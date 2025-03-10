@@ -3,36 +3,37 @@
 // put function declarations here:
 int myFunction(int, int);
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
-}
+// void setup() {
+//   // put your setup code here, to run once:
+//   int result = myFunction(2, 3);
+// }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-} /*
-   MechEng 706 Base Code
+// void loop() {
+//  // put your main code here, to run repeatedly:
+// }
+/*
+ MechEng 706 Base Code
 
-   This code provides basic movement and sensor reading for the MechEng 706
-   Mecanum Wheel Robot Project
+ This code provides basic movement and sensor reading for the MechEng 706
+ Mecanum Wheel Robot Project
 
-   Hardware:
-     Arduino Mega2560 https://www.arduino.cc/en/Guide/ArduinoMega2560
-     MPU-9250 https://www.sparkfun.com/products/13762
-     Ultrasonic Sensor - HC-SR04 https://www.sparkfun.com/products/13959
-     Infrared Proximity Sensor - Sharp https://www.sparkfun.com/products/242
-     Infrared Proximity Sensor Short Range - Sharp
-   https://www.sparkfun.com/products/12728 Servo - Generic (Sub-Micro Size)
-   https://www.sparkfun.com/products/9065 Vex Motor Controller 29
-   https://www.vexrobotics.com/276-2193.html Vex Motors
-   https://www.vexrobotics.com/motors.html Turnigy nano-tech 2200mah 2S
-   https://hobbyking.com/en_us/turnigy-nano-tech-2200mah-2s-25-50c-lipo-pack.html
+ Hardware:
+   Arduino Mega2560 https://www.arduino.cc/en/Guide/ArduinoMega2560
+   MPU-9250 https://www.sparkfun.com/products/13762
+   Ultrasonic Sensor - HC-SR04 https://www.sparkfun.com/products/13959
+   Infrared Proximity Sensor - Sharp https://www.sparkfun.com/products/242
+   Infrared Proximity Sensor Short Range - Sharp
+ https://www.sparkfun.com/products/12728 Servo - Generic (Sub-Micro Size)
+ https://www.sparkfun.com/products/9065 Vex Motor Controller 29
+ https://www.vexrobotics.com/276-2193.html Vex Motors
+ https://www.vexrobotics.com/motors.html Turnigy nano-tech 2200mah 2S
+ https://hobbyking.com/en_us/turnigy-nano-tech-2200mah-2s-25-50c-lipo-pack.html
 
-   Date: 11/11/2016
-   Author: Logan Stuart
-   Modified: 15/02/2018
-   Author: Logan Stuart
- */
+ Date: 11/11/2016
+ Author: Logan Stuart
+ Modified: 15/02/2018
+ Author: Logan Stuart
+*/
 #include <Servo.h>  //Need for Servo pulse output
 
 // #define NO_READ_GYRO  //Uncomment if GYRO is not attached.
@@ -77,122 +78,6 @@ int speed_change;
 HardwareSerial *SerialCom;
 
 int pos = 0;
-void setup(void) {
-  turret_motor.attach(11);
-  pinMode(LED_BUILTIN, OUTPUT);
-
-  // The Trigger pin will tell the sensor to range find
-  pinMode(TRIG_PIN, OUTPUT);
-  digitalWrite(TRIG_PIN, LOW);
-
-  // Setup the Serial port and pointer, the pointer allows switching the debug
-  // info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
-  SerialCom = &Serial;
-  SerialCom->begin(115200);
-  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
-  delay(1000);
-  SerialCom->println("Setup....");
-
-  delay(1000);  // settling time but no really needed
-}
-
-void loop(void)  // main loop
-{
-  static STATE machine_state = INITIALISING;
-  // Finite-state machine Code
-  switch (machine_state) {
-    case INITIALISING:
-      machine_state = initialising();
-      break;
-    case RUNNING:  // Lipo Battery Volage OK
-      machine_state = running();
-      break;
-    case STOPPED:  // Stop of Lipo Battery voltage is too low, to protect
-                   // Battery
-      machine_state = stopped();
-      break;
-  };
-}
-
-STATE initialising() {
-  // initialising
-  SerialCom->println("INITIALISING....");
-  delay(1000);  // One second delay to see the serial string "INITIALISING...."
-  SerialCom->println("Enabling Motors...");
-  enable_motors();
-  SerialCom->println("RUNNING STATE...");
-  return RUNNING;
-}
-
-STATE running() {
-  static unsigned long previous_millis;
-
-  read_serial_command();
-  fast_flash_double_LED_builtin();
-
-  if (millis() - previous_millis >
-      500) {  // Arduino style 500ms timed execution statement
-    previous_millis = millis();
-
-    SerialCom->println("RUNNING---------");
-    speed_change_smooth();
-    Analog_Range_A4();
-
-#ifndef NO_READ_GYRO
-    GYRO_reading();
-#endif
-
-#ifndef NO_HC - SR04
-    HC_SR04_range();
-#endif
-
-#ifndef NO_BATTERY_V_OK
-    if (!is_battery_voltage_OK()) return STOPPED;
-#endif
-
-    turret_motor.write(pos);
-
-    if (pos == 0) {
-      pos = 45;
-    } else {
-      pos = 0;
-    }
-  }
-
-  return RUNNING;
-}
-
-// Stop of Lipo Battery voltage is too low, to protect Battery
-STATE stopped() {
-  static byte counter_lipo_voltage_ok;
-  static unsigned long previous_millis;
-  int Lipo_level_cal;
-  disable_motors();
-  slow_flash_LED_builtin();
-
-  if (millis() - previous_millis > 500) {  // print massage every 500ms
-    previous_millis = millis();
-    SerialCom->println("STOPPED---------");
-
-#ifndef NO_BATTERY_V_OK
-    // 500ms timed if statement to check lipo and output speed settings
-    if (is_battery_voltage_OK()) {
-      SerialCom->print("Lipo OK waiting of voltage Counter 10 < ");
-      SerialCom->println(counter_lipo_voltage_ok);
-      counter_lipo_voltage_ok++;
-      if (counter_lipo_voltage_ok > 10) {  // Making sure lipo voltage is stable
-        counter_lipo_voltage_ok = 0;
-        enable_motors();
-        SerialCom->println("Lipo OK returning to RUN STATE");
-        return RUNNING;
-      }
-    } else {
-      counter_lipo_voltage_ok = 0;
-    }
-#endif
-  }
-  return STOPPED;
-}
 
 void fast_flash_double_LED_builtin() {
   static byte indexer = 0;
@@ -343,64 +228,6 @@ void GYRO_reading() {
 }
 #endif
 
-// Serial command pasing
-void read_serial_command() {
-  if (SerialCom->available()) {
-    char val = SerialCom->read();
-    SerialCom->print("Speed:");
-    SerialCom->print(speed_val);
-    SerialCom->print(" ms ");
-
-    // Perform an action depending on the command
-    switch (val) {
-      case 'w':  // Move Forward
-      case 'W':
-        forward();
-        SerialCom->println("Forward");
-        break;
-      case 's':  // Move Backwards
-      case 'S':
-        reverse();
-        SerialCom->println("Backwards");
-        break;
-      case 'q':  // Turn Left
-      case 'Q':
-        strafe_left();
-        SerialCom->println("Strafe Left");
-        break;
-      case 'e':  // Turn Right
-      case 'E':
-        strafe_right();
-        SerialCom->println("Strafe Right");
-        break;
-      case 'a':  // Turn Right
-      case 'A':
-        ccw();
-        SerialCom->println("ccw");
-        break;
-      case 'd':  // Turn Right
-      case 'D':
-        cw();
-        SerialCom->println("cw");
-        break;
-      case '-':  // Turn Right
-      case '_':
-        speed_change = -100;
-        SerialCom->println("-100");
-        break;
-      case '=':
-      case '+':
-        speed_change = 100;
-        SerialCom->println("+");
-        break;
-      default:
-        stop();
-        SerialCom->println("stop");
-        break;
-    }
-  }
-}
-
 //----------------------Motor moments------------------------
 // The Vex Motor Controller 29 use Servo Control signals to determine speed and
 // direction, with 0 degrees meaning neutral
@@ -485,3 +312,178 @@ void strafe_right() {
 
 // put function definitions here:
 int myFunction(int x, int y) { return x + y; }
+
+// Serial command pasing
+void read_serial_command() {
+  if (SerialCom->available()) {
+    char val = SerialCom->read();
+    SerialCom->print("Speed:");
+    SerialCom->print(speed_val);
+    SerialCom->print(" ms ");
+
+    // Perform an action depending on the command
+    switch (val) {
+      case 'w':  // Move Forward
+      case 'W':
+        forward();
+        SerialCom->println("Forward");
+        break;
+      case 's':  // Move Backwards
+      case 'S':
+        reverse();
+        SerialCom->println("Backwards");
+        break;
+      case 'q':  // Turn Left
+      case 'Q':
+        strafe_left();
+        SerialCom->println("Strafe Left");
+        break;
+      case 'e':  // Turn Right
+      case 'E':
+        strafe_right();
+        SerialCom->println("Strafe Right");
+        break;
+      case 'a':  // Turn Right
+      case 'A':
+        ccw();
+        SerialCom->println("ccw");
+        break;
+      case 'd':  // Turn Right
+      case 'D':
+        cw();
+        SerialCom->println("cw");
+        break;
+      case '-':  // Turn Right
+      case '_':
+        speed_change = -100;
+        SerialCom->println("-100");
+        break;
+      case '=':
+      case '+':
+        speed_change = 100;
+        SerialCom->println("+");
+        break;
+      default:
+        stop();
+        SerialCom->println("stop");
+        break;
+    }
+  }
+}
+
+STATE initialising() {
+  // initialising
+  SerialCom->println("INITIALISING....");
+  delay(1000);  // One second delay to see the serial string "INITIALISING...."
+  SerialCom->println("Enabling Motors...");
+  enable_motors();
+  SerialCom->println("RUNNING STATE...");
+  return RUNNING;
+}
+
+STATE running() {
+  static unsigned long previous_millis;
+
+  read_serial_command();
+  fast_flash_double_LED_builtin();
+
+  if (millis() - previous_millis >
+      500) {  // Arduino style 500ms timed execution statement
+    previous_millis = millis();
+
+    SerialCom->println("RUNNING---------");
+    speed_change_smooth();
+    Analog_Range_A4();
+
+#ifndef NO_READ_GYRO
+    GYRO_reading();
+#endif
+
+#ifndef NO_HC - SR04
+    HC_SR04_range();
+#endif
+
+#ifndef NO_BATTERY_V_OK
+    if (!is_battery_voltage_OK()) return STOPPED;
+#endif
+
+    turret_motor.write(pos);
+
+    if (pos == 0) {
+      pos = 45;
+    } else {
+      pos = 0;
+    }
+  }
+
+  return RUNNING;
+}
+
+// Stop of Lipo Battery voltage is too low, to protect Battery
+STATE stopped() {
+  static byte counter_lipo_voltage_ok;
+  static unsigned long previous_millis;
+  int Lipo_level_cal;
+  disable_motors();
+  slow_flash_LED_builtin();
+
+  if (millis() - previous_millis > 500) {  // print massage every 500ms
+    previous_millis = millis();
+    SerialCom->println("STOPPED---------");
+
+#ifndef NO_BATTERY_V_OK
+    // 500ms timed if statement to check lipo and output speed settings
+    if (is_battery_voltage_OK()) {
+      SerialCom->print("Lipo OK waiting of voltage Counter 10 < ");
+      SerialCom->println(counter_lipo_voltage_ok);
+      counter_lipo_voltage_ok++;
+      if (counter_lipo_voltage_ok > 10) {  // Making sure lipo voltage is stable
+        counter_lipo_voltage_ok = 0;
+        enable_motors();
+        SerialCom->println("Lipo OK returning to RUN STATE");
+        return RUNNING;
+      }
+    } else {
+      counter_lipo_voltage_ok = 0;
+    }
+#endif
+  }
+  return STOPPED;
+}
+
+void setup(void) {
+  turret_motor.attach(11);
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  // The Trigger pin will tell the sensor to range find
+  pinMode(TRIG_PIN, OUTPUT);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Setup the Serial port and pointer, the pointer allows switching the debug
+  // info through the USB port(Serial) or Bluetooth port(Serial1) with ease.
+  SerialCom = &Serial;
+  SerialCom->begin(115200);
+  SerialCom->println("MECHENG706_Base_Code_25/01/2018");
+  delay(1000);
+  SerialCom->println("Setup....");
+
+  delay(1000);  // settling time but no really needed
+}
+
+void loop(void)  // main loop
+{
+  static STATE machine_state = INITIALISING;
+  // Finite-state machine Code
+  switch (machine_state) {
+    case INITIALISING:
+      machine_state = initialising();
+      break;
+    case RUNNING:  // Lipo Battery Volage OK
+      machine_state = running();
+      break;
+    case STOPPED:  // Stop of Lipo Battery voltage is too low, to protect
+                   // Battery
+      machine_state = stopped();
+      break;
+  };
+}
