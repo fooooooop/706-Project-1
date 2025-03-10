@@ -1,5 +1,26 @@
 # 706-Project-1
 
+# Project File Descriptions
+- globals.h
+   Shared global variables, definitions, and pin settings.
+
+- moving_logic.h / moving_logic.cpp
+   Functions that control robot movement (forward, reverse, turn, etc.).
+
+- sensors.h / sensors.cpp
+   Functions to read sensor data (ultrasonic, analog, gyro, battery).
+
+- utilities.h / utilities.cpp
+   Helper functions (LED flashing, speed smoothing).
+
+- serial_command.h / serial_command.cpp
+   Reads and processes serial commands to control the robot.
+
+- state_machine.h / state_machine.cpp
+   Finite state machine managing robot states (initialising, running, stopped).
+
+- main.cpp
+   Main entry point that sets up hardware and runs the state machine loop.
 
 # Arduino Mega Project - Setup & Development Guide
 
@@ -87,4 +108,5 @@ Once you've made changes:
 
 
 ---
+
 
