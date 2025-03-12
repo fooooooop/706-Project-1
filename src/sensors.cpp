@@ -18,7 +18,7 @@ void HC_SR04_range() {
     t2 = micros();
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
-      SerialCom->println("HC-SR04: NOT found");
+      Serial.println("HC-SR04: NOT found");
       return;
     }
   }
@@ -29,7 +29,7 @@ void HC_SR04_range() {
     t2 = micros();
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
-      SerialCom->println("HC-SR04: Out of range");
+      Serial.println("HC-SR04: Out of range");
       return;
     }
   }
@@ -39,24 +39,24 @@ void HC_SR04_range() {
   cm = pulse_width / 58.0;
 
   if (pulse_width > MAX_DIST) {
-    SerialCom->println("HC-SR04: Out of range");
+    Serial.println("HC-SR04: Out of range");
   } else {
-    SerialCom->print("HC-SR04:");
-    SerialCom->print(cm);
-    SerialCom->println("cm");
+    Serial.print("HC-SR04:");
+    Serial.print(cm);
+    Serial.println("cm");
   }
 }
 #endif
 
 void Analog_Range_A4() {
-  SerialCom->print("Analog Range A4:");
-  SerialCom->println(analogRead(A4));
+  Serial.print("Analog Range A4:");
+  Serial.println(analogRead(A4));
 }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading() {
-  SerialCom->print("GYRO A3:");
-  SerialCom->println(analogRead(A3));
+  Serial.print("GYRO A3:");
+  Serial.println(analogRead(A3));
 }
 #endif
 
@@ -72,24 +72,23 @@ boolean is_battery_voltage_OK() {
   Lipo_level_cal = Lipo_level_cal / 143;
 
   if (Lipo_level_cal > 0 && Lipo_level_cal < 160) {
-    SerialCom->print("Lipo level:");
-    SerialCom->print(Lipo_level_cal);
-    SerialCom->print("%");
-    SerialCom->println("");
+    Serial.print("Lipo level:");
+    Serial.print(Lipo_level_cal);
+    Serial.print("%");
+    Serial.println("");
     Low_voltage_counter = 0;
     return true;
   } else {
     if (Lipo_level_cal < 0)
-      SerialCom->println(
-          "Lipo is Disconnected or Power Switch is turned OFF!!!");
+      Serial.println("Lipo is Disconnected or Power Switch is turned OFF!!!");
     else if (Lipo_level_cal > 160)
-      SerialCom->println("!Lipo is Overcharged!!!");
+      Serial.println("!Lipo is Overcharged!!!");
     else {
-      SerialCom->println(
+      Serial.println(
           "Lipo voltage too LOW, any lower and the lipo will be damaged");
-      SerialCom->print("Please Re-charge Lipo:");
-      SerialCom->print(Lipo_level_cal);
-      SerialCom->println("%");
+      Serial.print("Please Re-charge Lipo:");
+      Serial.print(Lipo_level_cal);
+      Serial.println("%");
     }
     Low_voltage_counter++;
     if (Low_voltage_counter > 5)

@@ -2,57 +2,80 @@
 
 #include "moving_logic.h"
 
+// --- Wireless Command Parsing ---
+// This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (SerialCom->available()) {
-    char val = SerialCom->read();
-    SerialCom->print("Speed:");
-    SerialCom->print(speed_val);
-    SerialCom->print(" ms ");
+  if (Serial1.available()) {
+    char val = Serial1.read();
+    Serial.print("Received command: ");
+    Serial.println(val);
+    Serial.print("Speed: ");
+    Serial.print(speed_val);
+    Serial.println(" ms");
 
     switch (val) {
-      case 'w':
+      case 'w':  // Move Forward
       case 'W':
         forward();
-        SerialCom->println("Forward");
+        Serial.println("Forward executed");
+        Serial1.println("Forward executed");
         break;
-      case 's':
+      case 's':  // Move Backward
       case 'S':
         reverse();
-        SerialCom->println("Backwards");
+        Serial.println("Reverse executed");
+        Serial1.println("Reverse executed");
         break;
-      case 'q':
+      case 'q':  // Strafe Left
       case 'Q':
         strafe_left();
-        SerialCom->println("Strafe Left");
+        Serial.println("Strafe Left executed");
+        Serial1.println("Strafe Left executed");
         break;
-      case 'e':
+      case 'e':  // Strafe Right
       case 'E':
         strafe_right();
-        SerialCom->println("Strafe Right");
+        Serial.println("Strafe Right executed");
+        Serial1.println("Strafe Right executed");
         break;
-      case 'a':
+      case 'a':  // Rotate Counter-Clockwise
       case 'A':
         ccw();
-        SerialCom->println("ccw");
+        Serial.println("Rotate CCW executed");
+        Serial1.println("Rotate CCW executed");
         break;
-      case 'd':
+      case 'd':  // Rotate Clockwise
       case 'D':
         cw();
-        SerialCom->println("cw");
+        Serial.println("Rotate CW executed");
+        Serial1.println("Rotate CW executed");
         break;
-      case '-':
+      case '-':  // Decrease Speed
       case '_':
         speed_change = -100;
-        SerialCom->println("-100");
+        Serial.println("Speed decreased");
+        Serial1.println("Speed decreased");
         break;
       case '=':
-      case '+':
+      case '+':  // Increase Speed
         speed_change = 100;
-        SerialCom->println("+");
+        Serial.println("Speed increased");
+        Serial1.println("Speed increased");
+        break;
+
+      case 'r':  // Request for status report
+      case 'R':
+        Serial.println("Status report requested");
+        // Sending a status report over Serial1 (HC-12)
+        Serial1.println("=== Mega Status Report ===");
+        Serial1.print("Speed value: ");
+        Serial1.println(speed_val);
+        // (Optionally add more debug info here, e.g., sensor values)
         break;
       default:
         stop_motors();
-        SerialCom->println("stop");
+        Serial.println("Stop executed");
+        Serial1.println("Stop executed");
         break;
     }
   }
