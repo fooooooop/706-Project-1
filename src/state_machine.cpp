@@ -28,6 +28,7 @@ STATE running() {
     previous_millis = millis();
     Serial.println("RUNNING---------");
     speed_change_smooth();
+    GYRO_controller();
     Analog_Range_A4();
 
 #ifndef NO_READ_GYRO

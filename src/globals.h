@@ -30,6 +30,14 @@ extern int speed_val;
 extern int speed_change;
 extern int pos;
 
+extern int fl_change;
+extern int fr_change;
+extern int bl_change;
+extern int br_change;
+
+// Controller variables
+extern double gyro_u;
+
 // Serial port pointer
 extern HardwareSerial *SerialCom;
 

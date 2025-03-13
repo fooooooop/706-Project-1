@@ -63,6 +63,47 @@ void read_serial_command() {
         Serial1.println("Speed increased");
         break;
 
+      case 'y':
+      case 'Y': //FL UP
+      fl_change += 10;
+      break;
+
+      case 'h':
+      case 'H': //FL DOWN
+      fl_change -= 10;
+      break;
+
+      case 'u':
+      case 'U': //FR UP
+      fr_change += 10;
+      break;
+
+      case 'j':
+      case 'J': //FR DOWN
+      fr_change -= 10;
+      break;
+
+      case 'i':
+      case 'I': //BL UP
+      bl_change += 10;
+      break;
+
+      case 'k':
+      case 'K': //BL DOWN
+      bl_change -= 10;
+      break;
+
+      case 'o':
+      case 'O': //BR UP
+      br_change += 10;
+      break;
+
+      case 'l':
+      case 'L': //BR DOWN
+      br_change -= 10;
+      break;
+
+
       case 'r':  // Request for status report
       case 'R':
         Serial.println("Status report requested");
@@ -71,7 +112,9 @@ void read_serial_command() {
         Serial1.print("Speed value: ");
         Serial1.println(speed_val);
         // (Optionally add more debug info here, e.g., sensor values)
+        Serial.println(gyro_u);
         break;
+
       default:
         stop_motors();
         Serial.println("Stop executed");

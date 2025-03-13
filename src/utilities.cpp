@@ -29,3 +29,52 @@ void speed_change_smooth() {
   if (speed_val > 1000) speed_val = 1000;
   speed_change = 0;
 }
+
+void GYRO_controller() {
+  //Setup!
+  double t_current = 0;
+  double t_previous = 0;
+
+  // General error variables
+  double gyro_currentSensor;
+  double gyro_err_current;
+  double gyro_target = 500;
+  double gyro_err_previous = 0;
+
+  double kp = 1.0;
+  double ki = 1.0;
+  double kd = 0;
+
+  // For Derivative controller
+  double dt;
+  double de;
+  double dedt;
+
+  // For Integral controller
+  double gyro_err_mem = 0;
+
+  //Main Code Start!
+  // Proportional controller
+  gyro_currentSensor = analogRead(A3); // Gyro reading
+  gyro_err_current = gyro_target - gyro_currentSensor;
+  
+  // Derivative controller
+  t_current = millis();
+  dt = (t_current - t_previous) / 1000;
+  t_previous = t_current;
+
+  de = (gyro_err_current - gyro_err_previous);
+  gyro_err_previous = gyro_err_current;
+
+  dedt = (de / dt);
+
+  // Integral controller
+  if (gyro_u < 400) { // Anti-integral windup
+    gyro_err_mem += gyro_err_current;
+  }
+
+  // PID controller
+  gyro_u = kp*gyro_err_current + ki+gyro_err_mem + kd*dedt;
+
+  return;
+}

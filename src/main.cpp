@@ -12,7 +12,12 @@ Servo turret_motor;
 
 int speed_val = 100;
 int speed_change = 0;
+int fl_change = 0;
+int fr_change = 0;
+int bl_change = 0;
+int br_change = 0;
 int pos = 0;
+double gyro_u = 0;
 
 void setup(void) {
   // Attach turret servo (example pin 11)

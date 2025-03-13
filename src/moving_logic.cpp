@@ -27,10 +27,10 @@ void stop_motors() {
 }
 
 void forward() {
-  left_front_motor.writeMicroseconds(1500 + speed_val);
-  left_rear_motor.writeMicroseconds(1500 + speed_val);
-  right_rear_motor.writeMicroseconds(1500 - speed_val);
-  right_front_motor.writeMicroseconds(1500 - speed_val);
+  left_front_motor.writeMicroseconds(1500 + speed_val + fl_change);
+  left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change);
+  right_rear_motor.writeMicroseconds(1500 - speed_val + br_change);
+  right_front_motor.writeMicroseconds(1500 - speed_val + fr_change);
 }
 
 void reverse() {
