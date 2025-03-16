@@ -5,8 +5,8 @@
 // --- Wireless Command Parsing ---
 // This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (Serial1.available()) {
-    char val = Serial1.read();
+  if (Serial.available()) {
+    char val = Serial.read();
     Serial.print("Received command: ");
     Serial.println(val);
     Serial.print("Speed: ");
@@ -65,43 +65,75 @@ void read_serial_command() {
 
       case 'y':
       case 'Y': //FL UP
-      fl_change += 10;
-      break;
+        fl_change += 10;
+        Serial.print("Front Left Increased: ");
+        Serial1.print("Front Left Increased: ");
+        Serial.println(fl_change);
+        Serial1.println(fl_change);
+        break;
 
       case 'h':
       case 'H': //FL DOWN
-      fl_change -= 10;
-      break;
+        fl_change -= 10;
+        Serial.print("Front Left Decreased: ");
+        Serial1.print("Front Left Decreased: ");
+        Serial.println(fl_change);
+        Serial1.println(fl_change);
+        break;
 
       case 'u':
       case 'U': //FR UP
-      fr_change += 10;
-      break;
+        fr_change += 10;  
+        Serial.print("Front Right Increased: ");
+        Serial1.print("Front Right Increased: ");
+        Serial.println(fr_change);
+        Serial1.println(fr_change);
+        break;
 
       case 'j':
       case 'J': //FR DOWN
-      fr_change -= 10;
-      break;
+        fr_change -= 10;
+        Serial.print("Front Right Decreased: ");
+        Serial1.print("Front Right Decreased: ");
+        Serial.println(fr_change);
+        Serial1.println(fr_change);
+        break;
 
       case 'i':
       case 'I': //BL UP
-      bl_change += 10;
-      break;
+        bl_change += 10;
+        Serial.print("Back Left Increased: ");
+        Serial1.print("Back Left Increased: ");
+        Serial.println(bl_change);
+        Serial1.println(bl_change);
+        break;
 
       case 'k':
       case 'K': //BL DOWN
-      bl_change -= 10;
-      break;
+        bl_change -= 10;
+        Serial.print("Back Left Decreased: ");
+        Serial1.print("Back Left Decreased: ");
+        Serial.println(bl_change);
+        Serial1.println(bl_change);
+        break;
 
       case 'o':
       case 'O': //BR UP
-      br_change += 10;
-      break;
+        br_change += 10;
+        Serial.print("Back Right Increased: ");
+        Serial1.print("Back Right Increased: ");
+        Serial.println(br_change);
+        Serial1.println(br_change);
+        break;
 
       case 'l':
       case 'L': //BR DOWN
-      br_change -= 10;
-      break;
+        br_change -= 10;
+        Serial.print("Back Right Decreased: ");
+        Serial1.print("Back Right Decreased: ");
+        Serial.println(br_change);
+        Serial1.println(br_change);
+        break;
 
 
       case 'r':  // Request for status report

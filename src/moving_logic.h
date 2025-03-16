@@ -2,6 +2,7 @@
 #define MOVING_LOGIC_H
 
 #include "globals.h"
+#include "utilities.h"
 
 // Motor control functions
 void enable_motors();

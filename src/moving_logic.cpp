@@ -27,10 +27,13 @@ void stop_motors() {
 }
 
 void forward() {
-  left_front_motor.writeMicroseconds(1500 + speed_val + fl_change);
-  left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change);
-  right_rear_motor.writeMicroseconds(1500 - speed_val + br_change);
-  right_front_motor.writeMicroseconds(1500 - speed_val + fr_change);
+  while (Serial.read() != 's') {
+    GYRO_controller();
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u);
+  }
 }
 
 void reverse() {
