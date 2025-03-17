@@ -44,8 +44,8 @@ void GYRO_controller() {
   double gyro_err_previous = 0;
 
   // K variables for controller
-  double kp = 5.0;
-  double ki = 1.0;
+  double kp = 5.5;
+  double ki = 1.2;
   double kd = 0;
 
   // For Derivative controller
