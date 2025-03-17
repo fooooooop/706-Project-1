@@ -48,9 +48,29 @@ void HC_SR04_range() {
 }
 #endif
 
-void Analog_Range_A4() {
-  Serial.print("Analog Range A4:");
-  Serial.println(analogRead(A4));
+// void Analog_Range_A4() {
+//   Serial.print("Analog Range A4:");
+//   Serial.println(analogRead(A4));
+// }
+
+uint8_t FRONT_LEFT_IR_reading() {
+  uint8_t distance = FrontLeftIR.getDistance();
+  return distance;
+}
+
+uint8_t FRONT_RIGHT_IR_reading() {
+  uint8_t distance = FrontRightIR.getDistance();
+  return distance;
+}
+
+uint8_t BACK_LEFT_IR_reading() {
+  uint8_t distance = BackLeftIR.getDistance();
+  return distance;
+}
+
+uint8_t BACK_RIGHT_IR_reading() {
+  uint8_t distance = BackRightIR.getDistance();
+  return distance;
 }
 
 #ifndef NO_READ_GYRO

@@ -1,13 +1,26 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
+#include "SharpIR.h"
 #include "globals.h"
 
 #ifndef NO_HC_SR04
 void HC_SR04_range();
 #endif
 
-void Analog_Range_A4();
+// void Analog_Range_A4();
+
+// FRONT_LEFT_IR
+uint8_t FRONT_LEFT_IR_reading();
+
+// FRONT_RIGHT_IR
+uint8_t FRONT_RIGHT_IR_reading();
+
+// BACK_LEFT_IR
+uint8_t BACK_LEFT_IR_reading();
+
+// BACK_RIGHT_IR
+uint8_t BACK_RIGHT_IR_reading();
 
 #ifndef NO_READ_GYRO
 void GYRO_reading();
