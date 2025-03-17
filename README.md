@@ -87,7 +87,13 @@ git pull origin main
 
 ---
 
-## 5. Making Changes & Pushing to GitHub
+## 5. Reset your code back to the latest change from Github
+
+git reset --hard HEAD
+
+---
+
+## 6. Making Changes & Pushing to GitHub
 Once you've made changes:
 
 1. Check what’s changed:
