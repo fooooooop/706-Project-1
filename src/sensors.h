@@ -10,16 +10,16 @@ void HC_SR04_range();
 
 // void Analog_Range_A4();
 
-// FRONT_LEFT_IR
+// // FRONT_LEFT_IR
 uint8_t FRONT_LEFT_IR_reading();
 
-// FRONT_RIGHT_IR
+// // FRONT_RIGHT_IR
 uint8_t FRONT_RIGHT_IR_reading();
 
-// BACK_LEFT_IR
+// // BACK_LEFT_IR
 uint8_t BACK_LEFT_IR_reading();
 
-// BACK_RIGHT_IR
+// // BACK_RIGHT_IR
 uint8_t BACK_RIGHT_IR_reading();
 
 #ifndef NO_READ_GYRO

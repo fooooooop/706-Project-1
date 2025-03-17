@@ -54,21 +54,25 @@ void HC_SR04_range() {
 // }
 
 uint8_t FRONT_LEFT_IR_reading() {
+  SharpIR FrontLeftIR(SharpIR::GP2Y0A41SK0F, FRONT_LEFT_IR);
   uint8_t distance = FrontLeftIR.getDistance();
   return distance;
 }
 
 uint8_t FRONT_RIGHT_IR_reading() {
+  SharpIR FrontRightIR(SharpIR::GP2Y0A41SK0F, FRONT_RIGHT_IR);
   uint8_t distance = FrontRightIR.getDistance();
   return distance;
 }
 
 uint8_t BACK_LEFT_IR_reading() {
+  SharpIR BackLeftIR(SharpIR::GP2Y0A21YK0F, BACK_LEFT_IR);
   uint8_t distance = BackLeftIR.getDistance();
   return distance;
 }
 
 uint8_t BACK_RIGHT_IR_reading() {
+  SharpIR BackRightIR(SharpIR::GP2Y0A21YK0F, BACK_RIGHT_IR);
   uint8_t distance = BackRightIR.getDistance();
   return distance;
 }

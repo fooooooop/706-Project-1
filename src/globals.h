@@ -16,17 +16,13 @@ const byte right_rear = 50;
 const byte right_front = 51;
 
 // IR sensor pins
-const int FRONT_LEFT_IR = A4;
-SharpIR FrontLeftIR(SharpIR::GP2Y0A41SK0F, FRONT_LEFT_IR);
+const int FRONT_LEFT_IR = A10;
 
 const int FRONT_RIGHT_IR = A14;
-SharpIR FrontRightIR(SharpIR::GP2Y0A41SK0F, FRONT_RIGHT_IR);
 
 const int BACK_LEFT_IR = A6;
-SharpIR BackLeftIR(SharpIR::GP2Y0A21YK0F, BACK_LEFT_IR);
 
 const int BACK_RIGHT_IR = A15;
-SharpIR BackRightIR(SharpIR::GP2Y0A21YK0F, BACK_RIGHT_IR);
 
 // Ultrasonic sensor pins and parameters
 const int TRIG_PIN = 48;
