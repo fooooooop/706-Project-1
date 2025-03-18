@@ -85,7 +85,7 @@ void GYRO_controller() {
   return;
 }
 
-void IR_controller() {
+void IR_controller(double IR_target) {
   //Setup!------------------------//
 
   // Time variables
@@ -95,7 +95,6 @@ void IR_controller() {
   // General error variables
   double IR_currentSensor;
   double IR_err_current;
-  double IR_target = 65;
   double IR_err_previous = 0;
 
   // K variables for controller
@@ -118,7 +117,13 @@ void IR_controller() {
   t_previous = t_current;
 
   // IR reading
-  IR_currentSensor = (double)BACK_LEFT_longIR_reading(); 
+  if ((double)FRONT_LEFT_shortIR_reading() < 32){
+    IR_currentSensor = (double)FRONT_LEFT_shortIR_reading() * -1; 
+  } else if ((double)FRONT_RIGHT_shortIR_reading() < 32){
+    IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading(); 
+  } else {
+    // Use long IR
+  }
 
   // Proportional controller
   IR_err_current = IR_target - IR_currentSensor;
