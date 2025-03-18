@@ -1,6 +1,8 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
+#include <SharpDistSensor.h>
+
 #include "SharpIR.h"
 #include "globals.h"
 
@@ -14,7 +16,7 @@ void HC_SR04_range();
 uint8_t FRONT_LEFT_shortIR_reading();
 
 // // FRONT_RIGHT_IR
-uint8_t FRONT_RIGHT_shortIR_reading();
+uint16_t FRONT_RIGHT_shortIR_reading();
 
 // // BACK_LEFT_IR
 uint8_t BACK_LEFT_longIR_reading();

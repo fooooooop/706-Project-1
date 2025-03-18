@@ -1,5 +1,7 @@
 #include "sensors.h"
 
+#define MEDIAN_WINDOW 3
+
 #ifndef NO_HC_SR04
 void HC_SR04_range() {
   unsigned long t1;
@@ -54,33 +56,53 @@ void HC_SR04_range() {
 // }
 
 uint8_t FRONT_LEFT_shortIR_reading() {
-  SharpIR FrontLeftIR(SharpIR::GP2Y0A41SK0F, FRONT_LEFT_IR);
-  uint8_t distance = FrontLeftIR.getDistance();
+  // SharpIR FrontLeftIR(SharpIR::GP2Y0A41SK0F, FRONT_LEFT_IR);
+  // uint8_t distance = FrontLeftIR.getDistance();
+  SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW);
+  FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
+  uint8_t distance = FrontLeftIR.getDist();
+  // Serial.print("Front Left IR: ");
+  // Serial.println(distance);
   return distance;
 }
 
-uint8_t FRONT_RIGHT_shortIR_reading() {
-  SharpIR FrontRightIR(SharpIR::GP2Y0A41SK0F, FRONT_RIGHT_IR);
-  uint8_t distance = FrontRightIR.getDistance();
+uint16_t FRONT_RIGHT_shortIR_reading() {
+  // SharpIR FrontRightIR(SharpIR::GP2Y0A41SK0F, FRONT_RIGHT_IR);
+  // uint8_t distance = FrontRightIR.getDistance();
+  SharpDistSensor FrontRightIR(FRONT_RIGHT_IR, 3);
+  FrontRightIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
+  uint16_t distance = FrontRightIR.getDist();
+  // Serial.print("Front Right IR: ");
+  // Serial.println(distance);
   return distance;
 }
 
 uint8_t BACK_LEFT_longIR_reading() {
-  SharpIR BackLeftIR(SharpIR::GP2Y0A21YK0F, BACK_LEFT_IR);
-  uint8_t distance = BackLeftIR.getDistance();
+  // SharpIR BackLeftIR(SharpIR::GP2Y0A21YK0F, BACK_LEFT_IR);
+  // uint8_t distance = BackLeftIR.getDistance();
+  SharpDistSensor BackLeftIR(BACK_LEFT_IR, MEDIAN_WINDOW);
+  BackLeftIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
+  uint8_t distance = BackLeftIR.getDist();
+  // Serial.print("Back Left IR: ");
+  // Serial.println(distance);
   return distance;
 }
 
 uint8_t BACK_RIGHT_longIR_reading() {
-  SharpIR BackRightIR(SharpIR::GP2Y0A21YK0F, BACK_RIGHT_IR);
-  uint8_t distance = BackRightIR.getDistance();
+  // SharpIR BackRightIR(SharpIR::GP2Y0A21YK0F, BACK_RIGHT_IR);
+  // uint8_t distance = BackRightIR.getDistance();
+  SharpDistSensor BackRightIR(BACK_RIGHT_IR, MEDIAN_WINDOW);
+  BackRightIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
+  uint8_t distance = BackRightIR.getDist();
+  // Serial.print("Back Right IR: ");
+  // Serial.println(distance);
   return distance;
 }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading() {
-  Serial.print("GYRO A3:");
-  Serial.println(analogRead(A3));
+  // Serial.print("GYRO A3:");
+  // Serial.println(analogRead(A3));
 }
 #endif
 
@@ -96,10 +118,10 @@ boolean is_battery_voltage_OK() {
   Lipo_level_cal = Lipo_level_cal / 143;
 
   if (Lipo_level_cal > 0 && Lipo_level_cal < 160) {
-    Serial.print("Lipo level:");
-    Serial.print(Lipo_level_cal);
-    Serial.print("%");
-    Serial.println("");
+    // Serial.print("Lipo level:");
+    // Serial.print(Lipo_level_cal);
+    // Serial.print("%");
+    // Serial.println("");
     Low_voltage_counter = 0;
     return true;
   } else {

@@ -26,29 +26,29 @@ STATE running() {
   // Perform periodic tasks every 500ms
   if (millis() - previous_millis > 500) {
     previous_millis = millis();
-    //Serial.println("RUNNING---------");
+    // Serial.println("RUNNING---------");
     speed_change_smooth();
     GYRO_controller();
     IR_controller();
-    Serial.println(gyro_u);
+    // Serial.println(gyro_u);
     Serial.println(FRONT_RIGHT_shortIR_reading());
-    Serial.println(FRONT_LEFT_shortIR_reading());
-    Serial.println(BACK_LEFT_longIR_reading());
-    Serial.println(BACK_RIGHT_longIR_reading());
-    Serial.println(IR_u);
-    //Analog_Range_A4();
+    // Serial.println(FRONT_LEFT_shortIR_reading());
+    // Serial.println(BACK_LEFT_longIR_reading());
+    // Serial.println(BACK_RIGHT_longIR_reading());
+    // Serial.println(IR_u);
+    // Analog_Range_A4();
 
-    #ifndef NO_READ_GYRO
-        GYRO_reading();
-    #endif
+#ifndef NO_READ_GYRO
+    GYRO_reading();
+#endif
 
-    #ifndef NO_HC_SR04
-        //HC_SR04_range();
-    #endif
+#ifndef NO_HC_SR04
+    // HC_SR04_range();
+#endif
 
-    #ifndef NO_BATTERY_V_OK
-        //if (!is_battery_voltage_OK()) return STOPPED;
-    #endif
+#ifndef NO_BATTERY_V_OK
+    // if (!is_battery_voltage_OK()) return STOPPED;
+#endif
 
     // Update turret position as an example
     turret_motor.write(pos);
