@@ -20,6 +20,12 @@ int pos = 0;
 double gyro_u = 0;
 double IR_u = 0;
 
+// Instanstiate IR sensor objects
+SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW_FL);
+SharpDistSensor FrontRightIR(FRONT_RIGHT_IR, MEDIAN_WINDOW_FR);
+SharpDistSensor BackLeftIR(BACK_LEFT_IR, MEDIAN_WINDOW_BL);
+SharpDistSensor BackRightIR(BACK_RIGHT_IR, MEDIAN_WINDOW_BR);
+
 void setup(void) {
   // Attach turret servo (example pin 11)
   turret_motor.attach(11);
@@ -32,6 +38,12 @@ void setup(void) {
   // Initialize USB Serial for debugging and Serial1 for wireless commands
   Serial.begin(115200);  // Debug output
   Serial1.begin(9600);   // HC‑12 wireless commands
+
+  // Set IR sensor models
+  FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
+  FrontRightIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
+  BackLeftIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
+  BackRightIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
 
   // Debug startup messages
   Serial.println("MECHENG706_Base_Code_25/01/2018");

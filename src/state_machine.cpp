@@ -30,13 +30,15 @@ STATE running() {
     speed_change_smooth();
     GYRO_controller();
     IR_controller();
-    // Serial.println(gyro_u);
+    Serial.println(gyro_u);
+    Serial.print("IR Sensor Font Right Short: ");
     Serial.println(FRONT_RIGHT_shortIR_reading());
-    // Serial.println(FRONT_LEFT_shortIR_reading());
-    // Serial.println(BACK_LEFT_longIR_reading());
+    Serial.print("IR Sensor Font Left Short: ");
+    Serial.println(FRONT_LEFT_shortIR_reading());
+    Serial.print("IR Sensor Back Left Long: ");
+    Serial.println(BACK_LEFT_longIR_reading());
+    Serial.print("IR Sensor Back Right  Long: ");
     // Serial.println(BACK_RIGHT_longIR_reading());
-    // Serial.println(IR_u);
-    // Analog_Range_A4();
 
 #ifndef NO_READ_GYRO
     GYRO_reading();

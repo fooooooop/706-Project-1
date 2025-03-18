@@ -50,54 +50,14 @@ void HC_SR04_range() {
 }
 #endif
 
-// void Analog_Range_A4() {
-//   Serial.print("Analog Range A4:");
-//   Serial.println(analogRead(A4));
-// }
+// Return IR sensor readings
+uint16_t FRONT_LEFT_shortIR_reading() { return FrontLeftIR.getDist(); }
 
-uint8_t FRONT_LEFT_shortIR_reading() {
-  // SharpIR FrontLeftIR(SharpIR::GP2Y0A41SK0F, FRONT_LEFT_IR);
-  // uint8_t distance = FrontLeftIR.getDistance();
-  SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW);
-  FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
-  uint8_t distance = FrontLeftIR.getDist();
-  // Serial.print("Front Left IR: ");
-  // Serial.println(distance);
-  return distance;
-}
+uint16_t FRONT_RIGHT_shortIR_reading() { return FrontRightIR.getDist(); }
 
-uint16_t FRONT_RIGHT_shortIR_reading() {
-  // SharpIR FrontRightIR(SharpIR::GP2Y0A41SK0F, FRONT_RIGHT_IR);
-  // uint8_t distance = FrontRightIR.getDistance();
-  SharpDistSensor FrontRightIR(FRONT_RIGHT_IR, 3);
-  FrontRightIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
-  uint16_t distance = FrontRightIR.getDist();
-  // Serial.print("Front Right IR: ");
-  // Serial.println(distance);
-  return distance;
-}
+uint16_t BACK_LEFT_longIR_reading() { return BackLeftIR.getDist(); }
 
-uint8_t BACK_LEFT_longIR_reading() {
-  // SharpIR BackLeftIR(SharpIR::GP2Y0A21YK0F, BACK_LEFT_IR);
-  // uint8_t distance = BackLeftIR.getDistance();
-  SharpDistSensor BackLeftIR(BACK_LEFT_IR, MEDIAN_WINDOW);
-  BackLeftIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
-  uint8_t distance = BackLeftIR.getDist();
-  // Serial.print("Back Left IR: ");
-  // Serial.println(distance);
-  return distance;
-}
-
-uint8_t BACK_RIGHT_longIR_reading() {
-  // SharpIR BackRightIR(SharpIR::GP2Y0A21YK0F, BACK_RIGHT_IR);
-  // uint8_t distance = BackRightIR.getDistance();
-  SharpDistSensor BackRightIR(BACK_RIGHT_IR, MEDIAN_WINDOW);
-  BackRightIR.setModel(SharpDistSensor::GP2Y0A21F_5V_DS);
-  uint8_t distance = BackRightIR.getDist();
-  // Serial.print("Back Right IR: ");
-  // Serial.println(distance);
-  return distance;
-}
+uint16_t BACK_RIGHT_longIR_reading() { return BackRightIR.getDist(); }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading() {
