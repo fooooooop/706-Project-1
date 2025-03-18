@@ -29,7 +29,13 @@ STATE running() {
     //Serial.println("RUNNING---------");
     speed_change_smooth();
     GYRO_controller();
+    IR_controller();
     Serial.println(gyro_u);
+    Serial.println(FRONT_RIGHT_shortIR_reading());
+    Serial.println(FRONT_LEFT_shortIR_reading());
+    Serial.println(BACK_LEFT_longIR_reading());
+    Serial.println(BACK_RIGHT_longIR_reading());
+    Serial.println(IR_u);
     //Analog_Range_A4();
 
     #ifndef NO_READ_GYRO
@@ -41,7 +47,7 @@ STATE running() {
     #endif
 
     #ifndef NO_BATTERY_V_OK
-        if (!is_battery_voltage_OK()) return STOPPED;
+        //if (!is_battery_voltage_OK()) return STOPPED;
     #endif
 
     // Update turret position as an example

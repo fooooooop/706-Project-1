@@ -44,7 +44,7 @@ void GYRO_controller() {
   double gyro_err_previous = 0;
 
   // K variables for controller
-  double kp = 5.5;
+  double kp = 6.5;
   double ki = 1.2;
   double kd = 0;
 
@@ -62,8 +62,10 @@ void GYRO_controller() {
   dt = (t_current - t_previous) / 1000;
   t_previous = t_current;
 
+  // Gyro reading
+  gyro_currentSensor = analogRead(A3); 
+
   // Proportional controller
-  gyro_currentSensor = analogRead(A3); // Gyro reading
   gyro_err_current = gyro_target - gyro_currentSensor;
 
   // Integral controller
@@ -79,6 +81,61 @@ void GYRO_controller() {
 
   // PID controller
   gyro_u = kp*gyro_err_current + ki+gyro_err_mem + kd*dedt;
+
+  return;
+}
+
+void IR_controller() {
+  //Setup!------------------------//
+
+  // Time variables
+  double t_current = 0;
+  double t_previous = 0;
+
+  // General error variables
+  double IR_currentSensor;
+  double IR_err_current;
+  double IR_target = 65;
+  double IR_err_previous = 0;
+
+  // K variables for controller
+  double kp = 1.5;
+  double ki = 0.72;
+  double kd = 0;
+
+  // For Derivative controller
+  double dt;
+  double de;
+  double dedt;
+
+  // For Integral controller
+  double IR_err_mem = 0;
+
+  //Main Code Start!------------------------//
+  // To get dt for Integral and Derivative controllers
+  t_current = millis();
+  dt = (t_current - t_previous) / 1000;
+  t_previous = t_current;
+
+  // IR reading
+  IR_currentSensor = (double)BACK_LEFT_longIR_reading(); 
+
+  // Proportional controller
+  IR_err_current = IR_target - IR_currentSensor;
+
+  // Integral controller
+  if (IR_u < 100) { // Anti-integral windup
+    IR_err_mem += IR_err_current;
+  }
+  
+  // Derivative controller
+  de = (IR_err_current - IR_err_previous);
+  IR_err_previous = IR_err_current;
+
+  dedt = (de / dt);
+
+  // PID controller
+  IR_u = kp*IR_err_current + ki+IR_err_mem + kd*dedt;
 
   return;
 }

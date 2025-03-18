@@ -18,6 +18,7 @@ int bl_change = 0;
 int br_change = 0;
 int pos = 0;
 double gyro_u = 0;
+double IR_u = 0;
 
 void setup(void) {
   // Attach turret servo (example pin 11)

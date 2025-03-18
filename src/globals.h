@@ -16,11 +16,11 @@ const byte right_rear = 50;
 const byte right_front = 51;
 
 // IR sensor pins
-const int FRONT_LEFT_IR = A10;
+const int FRONT_LEFT_IR = A4;
 
 const int FRONT_RIGHT_IR = A14;
 
-const int BACK_LEFT_IR = A6;
+const int BACK_LEFT_IR = A5;
 
 const int BACK_RIGHT_IR = A15;
 
@@ -48,6 +48,7 @@ extern int br_change;
 
 // Controller variables
 extern double gyro_u;
+extern double IR_u;
 
 // Serial port pointer
 extern HardwareSerial *SerialCom;
