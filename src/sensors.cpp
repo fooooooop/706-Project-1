@@ -61,8 +61,35 @@ uint16_t BACK_RIGHT_longIR_reading() { return BackRightIR.getDist(); }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading() {
-  // Serial.print("GYRO A3:");
-  // Serial.println(analogRead(A3));
+  int T = 500; // T is the time of one loop
+
+  // convert the 0-1023 signal to 0-5v
+  gyroRate = (analogRead(A3)*gyroSupplyVoltage)/1023;
+  // find the voltage offset the value of voltage when gyro is zero (still)
+  gyroRate -= (gyroZeroVoltage/1023*5);
+  // read out voltage divided the gyro sensitivity to calculate the angular velocity
+  float angularVelocity = gyroRate/ gyroSensitivity;
+  // if the angular velocity is less than the threshold, ignore it
+  if (angularVelocity >= rotationThreshold || angularVelocity <= -rotationThreshold)
+  {
+    // we are running a loop in T. one second will run (1000/T).
+    float angleChange = angularVelocity/(1000/T);
+    currentAngle += angleChange;
+  }
+  if (abs(angularVelocity) > maxGyroDrift) {
+    maxGyroDrift = abs(angularVelocity);
+  }
+
+  // keep the angle between 0-360
+  if (currentAngle < 0)
+    {currentAngle += 360;}
+  else if (currentAngle > 359)
+    {currentAngle -= 360;}
+  // Serial.print(maxGyroDrift);
+  // Serial.print(" ");
+  Serial.print(angularVelocity);
+  Serial.print(" ");
+  Serial.println(currentAngle);
 }
 #endif
 

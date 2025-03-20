@@ -29,7 +29,7 @@ void stop_motors() {
 void forward() {
   while (Serial.read() != 's') {
     GYRO_controller();
-    IR_controller(25.0);
+    // IR_controller(25.0);
     left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + br_change);

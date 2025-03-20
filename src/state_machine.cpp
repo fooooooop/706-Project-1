@@ -30,27 +30,28 @@ STATE running() {
     speed_change_smooth();
     GYRO_controller();
     IR_controller(25.0);
-    Serial.println(gyro_u);
-    Serial.print("IR Sensor Font Right Short: ");
-    Serial.println(FRONT_RIGHT_shortIR_reading());
-    Serial.print("IR Sensor Font Left Short: ");
-    Serial.println(FRONT_LEFT_shortIR_reading());
-    Serial.print("IR Sensor Back Left Long: ");
-    Serial.println(BACK_LEFT_longIR_reading());
-    Serial.print("IR Sensor Back Right  Long: ");
-    Serial.println(BACK_RIGHT_longIR_reading());
+    Serial.println(analogRead(A3));
+    // Serial.println(gyro_u);
+    // Serial.print("IR Sensor Font Right Short: ");
+    // Serial.println(FRONT_RIGHT_shortIR_reading());
+    // Serial.print("IR Sensor Font Left Short: ");
+    // Serial.println(FRONT_LEFT_shortIR_reading());
+    // Serial.print("IR Sensor Back Left Long: ");
+    // Serial.println(BACK_LEFT_longIR_reading());
+    // Serial.print("IR Sensor Back Right  Long: ");
+    // Serial.println(BACK_RIGHT_longIR_reading());
 
-#ifndef NO_READ_GYRO
-    GYRO_reading();
-#endif
+    #ifndef NO_READ_GYRO
+        GYRO_reading();
+    #endif
 
-#ifndef NO_HC_SR04
-    // HC_SR04_range();
-#endif
+    #ifndef NO_HC_SR04
+        // HC_SR04_range();
+    #endif
 
-#ifndef NO_BATTERY_V_OK
-    // if (!is_battery_voltage_OK()) return STOPPED;
-#endif
+    #ifndef NO_BATTERY_V_OK
+        // if (!is_battery_voltage_OK()) return STOPPED;
+    #endif
 
     // Update turret position as an example
     turret_motor.write(pos);
