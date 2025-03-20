@@ -61,6 +61,7 @@ uint16_t BACK_RIGHT_longIR_reading() { return BackRightIR.getDist(); }
 
 #ifndef NO_READ_GYRO
 void GYRO_reading(int T) {
+  // T is delay for loop
 
   // convert the 0-1023 signal to 0-5v
   gyroRate = (analogRead(A3)*gyroSupplyVoltage)/1023;

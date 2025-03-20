@@ -101,7 +101,7 @@ void IR_controller(double IR_target) {
   double IR_err_previous = 0;
 
   // K variables for controller
-  double kp = 1.5;
+  double kp = 1.7;
   double ki = 0.72;
   double kd = 0;
 
@@ -119,17 +119,23 @@ void IR_controller(double IR_target) {
   dt = (t_current - t_previous) / 1000;
   t_previous = t_current;
 
-  // IR reading
-  if ((double)FRONT_LEFT_shortIR_reading() < 32){
-    IR_currentSensor = (double)FRONT_LEFT_shortIR_reading() * -1; 
-  } else if ((double)FRONT_RIGHT_shortIR_reading() < 32){
-    IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading(); 
-  } else {
-    // Use long IR
-  }
+  // IR reading + Proportional Controller
+  if ((double)FRONT_LEFT_shortIR_reading() < 320){
+    IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
+    IR_err_current = (IR_target - IR_currentSensor) * -1; 
 
-  // Proportional controller
-  IR_err_current = IR_target - IR_currentSensor;
+  } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
+    IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
+    IR_err_current = IR_target - IR_currentSensor; 
+
+  } else if ((double)BACK_LEFT_longIR_reading() < 800){
+    IR_currentSensor = (double)BACK_LEFT_longIR_reading();
+    IR_err_current = (IR_target - IR_currentSensor) * -1; 
+
+  } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+    IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
+    IR_err_current = (IR_target - IR_currentSensor); 
+  }
 
   // Integral controller
   if (IR_u < 100) { // Anti-integral windup
