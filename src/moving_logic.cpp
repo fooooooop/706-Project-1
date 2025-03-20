@@ -34,6 +34,7 @@ void forward() {
     left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
+    // IR_u based on strafe_left function
   }
 }
 
@@ -45,10 +46,19 @@ void reverse() {
 }
 
 void ccw() {
-  left_front_motor.writeMicroseconds(1500 - speed_val);
-  left_rear_motor.writeMicroseconds(1500 - speed_val);
-  right_rear_motor.writeMicroseconds(1500 - speed_val);
-  right_front_motor.writeMicroseconds(1500 - speed_val);
+  // left_front_motor.writeMicroseconds(1500 - speed_val);
+  // left_rear_motor.writeMicroseconds(1500 - speed_val);
+  // right_rear_motor.writeMicroseconds(1500 - speed_val);
+  // right_front_motor.writeMicroseconds(1500 - speed_val);
+
+  while (Serial.read() != 'c') {
+    GYRO_controller(30);
+    Serial.println(gyro_u);
+    left_front_motor.writeMicroseconds(1500 + gyro_u);
+    left_rear_motor.writeMicroseconds(1500 + gyro_u);
+    right_rear_motor.writeMicroseconds(1500 + gyro_u);
+    right_front_motor.writeMicroseconds(1500 + gyro_u);
+  }
 }
 
 void cw() {
@@ -70,4 +80,111 @@ void strafe_right() {
   left_rear_motor.writeMicroseconds(1500 - speed_val);
   right_rear_motor.writeMicroseconds(1500 - speed_val);
   right_front_motor.writeMicroseconds(1500 + speed_val);
+}
+
+void find_corner() {
+  double target_dist = 140;
+
+  // until one of the IR sensors is less than target_dist, drive Forward--------------------------//
+  do {
+    GYRO_controller(0);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u);
+  } while ( ((double)FRONT_LEFT_shortIR_reading() > target_dist) && ((double)FRONT_RIGHT_shortIR_reading() > target_dist) );
+  // && ((double)BACK_LEFT_longIR_reading() > target_dist) && ((double)BACK_RIGHT_longIR_reading() > target_dist) ); // To also use the back sensors
+
+  delay(10);
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+  delay(1000);
+
+  // Re-orient itself straight along the wall (target_dist)--------------------------//
+  if ((double)FRONT_LEFT_shortIR_reading() < target_dist) {
+    Serial.println("Front LEFT");
+    Serial1.println("Front LEFT");
+    do {
+      left_front_motor.writeMicroseconds(1500 + speed_val);
+      left_rear_motor.writeMicroseconds(1500 + speed_val);
+      right_rear_motor.writeMicroseconds(1500 + speed_val);
+      right_front_motor.writeMicroseconds(1500 + speed_val);
+    } while ((double)BACK_LEFT_longIR_reading() > target_dist);
+
+    delay(10);
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+    delay(1000);
+
+    while (Serial.read() != 's') {
+      IR_controller(135);
+      left_front_motor.writeMicroseconds(1500 - speed_val - IR_u);
+      left_rear_motor.writeMicroseconds(1500 + speed_val + IR_u);
+      right_rear_motor.writeMicroseconds(1500 + speed_val + IR_u);
+      right_front_motor.writeMicroseconds(1500 - speed_val - IR_u);
+      // IR_u based on strafe_left function
+    }
+
+  } else if ((double)FRONT_RIGHT_shortIR_reading() < target_dist) {
+    Serial.println("Front RIGHT");
+    Serial1.println("Front RIGHT");
+    do {
+      left_front_motor.writeMicroseconds(1500 - speed_val);
+      left_rear_motor.writeMicroseconds(1500 - speed_val);
+      right_rear_motor.writeMicroseconds(1500 - speed_val);
+      right_front_motor.writeMicroseconds(1500 - speed_val);
+    } while ((double)BACK_RIGHT_longIR_reading( ) > target_dist);
+
+    delay(10);
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+    delay(1000);
+
+    while (Serial.read() != 's') {
+      IR_controller(135);
+      left_front_motor.writeMicroseconds(1500 + speed_val + IR_u);
+      left_rear_motor.writeMicroseconds(1500 - speed_val - IR_u);
+      right_rear_motor.writeMicroseconds(1500 - speed_val - IR_u);
+      right_front_motor.writeMicroseconds(1500 + speed_val + IR_u);
+      // IR_u based on strafe_left function
+    }
+    
+  }
+  // } else if ((double)BACK_LEFT_longIR_reading() < target_dist) {
+  //   Serial.println("Back LEFT");
+  //   Serial1.println("Back LEFT");
+  //   do {
+  //     left_front_motor.writeMicroseconds(1500 + speed_val);
+  //     left_rear_motor.writeMicroseconds(1500 + speed_val);
+  //     right_rear_motor.writeMicroseconds(1500 + speed_val);
+  //     right_front_motor.writeMicroseconds(1500 + speed_val);
+  //   } while ((double)FRONT_LEFT_shortIR_reading() > target_dist);
+    
+
+  // } else if ((double)BACK_RIGHT_longIR_reading() < target_dist) {
+  //   Serial.println("Back RIGHT");
+  //   Serial1.println("Back RIGHT");
+  //   do {
+  //     left_front_motor.writeMicroseconds(1500 - speed_val);
+  //     left_rear_motor.writeMicroseconds(1500 - speed_val);
+  //     right_rear_motor.writeMicroseconds(1500 - speed_val);
+  //     right_front_motor.writeMicroseconds(1500 - speed_val);
+  //   } while ((double)FRONT_RIGHT_shortIR_reading() > target_dist);
+
+  // }  
+
+  // Take an angle reading. "Zero" the robot.
+  // for (int i = 1; i < 50; i++){
+  //   GYRO_reading(50); 
+  //   delay(50);
+  // }
+  // currentAngle = 0;
+
+  // Drive to shortest wall
 }

@@ -120,21 +120,53 @@ void IR_controller(double IR_target) {
   t_previous = t_current;
 
   // IR reading + Proportional Controller
-  if ((double)FRONT_LEFT_shortIR_reading() < 320){
-    IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
-    IR_err_current = (IR_target - IR_currentSensor) * -1; 
-
-  } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
-    IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
-    IR_err_current = IR_target - IR_currentSensor; 
-
-  } else if ((double)BACK_LEFT_longIR_reading() < 800){
-    IR_currentSensor = (double)BACK_LEFT_longIR_reading();
-    IR_err_current = (IR_target - IR_currentSensor) * -1; 
-
-  } else if ((double)BACK_RIGHT_longIR_reading() < 800){
-    IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
-    IR_err_current = (IR_target - IR_currentSensor); 
+  // if ((IR_target < 320) && (IR_target >= 130)) {
+  //   if ( ((double)FRONT_LEFT_shortIR_reading() < 320) && ((double)BACK_LEFT_longIR_reading() >= 130) ){ 
+  //     // Between 13cm and 32cm from LEFT wall
+  //     Serial.println("Between 13cm and 32cm from LEFT wall");
+  //     Serial1.println("Between 13cm and 32cm from LEFT wall");
+  //     IR_currentSensor = ( (double)FRONT_LEFT_shortIR_reading() + (double)BACK_LEFT_longIR_reading() ) / 2.0;
+  //     IR_err_current = (IR_target - IR_currentSensor) * -1; 
+  
+  //   } else if ( ((double)FRONT_RIGHT_shortIR_reading() < 320) && ((double)BACK_RIGHT_longIR_reading() >= 130) ){ 
+  //     // Between 13cm and 32cm from RIGHT wall
+  //     Serial.println("Between 13cm and 32cm from RIGHT wall");
+  //     Serial1.println("Between 13cm and 32cm from RIGHT wall");
+  //     IR_currentSensor = ( (double)FRONT_RIGHT_shortIR_reading() + (double)BACK_RIGHT_longIR_reading() ) / 2.0;
+  //     IR_err_current = IR_target - IR_currentSensor; 
+  //   }
+  // } else if (IR_target < 320) {
+  if (IR_target < 320) {
+    if ( ((double)FRONT_LEFT_shortIR_reading() < 320) && ((double)BACK_LEFT_longIR_reading() < 130) ) {
+      // Less than 13cm from LEFT wall
+      Serial.println("Less than 13cm from LEFT wall");
+      Serial1.println("Less than 13cm from LEFT wall");
+      IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor) * -1; 
+  
+    } else if ( ((double)FRONT_RIGHT_shortIR_reading() < 320) && ((double)BACK_RIGHT_longIR_reading() < 130) ) {
+      // Less than 13cm from RIGHT wall
+      Serial.println("Less than 13cm from RIGHT wall");
+      Serial1.println("Less than 13cm from RIGHT wall");
+      IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
+      IR_err_current = IR_target - IR_currentSensor; 
+  
+    }
+  } else if (IR_target >= 320) {
+    if ((double)BACK_LEFT_longIR_reading() < 800){
+      // More than 32cm from LEFT wall
+      Serial.println("More than 32cm from LEFT wall");
+      Serial1.println("More than 32cm from LEFT wall");
+      IR_currentSensor = (double)BACK_LEFT_longIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor) * -1; 
+  
+    } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+      // More than 32cm from RIGHT wall
+      Serial.println("More than 32cm from RIGHT wall");
+      Serial1.println("More than 32cm from RIGHT wall");
+      IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor); 
+    }
   }
 
   // Integral controller

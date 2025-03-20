@@ -148,6 +148,13 @@ void read_serial_command() {
         Serial.println(gyro_u);
         break;
 
+      case 'z': // Find Corner
+      case 'Z':
+        find_corner();
+        Serial.println("Find corner executed");
+        Serial1.println("Find corner executed");
+        break;
+
       default:
         stop_motors();
         Serial.println("Stop executed");
