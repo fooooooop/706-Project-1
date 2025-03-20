@@ -28,9 +28,9 @@ STATE running() {
     previous_millis = millis();
     // Serial.println("RUNNING---------");
     speed_change_smooth();
-    GYRO_controller();
+    GYRO_controller(0);
     IR_controller(25.0);
-    Serial.println(analogRead(A3));
+    Serial.println(gyro_u);
     // Serial.println(gyro_u);
     // Serial.print("IR Sensor Font Right Short: ");
     // Serial.println(FRONT_RIGHT_shortIR_reading());
@@ -42,7 +42,7 @@ STATE running() {
     // Serial.println(BACK_RIGHT_longIR_reading());
 
     #ifndef NO_READ_GYRO
-        GYRO_reading();
+        // GYRO_reading(500);
     #endif
 
     #ifndef NO_HC_SR04

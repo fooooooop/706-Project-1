@@ -25,7 +25,7 @@ uint16_t BACK_LEFT_longIR_reading();
 uint16_t BACK_RIGHT_longIR_reading();
 
 #ifndef NO_READ_GYRO
-void GYRO_reading();
+void GYRO_reading(int T);
 #endif
 
 #ifndef NO_BATTERY_V_OK

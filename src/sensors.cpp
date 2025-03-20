@@ -60,8 +60,7 @@ uint16_t BACK_LEFT_longIR_reading() { return BackLeftIR.getDist(); }
 uint16_t BACK_RIGHT_longIR_reading() { return BackRightIR.getDist(); }
 
 #ifndef NO_READ_GYRO
-void GYRO_reading() {
-  int T = 500; // T is the time of one loop
+void GYRO_reading(int T) {
 
   // convert the 0-1023 signal to 0-5v
   gyroRate = (analogRead(A3)*gyroSupplyVoltage)/1023;
@@ -81,10 +80,11 @@ void GYRO_reading() {
   }
 
   // keep the angle between 0-360
-  if (currentAngle < 0)
+  if (currentAngle < -180)
     {currentAngle += 360;}
-  else if (currentAngle > 359)
+  else if (currentAngle > 180)
     {currentAngle -= 360;}
+
   // Serial.print(maxGyroDrift);
   // Serial.print(" ");
   Serial.print(angularVelocity);
@@ -105,10 +105,10 @@ boolean is_battery_voltage_OK() {
   Lipo_level_cal = Lipo_level_cal / 143;
 
   if (Lipo_level_cal > 0 && Lipo_level_cal < 160) {
-    // Serial.print("Lipo level:");
-    // Serial.print(Lipo_level_cal);
-    // Serial.print("%");
-    // Serial.println("");
+    Serial.print("Lipo level:");
+    Serial.print(Lipo_level_cal);
+    Serial.print("%");
+    Serial.println("");
     Low_voltage_counter = 0;
     return true;
   } else {

@@ -14,9 +14,9 @@ Servo turret_motor;
 int speed_val = 100;
 int speed_change = 0;
 int fl_change = 0;
-int fr_change = -60;
+int fr_change = 0;
 int bl_change = 0;
-int br_change = 0;
+int br_change = -50;
 
 int pos = 0; // turret pos?
 

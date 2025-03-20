@@ -30,17 +30,17 @@ void speed_change_smooth() {
   speed_change = 0;
 }
 
-void GYRO_controller() {
+void GYRO_controller(double gyro_target) {
   //Setup!------------------------//
 
   // Time variables
   double t_current = 0;
   double t_previous = 0;
+  int gyro_t = 50;
 
   // General error variables
   double gyro_currentSensor;
   double gyro_err_current;
-  double gyro_target = 500;
   double gyro_err_previous = 0;
 
   // K variables for controller
@@ -63,7 +63,10 @@ void GYRO_controller() {
   t_previous = t_current;
 
   // Gyro reading
-  gyro_currentSensor = analogRead(A3); 
+  // gyro_currentSensor = analogRead(A3);
+  GYRO_reading(gyro_t); 
+  delay(gyro_t);
+  gyro_currentSensor = currentAngle;
 
   // Proportional controller
   gyro_err_current = gyro_target - gyro_currentSensor;
