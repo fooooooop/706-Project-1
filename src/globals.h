@@ -68,6 +68,8 @@ extern int br_change;
 // Controller variables
 extern double gyro_u;
 extern double IR_u;
+extern double IRFront_u;
+extern double IRBack_u;
 
 // Serial port pointer
 extern HardwareSerial *SerialCom;

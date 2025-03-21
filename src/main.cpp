@@ -32,6 +32,8 @@ float maxGyroDrift = 0;
 // Controller Efforts
 double gyro_u = 0;
 double IR_u = 0;
+double IRFront_u = 0;
+double IRBack_u = 0;
 
 // Instanstiate IR sensor objects
 SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW_FL);

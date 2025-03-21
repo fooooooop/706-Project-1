@@ -88,8 +88,14 @@ void GYRO_controller(double gyro_target) {
   return;
 }
 
-void IR_controller(double IR_target) {
+void IR_controller(double IR_target, int IR_mode) {
   //Setup!------------------------//
+  //IR_mode changes what efforts are given to the motor
+  //IR_mode = 1 - AWD
+  //IR_mode = 2 - FWD
+  //IR_mode = 3 - RWD
+  //This is needed for the corner finding function so that the front and back wheels have
+  //their own controllers
 
   // Time variables
   double t_current = 0;
@@ -120,30 +126,17 @@ void IR_controller(double IR_target) {
   t_previous = t_current;
 
   // IR reading + Proportional Controller
-  if ((IR_target < 320) && (IR_target >= 130)) {
-    if ( ((double)FRONT_LEFT_shortIR_reading() < 320) && ((double)BACK_LEFT_longIR_reading() >= 130) ){ 
-      // Between 13cm and 32cm from LEFT wall
-      Serial.println("Between 13cm and 32cm from LEFT wall");
-      Serial1.println("Between 13cm and 32cm from LEFT wall");
-      IR_currentSensor = ( (double)FRONT_LEFT_shortIR_reading() + (double)BACK_LEFT_longIR_reading() ) / 2.0;
-      IR_err_current = (IR_target - IR_currentSensor) * -1; 
-  
-    } else if ( ((double)FRONT_RIGHT_shortIR_reading() < 320) && ((double)BACK_RIGHT_longIR_reading() >= 130) ){ 
-      // Between 13cm and 32cm from RIGHT wall
-      Serial.println("Between 13cm and 32cm from RIGHT wall");
-      Serial1.println("Between 13cm and 32cm from RIGHT wall");
-      IR_currentSensor = ( (double)FRONT_RIGHT_shortIR_reading() + (double)BACK_RIGHT_longIR_reading() ) / 2.0;
-      IR_err_current = IR_target - IR_currentSensor; 
-    }
-  } else if (IR_target < 320) {
-    if ( ((double)FRONT_LEFT_shortIR_reading() < 320) && ((double)BACK_LEFT_longIR_reading() < 130) ) {
+  if (IR_mode == 2) {
+
+    // Uses only Front IR Sensors //
+    if ((double)FRONT_LEFT_shortIR_reading() < 320) {
       // Less than 13cm from LEFT wall
       Serial.println("Less than 13cm from LEFT wall");
       Serial1.println("Less than 13cm from LEFT wall");
       IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
   
-    } else if ( ((double)FRONT_RIGHT_shortIR_reading() < 320) && ((double)BACK_RIGHT_longIR_reading() < 130) ) {
+    } else if ((double)FRONT_RIGHT_shortIR_reading() < 320) {
       // Less than 13cm from RIGHT wall
       Serial.println("Less than 13cm from RIGHT wall");
       Serial1.println("Less than 13cm from RIGHT wall");
@@ -151,7 +144,11 @@ void IR_controller(double IR_target) {
       IR_err_current = IR_target - IR_currentSensor; 
   
     }
-  } else if (IR_target >= 320) {
+    //---------------------------//
+
+  } else if (IR_mode == 3) {
+
+    // Uses only the Back IR Sensors //
     if ((double)BACK_LEFT_longIR_reading() < 800){
       // More than 32cm from LEFT wall
       Serial.println("More than 32cm from LEFT wall");
@@ -165,7 +162,32 @@ void IR_controller(double IR_target) {
       Serial1.println("More than 32cm from RIGHT wall");
       IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor); 
+
+    } 
+    //------------------------------//
+
+  } else if (IR_mode == 1) {
+
+    // Will use all sensors
+    // USE FOR THE STRAIGHT LINE
+    if ((double)FRONT_LEFT_shortIR_reading() < 320){
+      IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor) * -1; 
+  
+    } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
+      IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
+      IR_err_current = IR_target - IR_currentSensor; 
+  
+    } else if ((double)BACK_LEFT_longIR_reading() < 800){
+      IR_currentSensor = (double)BACK_LEFT_longIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor) * -1; 
+  
+    } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+      IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor); 
     }
+    //------------------------------//
+
   }
 
   // Integral controller
@@ -180,7 +202,9 @@ void IR_controller(double IR_target) {
   dedt = (de / dt);
 
   // PID controller
-  IR_u = kp*IR_err_current + ki+IR_err_mem + kd*dedt;
+  (IR_mode == 2) ? IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) 
+    : (IR_mode == 3) ? IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) 
+    : IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
 
   return;
 }

@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "utilities.h"
+#include "sensors.h"
 
 // Motor control functions
 void enable_motors();

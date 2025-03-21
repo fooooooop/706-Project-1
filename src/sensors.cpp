@@ -3,7 +3,7 @@
 #define MEDIAN_WINDOW 3
 
 #ifndef NO_HC_SR04
-void HC_SR04_range() {
+float HC_SR04_range() {
   unsigned long t1;
   unsigned long t2;
   unsigned long pulse_width;
@@ -21,7 +21,7 @@ void HC_SR04_range() {
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
       Serial.println("HC-SR04: NOT found");
-      return;
+      return 0;
     }
   }
 
@@ -32,7 +32,7 @@ void HC_SR04_range() {
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
       Serial.println("HC-SR04: Out of range");
-      return;
+      return 0;
     }
   }
   t2 = micros();
@@ -47,6 +47,8 @@ void HC_SR04_range() {
     Serial.print(cm);
     Serial.println("cm");
   }
+
+  return cm;
 }
 #endif
 

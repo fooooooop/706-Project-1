@@ -31,7 +31,9 @@ STATE running() {
     // GYRO_controller(0);
     // IR_controller(250);
     // Serial.println(gyro_u);
-    // Serial.println(IR_u);
+    Serial.println(IR_u);
+    Serial.println(IRFront_u);
+    Serial.println(IRBack_u);
     // Serial.print("IR Sensor Front Right Short: ");
     // Serial.println(FRONT_RIGHT_shortIR_reading());
     // Serial.print("IR Sensor Front Left Short: ");
