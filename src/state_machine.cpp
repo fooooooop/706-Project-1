@@ -7,10 +7,13 @@
 
 STATE initialising() {
   Serial.println("INITIALISING....");
+  Serial1.println("INITIALISING....");
   delay(1000);  // Allow time to view message
   Serial.println("Enabling Motors...");
+  Serial1.println("Enabling Motors...");
   enable_motors();
   Serial.println("RUNNING STATE...");
+  Serial1.println("RUNNING STATE...");
   return RUNNING;
 }
 
@@ -41,19 +44,19 @@ STATE running() {
     // Serial.print("IR Sensor Back Right  Long: ");
     // Serial.println(BACK_RIGHT_longIR_reading());
 
-    #ifndef NO_READ_GYRO
-        // GYRO_reading(500);
-        // Can't trust the readings from this cuz the current angle is now a global variable
-        // Running this will mess with the GYRO controller
-    #endif
+#ifndef NO_READ_GYRO
+    // GYRO_reading(500);
+    // Can't trust the readings from this cuz the current angle is now a global
+    // variable Running this will mess with the GYRO controller
+#endif
 
-    #ifndef NO_HC_SR04
-        // HC_SR04_range();
-    #endif
+#ifndef NO_HC_SR04
+    // HC_SR04_range();
+#endif
 
-    #ifndef NO_BATTERY_V_OK
-        // if (!is_battery_voltage_OK()) return STOPPED;
-    #endif
+#ifndef NO_BATTERY_V_OK
+    // if (!is_battery_voltage_OK()) return STOPPED;
+#endif
 
     // Update turret position as an example
     turret_motor.write(pos);
