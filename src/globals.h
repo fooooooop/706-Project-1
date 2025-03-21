@@ -6,6 +6,7 @@
 
 #include "SharpDistSensor.h"
 #include "SharpIR.h"
+#include "dual_serial.h"
 
 #define MEDIAN_WINDOW_FR 5
 #define MEDIAN_WINDOW_FL 5
@@ -40,13 +41,17 @@ const int ECHO_PIN = 49;
 const unsigned int MAX_DIST = 23200;
 
 // Gyro parameters
-extern float gyroSupplyVoltage; // supply voltage for gyro
-extern float gyroZeroVoltage; // the value of voltage when gyro is zero
-extern float gyroSensitivity; // gyro sensitivity unit is (mv/degree/second) get from datasheet
-extern float rotationThreshold; // because of gyro drifting, defining rotation angular velocity less than this value will not be ignored
-extern float gyroRate; // read out value of sensor in voltage
-extern float currentAngle; // current angle calculated by angular velocity integral on
-extern float maxGyroDrift; 
+extern float gyroSupplyVoltage;  // supply voltage for gyro
+extern float gyroZeroVoltage;    // the value of voltage when gyro is zero
+extern float gyroSensitivity;    // gyro sensitivity unit is (mv/degree/second)
+                                 // get from datasheet
+extern float
+    rotationThreshold;  // because of gyro drifting, defining rotation angular
+                        // velocity less than this value will not be ignored
+extern float gyroRate;  // read out value of sensor in voltage
+extern float
+    currentAngle;  // current angle calculated by angular velocity integral on
+extern float maxGyroDrift;
 
 // Declare servo objects
 extern Servo left_front_motor;

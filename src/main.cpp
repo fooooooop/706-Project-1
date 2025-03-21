@@ -18,16 +18,20 @@ int fr_change = 0;
 int bl_change = 0;
 int br_change = -50;
 
-int pos = 0; // turret pos?
+int pos = 0;  // turret pos?
 
 // Gyro Parameters
-float gyroSupplyVoltage = 5; // supply voltage for gyro
-float gyroZeroVoltage = 0; // the value of voltage when gyro is zero
-float gyroSensitivity = 0.007; // gyro sensitivity unit is (mv/degree/second) get from datasheet
-float rotationThreshold = 3; // because of gyro drifting, defining rotation angular velocity less than this value will not be ignored
-float gyroRate = 0; // read out value of sensor in voltage
-float currentAngle = 0; // current angle calculated by angular velocity integral on
-float maxGyroDrift = 0; 
+float gyroSupplyVoltage = 5;  // supply voltage for gyro
+float gyroZeroVoltage = 0;    // the value of voltage when gyro is zero
+float gyroSensitivity =
+    0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
+float rotationThreshold =
+    3;  // because of gyro drifting, defining rotation angular velocity less
+        // than this value will not be ignored
+float gyroRate = 0;  // read out value of sensor in voltage
+float currentAngle =
+    0;  // current angle calculated by angular velocity integral on
+float maxGyroDrift = 0;
 
 // Controller Efforts
 double gyro_u = 0;
@@ -64,20 +68,21 @@ void setup(void) {
   int i;
   float sum = 0;
   int sensorValue = 0;
-  
-  pinMode(A3,INPUT);
-  for (i=0;i<100;i++) // read 100 values of voltage when gyro is at still, to calculate the zero-drift
+
+  pinMode(A3, INPUT);
+  for (i = 0; i < 100; i++)  // read 100 values of voltage when gyro is at
+                             // still, to calculate the zero-drift
   {
     sensorValue = analogRead(A3);
     sum += sensorValue;
     delay(5);
   }
-  gyroZeroVoltage = sum/100; // average the sum as the zero drifting
+  gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
 
   // Debug startup messages
-  Serial.println("MECHENG706_Base_Code_25/01/2018");
+  dualPrintln("MECHENG706_Base_Code_25/01/2018");
   delay(1000);
-  Serial.println("Setup....");
+  dualPrintln("Setup....");
   delay(1000);
 }
 

@@ -27,14 +27,17 @@ void stop_motors() {
 }
 
 void forward() {
-
   while ((Serial.read() != 'c') || (Serial1.read() != 'c')) {
     GYRO_controller(0);
     IR_controller(500, 1);
-    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
-    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
-    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
     // IR_u based on strafe_left function
   }
 
@@ -88,25 +91,27 @@ void turn_angle(double target) {
 
   while (gyro_exit == false) {
     gyro_err_pos = GYRO_controller(target);
-    if (gyro_u > 800) gyro_u = 800; //Clamp
+    if (gyro_u > 800) gyro_u = 800;  // Clamp
     Serial.println(gyro_u);
     left_front_motor.writeMicroseconds(1500 + gyro_u);
     left_rear_motor.writeMicroseconds(1500 + gyro_u);
     right_rear_motor.writeMicroseconds(1500 + gyro_u);
     right_front_motor.writeMicroseconds(1500 + gyro_u);
 
-    //Exit Condition-----//
-    if ( (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart != true) ){
-      //Checks to see if yss is within exit threshold
+    // Exit Condition-----//
+    if ((abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart != true)) {
+      // Checks to see if yss is within exit threshold
       gyro_timestart = true;
       gyro_timer = millis();
     }
-    if ( (abs(gyro_err_pos) > gyro_bounds) && (gyro_timestart == true) ){
-      //Checks to see if yss falls outside of exit threshold
-      //If it does, then restart timer
+    if ((abs(gyro_err_pos) > gyro_bounds) && (gyro_timestart == true)) {
+      // Checks to see if yss falls outside of exit threshold
+      // If it does, then restart timer
       gyro_timestart = false;
-    } else if ( (millis()-gyro_timer > 3000.0) && (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart == true) ) {
-      //Else, if yss is within threshold for a certain amount of time (check first condition), exit controller
+    } else if ((millis() - gyro_timer > 3000.0) &&
+               (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart == true)) {
+      // Else, if yss is within threshold for a certain amount of time (check
+      // first condition), exit controller
       gyro_exit = true;
     }
   }
@@ -116,14 +121,18 @@ void forward_target(double target_wall) {
   do {
     GYRO_controller(0);
     IR_controller(target_wall, 1);
-    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
-    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
-    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
     // IR_u based on strafe_left function
 
-    //Exit Condition-----//
-    //Make a controller for the ultrasonic sensor?
+    // Exit Condition-----//
+    // Make a controller for the ultrasonic sensor?
   } while (HC_SR04_range() > 12);
 
   left_front_motor.writeMicroseconds(0);
@@ -142,7 +151,7 @@ void find_corner() {
 
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
-    //Start Strafing------------//
+    // Start Strafing------------//
     IR_err_Fpos = IR_controller(110, 2);
     IR_err_Bpos = IR_controller(110, 3);
     left_front_motor.writeMicroseconds(1500 - speed_val - IRFront_u);
@@ -150,23 +159,31 @@ void find_corner() {
     right_rear_motor.writeMicroseconds(1500 + speed_val + IRBack_u);
     right_front_motor.writeMicroseconds(1500 - speed_val - IRFront_u);
 
-    //Exit Condition-----//
-    if ( ((abs(IR_err_Fpos) < strafe_bounds) && (abs(IR_err_Bpos) < strafe_bounds)) && (strafe_timestart != true) ){
-      //Checks to see if yss is within exit threshold
+    // Exit Condition-----//
+    if (((abs(IR_err_Fpos) < strafe_bounds) &&
+         (abs(IR_err_Bpos) < strafe_bounds)) &&
+        (strafe_timestart != true)) {
+      // Checks to see if yss is within exit threshold
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if ( ((abs(IR_err_Fpos) > strafe_bounds) && (abs(IR_err_Bpos) > strafe_bounds)) && (strafe_timestart == true) ){
-      //Checks to see if yss falls outside of exit threshold
-      //If it does, then restart timer
+    if (((abs(IR_err_Fpos) > strafe_bounds) &&
+         (abs(IR_err_Bpos) > strafe_bounds)) &&
+        (strafe_timestart == true)) {
+      // Checks to see if yss falls outside of exit threshold
+      // If it does, then restart timer
       strafe_timestart = false;
-    } else if ( (millis()-strafe_timer > 3000.0) && ((abs(IR_err_Fpos) < strafe_bounds) && (abs(IR_err_Bpos) < strafe_bounds)) && (strafe_timestart == true) ) {
-      //Else, if yss is within threshold for a certain amount of time (check first condition), exit controller
+    } else if ((millis() - strafe_timer > 3000.0) &&
+               ((abs(IR_err_Fpos) < strafe_bounds) &&
+                (abs(IR_err_Bpos) < strafe_bounds)) &&
+               (strafe_timestart == true)) {
+      // Else, if yss is within threshold for a certain amount of time (check
+      // first condition), exit controller
       strafe_exit = true;
     }
   }
 
-  //Quick Stop//
+  // Quick Stop//
   delay(10);
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
@@ -176,8 +193,8 @@ void find_corner() {
   //----------//
 
   // Take an angle reading and "zero" the robot---//
-  for (int i = 1; i < 50; i++){
-    GYRO_reading(50); 
+  for (int i = 1; i < 50; i++) {
+    GYRO_reading(50);
     delay(10);
   }
   currentAngle = 0;
@@ -186,14 +203,18 @@ void find_corner() {
   do {
     GYRO_controller(0);
     IR_controller(135, 1);
-    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
-    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
-    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
     // IR_u based on strafe_left function
-  } while ( HC_SR04_range() > 12 );
+  } while (HC_SR04_range() > 12);
 
-  //Quick Stop//
+  // Quick Stop//
   delay(10);
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
@@ -203,8 +224,8 @@ void find_corner() {
   //----------//
 
   // Take an angle reading and "zero" the robot---//
-  for (int i = 1; i < 50; i++){
-    GYRO_reading(50); 
+  for (int i = 1; i < 50; i++) {
+    GYRO_reading(50);
     delay(10);
   }
   currentAngle = 0;
