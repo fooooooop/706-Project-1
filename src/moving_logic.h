@@ -15,6 +15,9 @@ void ccw();
 void cw();
 void strafe_left();
 void strafe_right();
+
 void find_corner();
+void turn_angle(double target);
+void forward_target(double target_wall);
 
 #endif  // MOVING_LOGIC_H

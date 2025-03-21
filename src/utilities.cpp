@@ -30,7 +30,7 @@ void speed_change_smooth() {
   speed_change = 0;
 }
 
-void GYRO_controller(double gyro_target) {
+double GYRO_controller(double gyro_target) {
   //Setup!------------------------//
 
   // Time variables
@@ -85,10 +85,10 @@ void GYRO_controller(double gyro_target) {
   // PID controller
   gyro_u = kp*gyro_err_current + ki+gyro_err_mem + kd*dedt;
 
-  return;
+  return gyro_err_current;
 }
 
-void IR_controller(double IR_target, int IR_mode) {
+double IR_controller(double IR_target, int IR_mode) {
   //Setup!------------------------//
   //IR_mode changes what efforts are given to the motor
   //IR_mode = 1 - AWD
@@ -197,12 +197,12 @@ void IR_controller(double IR_target, int IR_mode) {
 
   // PID controller
   if (IR_mode == 2) {
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 800) ? IRFront_u = 800 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 600) ? IRFront_u = 600 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   } else if (IR_mode == 3) {
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 800) ? IRBack_u = 800 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 600) ? IRBack_u = 600 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
   } else {
     IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   }
 
-  return;
+  return IR_err_current;
 }
