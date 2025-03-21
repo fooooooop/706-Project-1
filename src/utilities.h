@@ -7,7 +7,7 @@
 void fast_flash_double_LED_builtin();
 void slow_flash_LED_builtin();
 void speed_change_smooth();
-void GYRO_controller(double gyro_target);
-void IR_controller(double IR_target);
+double GYRO_controller(double gyro_target);
+double IR_controller(double IR_target, int IR_mode);
 
 #endif  // UTILITIES_H

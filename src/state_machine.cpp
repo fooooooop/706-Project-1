@@ -1,19 +1,17 @@
 #include "state_machine.h"
 
+#include "dual_serial.h"  // <-- Add this line
 #include "moving_logic.h"
 #include "sensors.h"
 #include "serial_command.h"
 #include "utilities.h"
 
 STATE initialising() {
-  Serial.println("INITIALISING....");
-  Serial1.println("INITIALISING....");
+  dualPrintln("INITIALISING....");
   delay(1000);  // Allow time to view message
-  Serial.println("Enabling Motors...");
-  Serial1.println("Enabling Motors...");
+  dualPrintln("Enabling Motors...");
   enable_motors();
-  Serial.println("RUNNING STATE...");
-  Serial1.println("RUNNING STATE...");
+  dualPrintln("RUNNING STATE...");
   return RUNNING;
 }
 
@@ -29,20 +27,22 @@ STATE running() {
   // Perform periodic tasks every 500ms
   if (millis() - previous_millis > 500) {
     previous_millis = millis();
-    // Serial.println("RUNNING---------");
+    // dualPrintln("RUNNING---------");
     speed_change_smooth();
     // GYRO_controller(0);
     // IR_controller(250);
-    // Serial.println(gyro_u);
-    // Serial.println(IR_u);
-    // Serial.print("IR Sensor Front Right Short: ");
-    // Serial.println(FRONT_RIGHT_shortIR_reading());
-    // Serial.print("IR Sensor Front Left Short: ");
-    // Serial.println(FRONT_LEFT_shortIR_reading());
-    // Serial.print("IR Sensor Back Left Long: ");
-    // Serial.println(BACK_LEFT_longIR_reading());
-    // Serial.print("IR Sensor Back Right  Long: ");
-    // Serial.println(BACK_RIGHT_longIR_reading());
+    // dualPrintln(gyro_u);
+    dualPrintln(IR_u);
+    dualPrintln(IRFront_u);
+    dualPrintln(IRBack_u);
+    // dualPrint("IR Sensor Front Right Short: ");
+    // dualPrintln(FRONT_RIGHT_shortIR_reading());
+    // dualPrint("IR Sensor Front Left Short: ");
+    // dualPrintln(FRONT_LEFT_shortIR_reading());
+    // dualPrint("IR Sensor Back Left Long: ");
+    // dualPrintln(BACK_LEFT_longIR_reading());
+    // dualPrint("IR Sensor Back Right  Long: ");
+    // dualPrintln(BACK_RIGHT_longIR_reading());
 
 #ifndef NO_READ_GYRO
     // GYRO_reading(500);
@@ -75,17 +75,17 @@ STATE stopped() {
 
   if (millis() - previous_millis > 500) {  // Print every 500ms
     previous_millis = millis();
-    Serial.println("STOPPED---------");
+    dualPrintln("STOPPED---------");
 
 #ifndef NO_BATTERY_V_OK
     if (is_battery_voltage_OK()) {
-      Serial.print("Lipo OK waiting, counter: ");
-      Serial.println(counter_lipo_voltage_ok);
+      dualPrint("Lipo OK waiting, counter: ");
+      dualPrintln(counter_lipo_voltage_ok);
       counter_lipo_voltage_ok++;
       if (counter_lipo_voltage_ok > 10) {  // Ensure voltage is stable
         counter_lipo_voltage_ok = 0;
         enable_motors();
-        Serial.println("Lipo OK returning to RUN STATE");
+        dualPrintln("Lipo OK returning to RUN STATE");
         return RUNNING;
       }
     } else {

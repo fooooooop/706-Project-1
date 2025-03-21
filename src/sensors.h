@@ -7,7 +7,7 @@
 #include "globals.h"
 
 #ifndef NO_HC_SR04
-void HC_SR04_range();
+float HC_SR04_range();
 #endif
 
 // void Analog_Range_A4();

@@ -27,15 +27,24 @@ void stop_motors() {
 }
 
 void forward() {
-  while (Serial.read() != 's') {
+  while ((Serial.read() != 'c') || (Serial1.read() != 'c')) {
     GYRO_controller(0);
-    IR_controller(500);
-    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
-    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
-    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
+    IR_controller(500, 1);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
     // IR_u based on strafe_left function
   }
+
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
 }
 
 void reverse() {
@@ -46,19 +55,10 @@ void reverse() {
 }
 
 void ccw() {
-  // left_front_motor.writeMicroseconds(1500 - speed_val);
-  // left_rear_motor.writeMicroseconds(1500 - speed_val);
-  // right_rear_motor.writeMicroseconds(1500 - speed_val);
-  // right_front_motor.writeMicroseconds(1500 - speed_val);
-
-  while (Serial.read() != 'c') {
-    GYRO_controller(30);
-    Serial.println(gyro_u);
-    left_front_motor.writeMicroseconds(1500 + gyro_u);
-    left_rear_motor.writeMicroseconds(1500 + gyro_u);
-    right_rear_motor.writeMicroseconds(1500 + gyro_u);
-    right_front_motor.writeMicroseconds(1500 + gyro_u);
-  }
+  left_front_motor.writeMicroseconds(1500 - speed_val);
+  left_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_rear_motor.writeMicroseconds(1500 - speed_val);
+  right_front_motor.writeMicroseconds(1500 - speed_val);
 }
 
 void cw() {
@@ -82,109 +82,155 @@ void strafe_right() {
   right_front_motor.writeMicroseconds(1500 + speed_val);
 }
 
-void find_corner() {
-  double target_dist = 140;
+void turn_angle(double target) {
+  bool gyro_exit = false;
+  bool gyro_timestart = false;
+  double gyro_timer = 0;
+  double gyro_err_pos;
+  double gyro_bounds = 10;
 
-  // until one of the IR sensors is less than target_dist, drive Forward--------------------------//
+  while (gyro_exit == false) {
+    gyro_err_pos = GYRO_controller(target);
+    if (gyro_u > 800) gyro_u = 800;  // Clamp
+    Serial.println(gyro_u);
+    left_front_motor.writeMicroseconds(1500 + gyro_u);
+    left_rear_motor.writeMicroseconds(1500 + gyro_u);
+    right_rear_motor.writeMicroseconds(1500 + gyro_u);
+    right_front_motor.writeMicroseconds(1500 + gyro_u);
+
+    // Exit Condition-----//
+    if ((abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart != true)) {
+      // Checks to see if yss is within exit threshold
+      gyro_timestart = true;
+      gyro_timer = millis();
+    }
+    if ((abs(gyro_err_pos) > gyro_bounds) && (gyro_timestart == true)) {
+      // Checks to see if yss falls outside of exit threshold
+      // If it does, then restart timer
+      gyro_timestart = false;
+    } else if ((millis() - gyro_timer > 3000.0) &&
+               (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart == true)) {
+      // Else, if yss is within threshold for a certain amount of time (check
+      // first condition), exit controller
+      gyro_exit = true;
+    }
+  }
+}
+
+void forward_target(double target_wall) {
   do {
     GYRO_controller(0);
-    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u);
-    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u);
-    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u);
-    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u);
-  } while ( ((double)FRONT_LEFT_shortIR_reading() > target_dist) && ((double)FRONT_RIGHT_shortIR_reading() > target_dist) );
-  // && ((double)BACK_LEFT_longIR_reading() > target_dist) && ((double)BACK_RIGHT_longIR_reading() > target_dist) ); // To also use the back sensors
+    IR_controller(target_wall, 1);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
+    // IR_u based on strafe_left function
 
+    // Exit Condition-----//
+    // Make a controller for the ultrasonic sensor?
+  } while (HC_SR04_range() > 12);
+
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+}
+
+void find_corner() {
+  bool strafe_exit = false;
+  double strafe_timer = 0;
+  bool strafe_timestart = false;
+  double strafe_bounds = 60;
+  double IR_err_Fpos;
+  double IR_err_Bpos;
+
+  // Strafe left and orient onto wall-----//
+  while (strafe_exit == false) {
+    // Start Strafing------------//
+    IR_err_Fpos = IR_controller(110, 2);
+    IR_err_Bpos = IR_controller(110, 3);
+    left_front_motor.writeMicroseconds(1500 - speed_val - IRFront_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + IRBack_u);
+    right_rear_motor.writeMicroseconds(1500 + speed_val + IRBack_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val - IRFront_u);
+
+    // Exit Condition-----//
+    if (((abs(IR_err_Fpos) < strafe_bounds) &&
+         (abs(IR_err_Bpos) < strafe_bounds)) &&
+        (strafe_timestart != true)) {
+      // Checks to see if yss is within exit threshold
+      strafe_timestart = true;
+      strafe_timer = millis();
+    }
+    if (((abs(IR_err_Fpos) > strafe_bounds) &&
+         (abs(IR_err_Bpos) > strafe_bounds)) &&
+        (strafe_timestart == true)) {
+      // Checks to see if yss falls outside of exit threshold
+      // If it does, then restart timer
+      strafe_timestart = false;
+    } else if ((millis() - strafe_timer > 3000.0) &&
+               ((abs(IR_err_Fpos) < strafe_bounds) &&
+                (abs(IR_err_Bpos) < strafe_bounds)) &&
+               (strafe_timestart == true)) {
+      // Else, if yss is within threshold for a certain amount of time (check
+      // first condition), exit controller
+      strafe_exit = true;
+    }
+  }
+
+  // Quick Stop//
   delay(10);
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
   right_rear_motor.writeMicroseconds(0);
   right_front_motor.writeMicroseconds(0);
   delay(1000);
+  //----------//
 
-  // Re-orient itself straight along the wall (target_dist)--------------------------//
-  if ((double)FRONT_LEFT_shortIR_reading() < target_dist) {
-    Serial.println("Front LEFT");
-    Serial1.println("Front LEFT");
-    do {
-      left_front_motor.writeMicroseconds(1500 + speed_val);
-      left_rear_motor.writeMicroseconds(1500 + speed_val);
-      right_rear_motor.writeMicroseconds(1500 + speed_val);
-      right_front_motor.writeMicroseconds(1500 + speed_val);
-    } while ((double)BACK_LEFT_longIR_reading() > target_dist);
-
+  // Take an angle reading and "zero" the robot---//
+  for (int i = 1; i < 50; i++) {
+    GYRO_reading(50);
     delay(10);
-    left_front_motor.writeMicroseconds(0);
-    left_rear_motor.writeMicroseconds(0);
-    right_rear_motor.writeMicroseconds(0);
-    right_front_motor.writeMicroseconds(0);
-    delay(1000);
-
-    while (Serial.read() != 's') {
-      IR_controller(135);
-      left_front_motor.writeMicroseconds(1500 - speed_val - IR_u);
-      left_rear_motor.writeMicroseconds(1500 + speed_val + IR_u);
-      right_rear_motor.writeMicroseconds(1500 + speed_val + IR_u);
-      right_front_motor.writeMicroseconds(1500 - speed_val - IR_u);
-      // IR_u based on strafe_left function
-    }
-
-  } else if ((double)FRONT_RIGHT_shortIR_reading() < target_dist) {
-    Serial.println("Front RIGHT");
-    Serial1.println("Front RIGHT");
-    do {
-      left_front_motor.writeMicroseconds(1500 - speed_val);
-      left_rear_motor.writeMicroseconds(1500 - speed_val);
-      right_rear_motor.writeMicroseconds(1500 - speed_val);
-      right_front_motor.writeMicroseconds(1500 - speed_val);
-    } while ((double)BACK_RIGHT_longIR_reading( ) > target_dist);
-
-    delay(10);
-    left_front_motor.writeMicroseconds(0);
-    left_rear_motor.writeMicroseconds(0);
-    right_rear_motor.writeMicroseconds(0);
-    right_front_motor.writeMicroseconds(0);
-    delay(1000);
-
-    while (Serial.read() != 's') {
-      IR_controller(135);
-      left_front_motor.writeMicroseconds(1500 + speed_val + IR_u);
-      left_rear_motor.writeMicroseconds(1500 - speed_val - IR_u);
-      right_rear_motor.writeMicroseconds(1500 - speed_val - IR_u);
-      right_front_motor.writeMicroseconds(1500 + speed_val + IR_u);
-      // IR_u based on strafe_left function
-    }
-    
   }
-  // } else if ((double)BACK_LEFT_longIR_reading() < target_dist) {
-  //   Serial.println("Back LEFT");
-  //   Serial1.println("Back LEFT");
-  //   do {
-  //     left_front_motor.writeMicroseconds(1500 + speed_val);
-  //     left_rear_motor.writeMicroseconds(1500 + speed_val);
-  //     right_rear_motor.writeMicroseconds(1500 + speed_val);
-  //     right_front_motor.writeMicroseconds(1500 + speed_val);
-  //   } while ((double)FRONT_LEFT_shortIR_reading() > target_dist);
-    
+  currentAngle = 0;
 
-  // } else if ((double)BACK_RIGHT_longIR_reading() < target_dist) {
-  //   Serial.println("Back RIGHT");
-  //   Serial1.println("Back RIGHT");
-  //   do {
-  //     left_front_motor.writeMicroseconds(1500 - speed_val);
-  //     left_rear_motor.writeMicroseconds(1500 - speed_val);
-  //     right_rear_motor.writeMicroseconds(1500 - speed_val);
-  //     right_front_motor.writeMicroseconds(1500 - speed_val);
-  //   } while ((double)FRONT_RIGHT_shortIR_reading() > target_dist);
+  // Drive straight to shortest wall----------//
+  do {
+    GYRO_controller(0);
+    IR_controller(135, 1);
+    left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u -
+                                       IR_u);
+    left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u +
+                                      IR_u);
+    right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u +
+                                       IR_u);
+    right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u -
+                                        IR_u);
+    // IR_u based on strafe_left function
+  } while (HC_SR04_range() > 12);
 
-  // }  
+  // Quick Stop//
+  delay(10);
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+  delay(1000);
+  //----------//
 
-  // Take an angle reading. "Zero" the robot.
-  // for (int i = 1; i < 50; i++){
-  //   GYRO_reading(50); 
-  //   delay(50);
-  // }
-  // currentAngle = 0;
+  // Take an angle reading and "zero" the robot---//
+  for (int i = 1; i < 50; i++) {
+    GYRO_reading(50);
+    delay(10);
+  }
+  currentAngle = 0;
 
-  // Drive to shortest wall
+  turn_angle(90);
+  currentAngle = 0;
+  turn_angle(90);
 }

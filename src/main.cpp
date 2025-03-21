@@ -36,6 +36,8 @@ float maxGyroDrift = 0;
 // Controller Efforts
 double gyro_u = 0;
 double IR_u = 0;
+double IRFront_u = 0;
+double IRBack_u = 0;
 
 // Instanstiate IR sensor objects
 SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW_FL);
@@ -78,9 +80,9 @@ void setup(void) {
   gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
 
   // Debug startup messages
-  Serial.println("MECHENG706_Base_Code_25/01/2018");
+  dualPrintln("MECHENG706_Base_Code_25/01/2018");
   delay(1000);
-  Serial.println("Setup....");
+  dualPrintln("Setup....");
   delay(1000);
 }
 
