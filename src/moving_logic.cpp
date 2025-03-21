@@ -27,7 +27,7 @@ void stop_motors() {
 }
 
 void forward() {
-  while (Serial.read() != 's') {
+  while ((Serial.read() != 's') || (Serial1.read() != 's')) {
     GYRO_controller(0);
     IR_controller(500);
     left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
@@ -36,6 +36,10 @@ void forward() {
     right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
     // IR_u based on strafe_left function
   }
+  left_front_motor.writeMicroseconds(1500 + speed_val + fl_change + gyro_u - IR_u);
+  left_rear_motor.writeMicroseconds(1500 + speed_val + bl_change + gyro_u + IR_u);
+  right_rear_motor.writeMicroseconds(1500 - speed_val + br_change + gyro_u + IR_u);
+  right_front_motor.writeMicroseconds(1500 - speed_val + fr_change + gyro_u - IR_u);
 }
 
 void reverse() {
@@ -51,7 +55,7 @@ void ccw() {
   // right_rear_motor.writeMicroseconds(1500 - speed_val);
   // right_front_motor.writeMicroseconds(1500 - speed_val);
 
-  while (Serial.read() != 'c') {
+  while ((Serial.read() != 'c') || (Serial1.read() != 'c')) {
     GYRO_controller(30);
     Serial.println(gyro_u);
     left_front_motor.writeMicroseconds(1500 + gyro_u);
@@ -120,7 +124,7 @@ void find_corner() {
     right_front_motor.writeMicroseconds(0);
     delay(1000);
 
-    while (Serial.read() != 's') {
+    while ((Serial.read() != 's') || (Serial1.read() != 's')) {
       IR_controller(135);
       left_front_motor.writeMicroseconds(1500 - speed_val - IR_u);
       left_rear_motor.writeMicroseconds(1500 + speed_val + IR_u);
@@ -146,7 +150,7 @@ void find_corner() {
     right_front_motor.writeMicroseconds(0);
     delay(1000);
 
-    while (Serial.read() != 's') {
+    while ((Serial.read() != 's') || (Serial1.read() != 's')) {
       IR_controller(135);
       left_front_motor.writeMicroseconds(1500 + speed_val + IR_u);
       left_rear_motor.writeMicroseconds(1500 - speed_val - IR_u);

@@ -6,8 +6,8 @@
 // --- Wireless Command Parsing ---
 // This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (Serial.available()) {
-    char val = Serial.read();
+  if (Serial1.available()) {
+    char val = Serial1.read();
     Serial.print("Received command: ");
     Serial.println(val);
     Serial.print("Speed: ");
