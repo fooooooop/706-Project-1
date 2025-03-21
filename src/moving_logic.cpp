@@ -132,8 +132,8 @@ void find_corner() {
 
     // Strafe left and orient onto wall
     while ((Serial.read() != 's') || (Serial1.read() != 's')) {
-      IR_controller(135, 2);
-      IR_controller(135, 3);
+      IR_controller(110, 2);
+      IR_controller(110, 3);
       left_front_motor.writeMicroseconds(1500 - speed_val - IRFront_u);
       left_rear_motor.writeMicroseconds(1500 + speed_val + IRBack_u);
       right_rear_motor.writeMicroseconds(1500 + speed_val + IRBack_u);
@@ -162,8 +162,8 @@ void find_corner() {
 
     // Strafe right and orient onto wall
     while ((Serial.read() != 's') || (Serial1.read() != 's')) {
-      IR_controller(135, 2);
-      IR_controller(135, 3);
+      IR_controller(110, 2);
+      IR_controller(110, 3);
       left_front_motor.writeMicroseconds(1500 + speed_val + IRFront_u);
       left_rear_motor.writeMicroseconds(1500 - speed_val - IRBack_u);
       right_rear_motor.writeMicroseconds(1500 - speed_val - IRBack_u);

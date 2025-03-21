@@ -131,15 +131,11 @@ void IR_controller(double IR_target, int IR_mode) {
     // Uses only Front IR Sensors //
     if ((double)FRONT_LEFT_shortIR_reading() < 320) {
       // Less than 13cm from LEFT wall
-      Serial.println("Less than 13cm from LEFT wall");
-      Serial1.println("Less than 13cm from LEFT wall");
       IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
   
     } else if ((double)FRONT_RIGHT_shortIR_reading() < 320) {
       // Less than 13cm from RIGHT wall
-      Serial.println("Less than 13cm from RIGHT wall");
-      Serial1.println("Less than 13cm from RIGHT wall");
       IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
       IR_err_current = IR_target - IR_currentSensor; 
   
@@ -151,15 +147,11 @@ void IR_controller(double IR_target, int IR_mode) {
     // Uses only the Back IR Sensors //
     if ((double)BACK_LEFT_longIR_reading() < 800){
       // More than 32cm from LEFT wall
-      Serial.println("More than 32cm from LEFT wall");
-      Serial1.println("More than 32cm from LEFT wall");
       IR_currentSensor = (double)BACK_LEFT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
   
     } else if ((double)BACK_RIGHT_longIR_reading() < 800){
       // More than 32cm from RIGHT wall
-      Serial.println("More than 32cm from RIGHT wall");
-      Serial1.println("More than 32cm from RIGHT wall");
       IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor); 
 
@@ -170,6 +162,8 @@ void IR_controller(double IR_target, int IR_mode) {
 
     // Will use all sensors
     // USE FOR THE STRAIGHT LINE
+    // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
+    // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
     if ((double)FRONT_LEFT_shortIR_reading() < 320){
       IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
@@ -202,9 +196,13 @@ void IR_controller(double IR_target, int IR_mode) {
   dedt = (de / dt);
 
   // PID controller
-  (IR_mode == 2) ? IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) 
-    : (IR_mode == 3) ? IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) 
-    : IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+  if (IR_mode == 2) {
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 800) ? IRFront_u = 800 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+  } else if (IR_mode == 3) {
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 800) ? IRBack_u = 800 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
+  } else {
+    IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+  }
 
   return;
 }
