@@ -95,7 +95,7 @@ void turn_angle(double target) {
   bool gyro_timestart = false;
   double gyro_timer = 0;
   double gyro_err_pos;
-  double gyro_bounds = 5;
+  double gyro_bounds = 7;
 
   while (gyro_exit == false) {
     gyro_err_pos = GYRO_controller(target, 4.0, 1.75, 0);
@@ -160,7 +160,7 @@ void reverse_target(double target_sidewall, double target) {
     right_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     // IR_u based on strafe_left function
-  } while (HC_SR04_range() > target);
+  } while (HC_SR04_range() < target);
 
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
@@ -174,28 +174,31 @@ void strafe_target(double target, int left_right) {
   bool strafe_timestart = false;
   double strafe_bounds = 100;
   double IR_err_pos;
+  double gyro_err_pos;
+  double gyro_bounds = 5;
 
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
+    gyro_err_pos = GYRO_controller(0, 6.5, 1.25, 0);
     IR_err_pos = IR_controller(target, 1, 1.7, 0.7, 0);
-    left_front_motor.writeMicroseconds(1500 - 100 - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + 100 + IR_u);
-    right_rear_motor.writeMicroseconds(1500 + 100 + IR_u);
-    right_front_motor.writeMicroseconds(1500 - 100 - IR_u);
+    left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+    left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+    right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+    right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     
     // Exit Condition-----//
-    if ((abs(IR_err_pos) < strafe_bounds) && (strafe_timestart != true)) {
+    if ( ((abs(IR_err_pos) < strafe_bounds) && (abs(gyro_err_pos) < gyro_bounds)) && (strafe_timestart != true) ) {
       // Checks to see if yss is within exit threshold
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if ((abs(IR_err_pos) > strafe_bounds) && (strafe_timestart == true)) {
+    if ( ((abs(IR_err_pos) > strafe_bounds) && (abs(gyro_err_pos) > gyro_bounds)) && (strafe_timestart == true)) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 3000.0) && (abs(IR_err_pos) < strafe_bounds) && (strafe_timestart == true)) {
+    } else if ((millis() - strafe_timer > 1500.0) && ((abs(IR_err_pos) < strafe_bounds) && (abs(gyro_err_pos) < gyro_bounds)) && (strafe_timestart == true)) {
       // Else, if yss is within threshold for a certain amount of time (check
       // first condition), exit controller
       strafe_exit = true;
@@ -294,12 +297,26 @@ void loop_one() {
   dualPrintln("Forward done");
   strafe_target(310, 1);
   dualPrintln("Strafe done");
-  reverse_target(310,1950);
+  reverse_target(310,168);
   dualPrintln("Reverse done");
   strafe_target(510,1);
   dualPrintln("Strafe done");
   forward_target(510, 12);
   dualPrintln("Forward done");
   strafe_target(710, 1);
-  reverse_target(710,1950);
+  dualPrintln("Strafe done");
+  reverse_target(710,168);
+  dualPrintln("Reverse done");
+  strafe_target(910, 1);
+  dualPrintln("Strafe done");
+  forward_target(910, 12);
+  dualPrintln("Forward done");
+  strafe_target(1110, 1);
+  dualPrintln("Strafe done");
+  reverse_target(1110,168);
+  dualPrintln("Reverse done");
+  strafe_target(90, 1);
+  dualPrintln("Strafe done");
+  forward_target(90, 12);
+  dualPrintln("Forward done");
 }

@@ -43,9 +43,9 @@ float HC_SR04_range() {
   if (pulse_width > MAX_DIST) {
     dualPrintln("HC-SR04: Out of range");
   } else {
-    // dualPrintln("HC-SR04:");
-    // dualPrintln(cm);
-    // dualPrintln("cm");
+    dualPrintln("HC-SR04:");
+    dualPrintln(cm);
+    dualPrintln("cm");
   }
 
   return cm;

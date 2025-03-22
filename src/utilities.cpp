@@ -168,11 +168,14 @@ double IR_controller(double IR_target, int IR_mode, double kp, double ki, double
     
       }
     } else {
-      if ((double)BACK_LEFT_longIR_reading() < 800){
+      // The (IR_target < 800) thing is so that it makes it easier for it to switch between sensors LMAOOO
+      // Don't ask me why it works cuz idk. How it works? Too long to explain - Rad
+      if ( ((double)BACK_LEFT_longIR_reading() < 800) && (IR_target < 800)){
         IR_currentSensor = (double)BACK_LEFT_longIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
     
-      } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+      } else if ( ((double)BACK_RIGHT_longIR_reading() < 800) && (IR_target > 800)){
+        IR_target = 1210 - IR_target;
         IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
         IR_err_current = (IR_target - IR_currentSensor); 
       }

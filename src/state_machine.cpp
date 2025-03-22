@@ -53,7 +53,7 @@ STATE running() {
 #endif
 
 #ifndef NO_HC_SR04
-    // HC_SR04_range();
+    HC_SR04_range();
 #endif
 
 #ifndef NO_BATTERY_V_OK

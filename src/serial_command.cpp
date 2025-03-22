@@ -135,7 +135,7 @@ void read_serial_command() {
       case 'X':
         dualPrintln("Loop One initiated");
         loop_one();
-        dualPrintln("Find corner executed");
+        dualPrintln("Loop One done!");
         break;
 
       default:
