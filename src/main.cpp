@@ -11,12 +11,12 @@ Servo right_front_motor;
 Servo turret_motor;
 
 // Speed Control
-int speed_val = 100;
+int speed_val = 250;
 int speed_change = 0;
-int fl_change = 0;
-int fr_change = 0;
-int bl_change = 0;
-int br_change = -50;
+int f_fl_change = 0;
+int f_fr_change = 0;
+int f_bl_change = 0;//20;
+int f_br_change = 0;//-50;
 
 int pos = 0;  // turret pos?
 

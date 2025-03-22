@@ -20,7 +20,7 @@ float HC_SR04_range() {
     t2 = micros();
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
-      Serial.println("HC-SR04: NOT found");
+      dualPrintln("HC-SR04: NOT found");
       return 0;
     }
   }
@@ -31,7 +31,7 @@ float HC_SR04_range() {
     t2 = micros();
     pulse_width = t2 - t1;
     if (pulse_width > (MAX_DIST + 1000)) {
-      Serial.println("HC-SR04: Out of range");
+      dualPrintln("HC-SR04: Out of range");
       return 0;
     }
   }
@@ -41,11 +41,11 @@ float HC_SR04_range() {
   cm = pulse_width / 58.0;
 
   if (pulse_width > MAX_DIST) {
-    Serial.println("HC-SR04: Out of range");
+    dualPrintln("HC-SR04: Out of range");
   } else {
-    Serial.print("HC-SR04:");
-    Serial.print(cm);
-    Serial.println("cm");
+    // dualPrintln("HC-SR04:");
+    // dualPrintln(cm);
+    // dualPrintln("cm");
   }
 
   return cm;
@@ -78,21 +78,16 @@ void GYRO_reading(int T) {
     float angleChange = angularVelocity/(1000/T);
     currentAngle += angleChange;
   }
-  if (abs(angularVelocity) > maxGyroDrift) {
-    maxGyroDrift = abs(angularVelocity);
-  }
+
+  if (abs(angularVelocity) > maxGyroDrift) maxGyroDrift = abs(angularVelocity);
 
   // keep the angle between 0-360
-  if (currentAngle < -180)
-    {currentAngle += 360;}
-  else if (currentAngle > 180)
-    {currentAngle -= 360;}
-
-  // Serial.print(maxGyroDrift);
-  // Serial.print(" ");
-  Serial.print(angularVelocity);
-  Serial.print(" ");
-  Serial.println(currentAngle);
+  // 183 threshold so we can do 180 degree turns
+  if (currentAngle < -183) {currentAngle += 360;}
+  else if (currentAngle > 183) {currentAngle -= 360;}
+  
+  delay(T);
+  return;
 }
 #endif
 

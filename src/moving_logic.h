@@ -18,6 +18,9 @@ void strafe_right();
 
 void find_corner();
 void turn_angle(double target);
-void forward_target(double target_wall);
+void forward_target(double target_sidewall, double target);
+void reverse_target(double target_sidewall, double target);
+void strafe_target(double target, int left_right);
+void loop_one();
 
 #endif  // MOVING_LOGIC_H

@@ -26,11 +26,12 @@ void slow_flash_LED_builtin() {
 
 void speed_change_smooth() {
   speed_val += speed_change;
-  if (speed_val > 1000) speed_val = 1000;
-  speed_change = 0;
+  if (speed_val > 250) speed_val = 250;
+  delay(50);
+  // speed_change = 0;
 }
 
-double GYRO_controller(double gyro_target) {
+double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   //Setup!------------------------//
 
   // Time variables
@@ -42,11 +43,6 @@ double GYRO_controller(double gyro_target) {
   double gyro_currentSensor;
   double gyro_err_current;
   double gyro_err_previous = 0;
-
-  // K variables for controller
-  double kp = 6.5;
-  double ki = 1.2;
-  double kd = 0;
 
   // For Derivative controller
   double dt;
@@ -63,9 +59,7 @@ double GYRO_controller(double gyro_target) {
   t_previous = t_current;
 
   // Gyro reading
-  // gyro_currentSensor = analogRead(A3);
   GYRO_reading(gyro_t); 
-  delay(gyro_t);
   gyro_currentSensor = currentAngle;
 
   // Proportional controller
@@ -88,7 +82,7 @@ double GYRO_controller(double gyro_target) {
   return gyro_err_current;
 }
 
-double IR_controller(double IR_target, int IR_mode) {
+double IR_controller(double IR_target, int IR_mode, double kp, double ki, double kd) {
   //Setup!------------------------//
   //IR_mode changes what efforts are given to the motor
   //IR_mode = 1 - AWD
@@ -105,11 +99,6 @@ double IR_controller(double IR_target, int IR_mode) {
   double IR_currentSensor;
   double IR_err_current;
   double IR_err_previous = 0;
-
-  // K variables for controller
-  double kp = 1.7;
-  double ki = 0.72;
-  double kd = 0;
 
   // For Derivative controller
   double dt;
@@ -139,6 +128,10 @@ double IR_controller(double IR_target, int IR_mode) {
       IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
       IR_err_current = IR_target - IR_currentSensor; 
   
+    } else {
+      // Fallback option, mainly just for the find_corner()
+      IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
+      IR_err_current = (IR_target - IR_currentSensor) * -1; 
     }
     //---------------------------//
 
@@ -164,28 +157,32 @@ double IR_controller(double IR_target, int IR_mode) {
     // USE FOR THE STRAIGHT LINE
     // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
     // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
-    if ((double)FRONT_LEFT_shortIR_reading() < 320){
-      IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
-      IR_err_current = (IR_target - IR_currentSensor) * -1; 
-  
-    } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
-      IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
-      IR_err_current = IR_target - IR_currentSensor; 
-  
-    } else if ((double)BACK_LEFT_longIR_reading() < 800){
-      IR_currentSensor = (double)BACK_LEFT_longIR_reading();
-      IR_err_current = (IR_target - IR_currentSensor) * -1; 
-  
-    } else if ((double)BACK_RIGHT_longIR_reading() < 800){
-      IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
-      IR_err_current = (IR_target - IR_currentSensor); 
+    if (IR_target < 300) {
+      if ((double)FRONT_LEFT_shortIR_reading() < 320){
+        IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
+        IR_err_current = (IR_target - IR_currentSensor) * -1; 
+    
+      } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
+        IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
+        IR_err_current = IR_target - IR_currentSensor; 
+    
+      }
+    } else {
+      if ((double)BACK_LEFT_longIR_reading() < 800){
+        IR_currentSensor = (double)BACK_LEFT_longIR_reading();
+        IR_err_current = (IR_target - IR_currentSensor) * -1; 
+    
+      } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+        IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
+        IR_err_current = (IR_target - IR_currentSensor); 
+      }
     }
     //------------------------------//
 
   }
 
   // Integral controller
-  if (IR_u < 100) { // Anti-integral windup
+  if (IR_u < 100)  { // Anti-integral windup
     IR_err_mem += IR_err_current;
   }
   
@@ -197,9 +194,9 @@ double IR_controller(double IR_target, int IR_mode) {
 
   // PID controller
   if (IR_mode == 2) {
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 600) ? IRFront_u = 600 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRFront_u = 500 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   } else if (IR_mode == 3) {
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 600) ? IRBack_u = 600 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRBack_u = 500 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
   } else {
     IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   }

@@ -60,58 +60,58 @@ void read_serial_command() {
 
       case 'y':
       case 'Y':  // FL UP
-        fl_change += 10;
+        f_fl_change += 5;
         dualPrint("Front Left Increased: ");
-        dualPrintln(fl_change);
+        dualPrintln(f_fl_change);
         break;
 
       case 'h':
       case 'H':  // FL DOWN
-        fl_change -= 10;
+        f_fl_change -= 5;
         dualPrint("Front Left Decreased: ");
-        dualPrintln(fl_change);
+        dualPrintln(f_fl_change);
         break;
 
       case 'u':
       case 'U':  // FR UP
-        fr_change += 10;
+        f_fr_change += 5;
         dualPrint("Front Right Increased: ");
-        dualPrintln(fr_change);
+        dualPrintln(f_fr_change);
         break;
 
       case 'j':
       case 'J':  // FR DOWN
-        fr_change -= 10;
+        f_fr_change -= 5;
         dualPrint("Front Right Decreased: ");
-        dualPrintln(fr_change);
+        dualPrintln(f_fr_change);
         break;
 
       case 'i':
       case 'I':  // BL UP
-        bl_change += 10;
+        f_bl_change += 5;
         dualPrint("Back Left Increased: ");
-        dualPrintln(bl_change);
+        dualPrintln(f_bl_change);
         break;
 
       case 'k':
       case 'K':  // BL DOWN
-        bl_change -= 10;
+        f_bl_change -= 5;
         dualPrint("Back Left Decreased: ");
-        dualPrintln(bl_change);
+        dualPrintln(f_bl_change);
         break;
 
       case 'o':
       case 'O':  // BR UP
-        br_change += 10;
+        f_br_change += 5;
         dualPrint("Back Right Increased: ");
-        dualPrintln(br_change);
+        dualPrintln(f_br_change);
         break;
 
       case 'l':
       case 'L':  // BR DOWN
-        br_change -= 10;
+        f_br_change -= 5;
         dualPrint("Back Right Decreased: ");
-        dualPrintln(br_change);
+        dualPrintln(f_br_change);
         break;
 
       case 'r':  // Request for status report
@@ -126,7 +126,15 @@ void read_serial_command() {
 
       case 'z':  // Find Corner
       case 'Z':
+        dualPrintln("Find corner initiated");
         find_corner();
+        dualPrintln("Find corner executed");
+        break;
+
+      case 'x':  // Initiate Loop One
+      case 'X':
+        dualPrintln("Loop One initiated");
+        loop_one();
         dualPrintln("Find corner executed");
         break;
 
