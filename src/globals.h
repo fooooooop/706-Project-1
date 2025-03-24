@@ -35,6 +35,10 @@ extern SharpDistSensor FrontRightIR;
 extern SharpDistSensor BackLeftIR;
 extern SharpDistSensor BackRightIR;
 
+// IR left-right/wheel-drive states
+enum DRIVE {AWD, FWD, RWD};
+enum DIRECTION {LEFT, RIGHT, IDGAF};
+
 // Ultrasonic sensor pins and parameters
 const int TRIG_PIN = 48;
 const int ECHO_PIN = 49;
@@ -64,11 +68,6 @@ extern Servo turret_motor;
 extern int speed_val;
 extern int speed_change;
 extern int pos;
-
-extern int f_fl_change;
-extern int f_fr_change;
-extern int f_bl_change;
-extern int f_br_change;
 
 // Controller variables
 extern double gyro_u;

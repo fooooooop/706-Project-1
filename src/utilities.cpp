@@ -26,9 +26,9 @@ void slow_flash_LED_builtin() {
 
 void speed_change_smooth() {
   speed_val += speed_change;
-  if (speed_val > 250) speed_val = 250;
+  if (speed_val > 500) speed_val = 500;
   delay(50);
-  // speed_change = 0;
+  speed_change = 0;
 }
 
 double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
@@ -82,14 +82,26 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   return gyro_err_current;
 }
 
-double IR_controller(double IR_target, int IR_mode, double kp, double ki, double kd) {
+double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_right, double kp, double ki, double kd) {
   //Setup!------------------------//
   //IR_mode changes what efforts are given to the motor
-  //IR_mode = 1 - AWD
-  //IR_mode = 2 - FWD
-  //IR_mode = 3 - RWD
   //This is needed for the corner finding function so that the front and back wheels have
   //their own controllers
+
+  //left_right states which side IR sensor to use
+  //To-Do: turn these into fucking enums omg.
+
+  dualPrintln(IR_u);
+  dualPrintln(IRFront_u);
+  dualPrintln(IRBack_u);
+  dualPrint("IR Sensor Front Right Short: ");
+  dualPrintln(FRONT_RIGHT_shortIR_reading());
+  dualPrint("IR Sensor Front Left Short: ");
+  dualPrintln(FRONT_LEFT_shortIR_reading());
+  dualPrint("IR Sensor Back Left Long: ");
+  dualPrintln(BACK_LEFT_longIR_reading());
+  dualPrint("IR Sensor Back Right  Long: ");
+  dualPrintln(BACK_RIGHT_longIR_reading());
 
   // Time variables
   double t_current = 0;
@@ -115,35 +127,31 @@ double IR_controller(double IR_target, int IR_mode, double kp, double ki, double
   t_previous = t_current;
 
   // IR reading + Proportional Controller
-  if (IR_mode == 2) {
+  if (IR_mode == FWD) {
 
     // Uses only Front IR Sensors //
-    if ((double)FRONT_LEFT_shortIR_reading() < 320) {
+    if (left_right == LEFT) {
       // Less than 13cm from LEFT wall
       IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
   
-    } else if ((double)FRONT_RIGHT_shortIR_reading() < 320) {
+    } else if (left_right == RIGHT) {
       // Less than 13cm from RIGHT wall
       IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
       IR_err_current = IR_target - IR_currentSensor; 
   
-    } else {
-      // Fallback option, mainly just for the find_corner()
-      IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
-      IR_err_current = (IR_target - IR_currentSensor) * -1; 
     }
     //---------------------------//
 
-  } else if (IR_mode == 3) {
+  } else if (IR_mode == RWD) {
 
     // Uses only the Back IR Sensors //
-    if ((double)BACK_LEFT_longIR_reading() < 800){
+    if (left_right == LEFT){
       // More than 32cm from LEFT wall
       IR_currentSensor = (double)BACK_LEFT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
   
-    } else if ((double)BACK_RIGHT_longIR_reading() < 800){
+    } else if (left_right == RIGHT){
       // More than 32cm from RIGHT wall
       IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor); 
@@ -151,7 +159,7 @@ double IR_controller(double IR_target, int IR_mode, double kp, double ki, double
     } 
     //------------------------------//
 
-  } else if (IR_mode == 1) {
+  } else if (IR_mode == AWD) {
 
     // Will use all sensors
     // USE FOR THE STRAIGHT LINE
@@ -168,14 +176,11 @@ double IR_controller(double IR_target, int IR_mode, double kp, double ki, double
     
       }
     } else {
-      // The (IR_target < 800) thing is so that it makes it easier for it to switch between sensors LMAOOO
-      // Don't ask me why it works cuz idk. How it works? Too long to explain - Rad
-      if ( ((double)BACK_LEFT_longIR_reading() < 800) && (IR_target < 800)){
+      if (left_right == LEFT){
         IR_currentSensor = (double)BACK_LEFT_longIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
     
-      } else if ( ((double)BACK_RIGHT_longIR_reading() < 800) && (IR_target > 800)){
-        IR_target = 1210 - IR_target;
+      } else if (left_right == RIGHT){
         IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
         IR_err_current = (IR_target - IR_currentSensor); 
       }
@@ -196,9 +201,9 @@ double IR_controller(double IR_target, int IR_mode, double kp, double ki, double
   dedt = (de / dt);
 
   // PID controller
-  if (IR_mode == 2) {
+  if (IR_mode == FWD) {
     ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRFront_u = 500 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
-  } else if (IR_mode == 3) {
+  } else if (IR_mode == RWD) {
     ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRBack_u = 500 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
   } else {
     IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);

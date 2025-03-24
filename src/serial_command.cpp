@@ -49,69 +49,13 @@ void read_serial_command() {
         break;
       case '-':  // Decrease Speed
       case '_':
-        speed_change = -100;
+        speed_change = -50;
         dualPrintln("Speed decreased");
         break;
       case '=':
       case '+':  // Increase Speed
-        speed_change = 100;
+        speed_change = 50;
         dualPrintln("Speed increased");
-        break;
-
-      case 'y':
-      case 'Y':  // FL UP
-        f_fl_change += 5;
-        dualPrint("Front Left Increased: ");
-        dualPrintln(f_fl_change);
-        break;
-
-      case 'h':
-      case 'H':  // FL DOWN
-        f_fl_change -= 5;
-        dualPrint("Front Left Decreased: ");
-        dualPrintln(f_fl_change);
-        break;
-
-      case 'u':
-      case 'U':  // FR UP
-        f_fr_change += 5;
-        dualPrint("Front Right Increased: ");
-        dualPrintln(f_fr_change);
-        break;
-
-      case 'j':
-      case 'J':  // FR DOWN
-        f_fr_change -= 5;
-        dualPrint("Front Right Decreased: ");
-        dualPrintln(f_fr_change);
-        break;
-
-      case 'i':
-      case 'I':  // BL UP
-        f_bl_change += 5;
-        dualPrint("Back Left Increased: ");
-        dualPrintln(f_bl_change);
-        break;
-
-      case 'k':
-      case 'K':  // BL DOWN
-        f_bl_change -= 5;
-        dualPrint("Back Left Decreased: ");
-        dualPrintln(f_bl_change);
-        break;
-
-      case 'o':
-      case 'O':  // BR UP
-        f_br_change += 5;
-        dualPrint("Back Right Increased: ");
-        dualPrintln(f_br_change);
-        break;
-
-      case 'l':
-      case 'L':  // BR DOWN
-        f_br_change -= 5;
-        dualPrint("Back Right Decreased: ");
-        dualPrintln(f_br_change);
         break;
 
       case 'r':  // Request for status report

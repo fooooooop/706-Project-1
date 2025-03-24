@@ -31,7 +31,6 @@ STATE running() {
     // speed_change_smooth();
     // dualPrintln(speed_val);
     // GYRO_controller(0);
-    // IR_controller(250);
     // dualPrintln(gyro_u);
     // dualPrintln(currentAngle);
     // dualPrintln(IR_u);
@@ -53,7 +52,7 @@ STATE running() {
 #endif
 
 #ifndef NO_HC_SR04
-    HC_SR04_range();
+    // HC_SR04_range();
 #endif
 
 #ifndef NO_BATTERY_V_OK

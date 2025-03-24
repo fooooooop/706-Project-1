@@ -16,10 +16,11 @@ void cw();
 void strafe_left();
 void strafe_right();
 
+// Custom functions
 void find_corner();
 void turn_angle(double target);
-void forward_target(double target_sidewall, double target);
-void reverse_target(double target_sidewall, double target);
+void forward_target(double target_sidewall, double target, int left_right);
+void reverse_target(double target_sidewall, double target, int left_right);
 void strafe_target(double target, int left_right);
 void loop_one();
 
