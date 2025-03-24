@@ -2,14 +2,15 @@
 
 #include "dual_serial.h"
 #include "moving_logic.h"
+#include "positioning_system.h"
 
 // woah im adding such big change - test for git pushing
 
 // --- Wireless Command Parsing ---
 // This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (Serial.available()) {
-    char val = Serial.read();
+  if (Serial1.available()) {
+    char val = Serial1.read();
     dualPrint("Received command: ");
     dualPrintln(String(val));
     dualPrint("Speed: ");
@@ -61,11 +62,11 @@ void read_serial_command() {
       case 'r':  // Request for status report
       case 'R':
         dualPrintln("Status report requested");
-        Serial1.println(
+        dualPrintln(
             "=== Mega Status Report ===");  // Keeping this HC-12 specific line
-        Serial1.print("Speed value: ");
-        Serial1.println(speed_val);
-        Serial.println(gyro_u);  // Keeping gyro_u only on Serial
+        dualPrint("Speed value: ");
+        dualPrintln(speed_val);
+        dualPrintln(gyro_u);  // Keeping gyro_u only on Serial
         break;
 
       case 'z':  // Find Corner
@@ -74,6 +75,22 @@ void read_serial_command() {
         find_corner();
         dualPrintln("Find corner executed");
         break;
+      case 'P': {
+        dualPrintln("Position test mode: Press any key to exit.");
+        while (!Serial1.available()) {
+          Position pos = updatePosition();
+          dualPrint("X: ");
+          dualPrint(pos.x);
+          dualPrint(" cm, Y: ");
+          dualPrint(pos.y);
+          dualPrint(" cm, Theta: ");
+          dualPrintln(pos.theta);
+          delay(500);
+        }
+        while (Serial1.available()) Serial1.read();
+        dualPrintln("Exiting position test mode.");
+        break;
+      }
 
       case 'x':  // Initiate forward_left()
       case 'X':

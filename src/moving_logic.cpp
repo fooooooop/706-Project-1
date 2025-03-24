@@ -27,7 +27,7 @@ void stop_motors() {
 }
 
 void forward() {
-  while (Serial.read() != 'c') {
+  while (Serial1.read() != 'c') {
     GYRO_controller(0, 20.5, 4.5, 0);
     dualPrintln(currentAngle);
     // IR_controller(135, 1, 0, 1.7, 0.72, 0);
@@ -46,7 +46,7 @@ void forward() {
 }
 
 void reverse() {
-  while (Serial.read() != 'c') {
+  while (Serial1.read() != 'c') {
     GYRO_controller(0, 20.5, 4.5, 0);
     // IR_controller(135, 1, 0, 1.7, 0.72, 0);
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -105,7 +105,7 @@ void turn_angle(double target) {
 
     // Clamp-----//
     if (gyro_u > 400) {
-      gyro_u = 400; 
+      gyro_u = 400;
     } else if (gyro_u < -400) {
       gyro_u = -400;
     }
@@ -135,7 +135,8 @@ void turn_angle(double target) {
   }
 }
 
-void forward_target(double target_sidewall, double target, enum DIRECTION left_right) {
+void forward_target(double target_sidewall, double target,
+                    enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.5, 4.5, 0);
     IR_controller(target_sidewall, AWD, left_right, 3, 1.0, 0);
@@ -157,7 +158,8 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
   right_front_motor.writeMicroseconds(0);
 }
 
-void reverse_target(double target_sidewall, double target, enum DIRECTION left_right) {
+void reverse_target(double target_sidewall, double target,
+                    enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.5, 4.5, 0);
     IR_controller(target_sidewall, AWD, left_right, 1.7, 0.72, 0);
@@ -197,38 +199,43 @@ void strafe_target(double target, enum DIRECTION left_right) {
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
-    
+
     // Exit Condition-----//
-    if ( ((abs(IR_err_pos) < strafe_bounds) && (abs(gyro_err_pos) < gyro_bounds)) && (strafe_timestart != true) ) {
+    if (((abs(IR_err_pos) < strafe_bounds) &&
+         (abs(gyro_err_pos) < gyro_bounds)) &&
+        (strafe_timestart != true)) {
       // Checks to see if yss is within exit threshold, start timer
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if ( ((abs(IR_err_pos) > strafe_bounds) && (abs(gyro_err_pos) > gyro_bounds)) && (strafe_timestart == true)) {
+    if (((abs(IR_err_pos) > strafe_bounds) &&
+         (abs(gyro_err_pos) > gyro_bounds)) &&
+        (strafe_timestart == true)) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 1500.0) && ((abs(IR_err_pos) < strafe_bounds) && (abs(gyro_err_pos) < gyro_bounds)) && (strafe_timestart == true)) {
+    } else if ((millis() - strafe_timer > 1500.0) &&
+               ((abs(IR_err_pos) < strafe_bounds) &&
+                (abs(gyro_err_pos) < gyro_bounds)) &&
+               (strafe_timestart == true)) {
       // Else, if yss is within threshold for a certain amount of time (check
       // first condition), exit controller
       strafe_exit = true;
-
     }
-
   }
 
   return;
 }
 
-void forward_right(){
+void forward_right() {
   forward_target(110, 12, LEFT);
   dualPrintln("Forward done");
   strafe_target(310, LEFT);
   dualPrintln("Strafe done");
   reverse_target(310, 168, LEFT);
   dualPrintln("Reverse done");
-  strafe_target(510,LEFT);
+  strafe_target(510, LEFT);
   dualPrintln("Strafe done");
   forward_target(510, 12, LEFT);
   dualPrintln("Forward done");
@@ -250,7 +257,7 @@ void forward_right(){
   dualPrintln("Forward done");
 }
 
-void forward_left(){
+void forward_left() {
   forward_target(110, 12, RIGHT);
   dualPrintln("Forward done");
   strafe_target(310, RIGHT);
@@ -271,13 +278,12 @@ void forward_left(){
   dualPrintln("Forward done");
   strafe_target(310, LEFT);
   dualPrintln("Strafe done");
-  reverse_target(310,168, LEFT);
+  reverse_target(310, 168, LEFT);
   dualPrintln("Reverse done");
   strafe_target(90, LEFT);
   dualPrintln("Strafe done");
   forward_target(90, 12, LEFT);
   dualPrintln("Forward done");
-
 }
 
 void find_corner() {
@@ -297,27 +303,29 @@ void find_corner() {
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
-    
+
     // Exit Condition-----//
-    if (((abs(IR_err_Fpos) < strafe_bounds) && (abs(IR_err_Bpos) < strafe_bounds)) &&
+    if (((abs(IR_err_Fpos) < strafe_bounds) &&
+         (abs(IR_err_Bpos) < strafe_bounds)) &&
         (strafe_timestart != true)) {
       // Checks to see if yss is within exit threshold, start timer
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if (((abs(IR_err_Fpos) > strafe_bounds) && (abs(IR_err_Bpos) > strafe_bounds)) &&
+    if (((abs(IR_err_Fpos) > strafe_bounds) &&
+         (abs(IR_err_Bpos) > strafe_bounds)) &&
         (strafe_timestart == true)) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       strafe_timestart = false;
 
     } else if ((millis() - strafe_timer > 2000.0) &&
-               ((abs(IR_err_Fpos) < strafe_bounds) && (abs(IR_err_Bpos) < strafe_bounds)) &&
+               ((abs(IR_err_Fpos) < strafe_bounds) &&
+                (abs(IR_err_Bpos) < strafe_bounds)) &&
                (strafe_timestart == true)) {
       // Else, if yss is within threshold for a certain amount of time (check
       // first condition), exit controller
       strafe_exit = true;
-
     }
   }
 
@@ -354,14 +362,13 @@ void find_corner() {
   float second_reading = HC_SR04_range();
   // Align along long wall and zero robot //
   if (first_reading > second_reading) {
-    turn_angle (90);
+    turn_angle(90);
     currentAngle = 0;
-    forward_right(); // Start Tilling
+    forward_right();  // Start Tilling
   } else {
     currentAngle = 0;
-    forward_left(); // Start Tilling
+    forward_left();  // Start Tilling
   }
 
   return;
 }
-

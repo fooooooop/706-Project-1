@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "globals.h"
+#include "positioning_system.h"
 #include "state_machine.h"
 
 // Instantiate servo objects and global variables
@@ -47,8 +48,8 @@ void setup(void) {
   digitalWrite(TRIG_PIN, LOW);
 
   // Initialize USB Serial for debugging and Serial1 for wireless commands
-  Serial.begin(115200);   // Debug output
-  Serial1.begin(115200);  // HC‑12 wireless commands
+  Serial.begin(9600);   // Debug output
+  Serial1.begin(9600);  // HC‑12 wireless commands
 
   // Set IR sensor models
   FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
@@ -70,7 +71,7 @@ void setup(void) {
     delay(5);
   }
   gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
-
+  initPositioning();
   // Debug startup messages
   dualPrintln("MECHENG706_Base_Code_25/01/2018");
   delay(1000);
