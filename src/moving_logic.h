@@ -19,9 +19,10 @@ void strafe_right();
 // Custom functions
 void find_corner();
 void turn_angle(double target);
-void forward_target(double target_sidewall, double target, int left_right);
-void reverse_target(double target_sidewall, double target, int left_right);
-void strafe_target(double target, int left_right);
-void loop_one();
+void forward_target(double target_sidewall, double target, enum DIRECTION left_right);
+void reverse_target(double target_sidewall, double target, enum DIRECTION left_right);
+void strafe_target(double target, enum DIRECTION left_right);
+void forward_right();
+void forward_left();
 
 #endif  // MOVING_LOGIC_H

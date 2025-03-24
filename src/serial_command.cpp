@@ -75,10 +75,17 @@ void read_serial_command() {
         dualPrintln("Find corner executed");
         break;
 
-      case 'x':  // Initiate Loop One
+      case 'x':  // Initiate forward_left()
       case 'X':
         dualPrintln("Loop One initiated");
-        loop_one();
+        forward_left();
+        dualPrintln("Loop One done!");
+        break;
+
+      case 'c':  // Initiate forward_right()
+      case 'C':
+        dualPrintln("Loop One initiated");
+        forward_right();
         dualPrintln("Loop One done!");
         break;
 

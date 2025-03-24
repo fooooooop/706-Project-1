@@ -89,7 +89,6 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   //their own controllers
 
   //left_right states which side IR sensor to use
-  //To-Do: turn these into fucking enums omg.
 
   dualPrintln(IR_u);
   dualPrintln(IRFront_u);
@@ -202,8 +201,10 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
 
   // PID controller
   if (IR_mode == FWD) {
+    // Add clamps
     ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRFront_u = 500 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   } else if (IR_mode == RWD) {
+    // Add clamps
     ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRBack_u = 500 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
   } else {
     IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);

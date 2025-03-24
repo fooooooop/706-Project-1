@@ -47,8 +47,8 @@ STATE running() {
 
 #ifndef NO_READ_GYRO
     // GYRO_reading(500);
-    // Can't trust the readings from this cuz the current angle is now a global
-    // variable Running this will mess with the GYRO controller
+    // Can't trust the readings from this cuz the current angle is now a global variable 
+    // Running this will mess with the GYRO controller
 #endif
 
 #ifndef NO_HC_SR04
