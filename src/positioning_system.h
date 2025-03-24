@@ -3,8 +3,8 @@
 
 #include <Arduino.h>
 
-#define TABLE_WIDTH 200.0   // in cm
-#define TABLE_LENGTH 300.0  // in cm
+#define TABLE_WIDTH 122.0   // in cm
+#define TABLE_LENGTH 198.5  // in cm
 
 struct Position {
   float x;          // Lateral coordinate (cm)

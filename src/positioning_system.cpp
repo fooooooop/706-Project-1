@@ -8,8 +8,8 @@ const float IR_NEAR_THRESHOLD = 15.0;     // cm
 const float ULTRASONIC_THRESHOLD = 50.0;  // cm
 const float OFFSET_IR_LEFT = 3.0;         // cm
 const float OFFSET_IR_RIGHT = 3.0;        // cm
-const float ROBOT_FRONT_OFFSET = 5.0;
-const float ROBOT_BACK_OFFSET = 5.0;      // cm
+const float ROBOT_FRONT_OFFSET = 11.5;
+const float ROBOT_BACK_OFFSET = 11.5;     // cm
 const float IR_SENSOR_SEPARATION = 10.0;  // cm
 
 void initPositioning() {

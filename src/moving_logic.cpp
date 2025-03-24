@@ -92,7 +92,7 @@ void turn_angle(double target) {
   while (gyro_exit == false) {
     gyro_err_pos = GYRO_controller(target);
     if (gyro_u > 800) gyro_u = 800;  // Clamp
-    Serial.println(gyro_u);
+    dualPrintln(gyro_u);
     left_front_motor.writeMicroseconds(1500 + gyro_u);
     left_rear_motor.writeMicroseconds(1500 + gyro_u);
     right_rear_motor.writeMicroseconds(1500 + gyro_u);

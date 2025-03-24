@@ -9,8 +9,8 @@
 // --- Wireless Command Parsing ---
 // This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (Serial.available()) {
-    char val = Serial.read();
+  if (Serial1.available()) {
+    char val = Serial1.read();
     dualPrint("Received command: ");
     dualPrintln(String(val));
     dualPrint("Speed: ");
@@ -132,7 +132,7 @@ void read_serial_command() {
         break;
       case 'P': {
         dualPrintln("Position test mode: Press any key to exit.");
-        while (!Serial.available()) {
+        while (!Serial1.available()) {
           Position pos = updatePosition();
           dualPrint("X: ");
           dualPrint(pos.x);
@@ -142,7 +142,7 @@ void read_serial_command() {
           dualPrintln(pos.theta);
           delay(500);
         }
-        while (Serial.available()) Serial.read();
+        while (Serial1.available()) Serial1.read();
         dualPrintln("Exiting position test mode.");
         break;
       }

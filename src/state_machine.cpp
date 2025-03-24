@@ -2,6 +2,7 @@
 
 #include "dual_serial.h"  // <-- Add this line
 #include "moving_logic.h"
+#include "positioning_system.h"
 #include "sensors.h"
 #include "serial_command.h"
 #include "utilities.h"
@@ -32,9 +33,11 @@ STATE running() {
     // GYRO_controller(0);
     // IR_controller(250);
     // dualPrintln(gyro_u);
-    dualPrintln(IR_u);
-    dualPrintln(IRFront_u);
-    dualPrintln(IRBack_u);
+
+    // dualPrintln(IR_u);
+    // dualPrintln(IRFront_u);
+    // dualPrintln(IRBack_u);
+
     // dualPrint("IR Sensor Front Right Short: ");
     // dualPrintln(FRONT_RIGHT_shortIR_reading());
     // dualPrint("IR Sensor Front Left Short: ");
