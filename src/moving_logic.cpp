@@ -251,9 +251,9 @@ void forward_right() {
   dualPrintln("Strafe done");
   reverse_target(310, 168, RIGHT);
   dualPrintln("Reverse done");
-  strafe_target(90, RIGHT);
+  strafe_target(100, RIGHT);
   dualPrintln("Strafe done");
-  forward_target(90, 12, RIGHT);
+  forward_target(100, 12, RIGHT);
   dualPrintln("Forward done");
 }
 
@@ -280,9 +280,9 @@ void forward_left() {
   dualPrintln("Strafe done");
   reverse_target(310, 168, LEFT);
   dualPrintln("Reverse done");
-  strafe_target(90, LEFT);
+  strafe_target(100, LEFT);
   dualPrintln("Strafe done");
-  forward_target(90, 12, LEFT);
+  forward_target(100, 12, LEFT);
   dualPrintln("Forward done");
 }
 
@@ -290,15 +290,15 @@ void find_corner() {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 60;
+  double strafe_bounds = 40;
   double IR_err_Fpos;
   double IR_err_Bpos;
 
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    IR_err_Fpos = IR_controller(110, FWD, LEFT, 1.7, 0.82, 0);
-    IR_err_Bpos = IR_controller(110, RWD, LEFT, 1.7, 0.82, 0);
+    IR_err_Fpos = IR_controller(110, FWD, LEFT, 4.7, 3.15, 0);
+    IR_err_Bpos = IR_controller(110, RWD, LEFT, 4.7, 3.15, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
@@ -319,7 +319,7 @@ void find_corner() {
       // If it does, then restart timer
       strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 2000.0) &&
+    } else if ((millis() - strafe_timer > 3000.0) &&
                ((abs(IR_err_Fpos) < strafe_bounds) &&
                 (abs(IR_err_Bpos) < strafe_bounds)) &&
                (strafe_timestart == true)) {
@@ -328,7 +328,7 @@ void find_corner() {
       strafe_exit = true;
     }
   }
-
+  
   // Take an angle reading and "zero" the robot---//
   for (int i = 1; i < 10; i++) {
     GYRO_reading(50);
@@ -369,6 +369,6 @@ void find_corner() {
     currentAngle = 0;
     forward_left();  // Start Tilling
   }
-
+  
   return;
 }

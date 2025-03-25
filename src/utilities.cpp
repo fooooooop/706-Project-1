@@ -90,18 +90,6 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
 
   //left_right states which side IR sensor to use
 
-  dualPrintln(IR_u);
-  dualPrintln(IRFront_u);
-  dualPrintln(IRBack_u);
-  dualPrint("IR Sensor Front Right Short: ");
-  dualPrintln(FRONT_RIGHT_shortIR_reading());
-  dualPrint("IR Sensor Front Left Short: ");
-  dualPrintln(FRONT_LEFT_shortIR_reading());
-  dualPrint("IR Sensor Back Left Long: ");
-  dualPrintln(BACK_LEFT_longIR_reading());
-  dualPrint("IR Sensor Back Right  Long: ");
-  dualPrintln(BACK_RIGHT_longIR_reading());
-
   // Time variables
   double t_current = 0;
   double t_previous = 0;
@@ -165,11 +153,11 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
     // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
     if (IR_target < 300) {
-      if ((double)FRONT_LEFT_shortIR_reading() < 320){
+      if (left_right == LEFT){
         IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
     
-      } else if ((double)FRONT_RIGHT_shortIR_reading() < 320){
+      } else if (left_right == RIGHT){
         IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
         IR_err_current = IR_target - IR_currentSensor; 
     
@@ -202,10 +190,10 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   // PID controller
   if (IR_mode == FWD) {
     // Add clamps
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRFront_u = 500 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 400) ? IRFront_u = 400 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   } else if (IR_mode == RWD) {
     // Add clamps
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 500) ? IRBack_u = 500 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
+    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 400) ? IRBack_u = 400 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
   } else {
     IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
   }
