@@ -20,10 +20,14 @@ int pos = 0;  // turret pos?
 // Gyro Parameters
 float gyroSupplyVoltage = 5;  // supply voltage for gyro
 float gyroZeroVoltage = 0;    // the value of voltage when gyro is zero
-float gyroSensitivity = 0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
-float rotationThreshold = 2;  // because of gyro drifting, defining rotation angular velocity less than this value will not be ignored
+float gyroSensitivity =
+    0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
+float rotationThreshold =
+    2;  // because of gyro drifting, defining rotation angular velocity less
+        // than this value will not be ignored
 float gyroRate = 0;  // read out value of sensor in voltage
-float currentAngle = 0;  // current angle calculated by angular velocity integral on
+float currentAngle =
+    0;  // current angle calculated by angular velocity integral on
 float maxGyroDrift = 0;
 
 // Controller Efforts

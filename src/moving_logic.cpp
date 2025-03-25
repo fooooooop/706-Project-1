@@ -328,7 +328,7 @@ void find_corner() {
       strafe_exit = true;
     }
   }
-  
+
   // Take an angle reading and "zero" the robot---//
   for (int i = 1; i < 10; i++) {
     GYRO_reading(50);
@@ -369,6 +369,6 @@ void find_corner() {
     currentAngle = 0;
     forward_left();  // Start Tilling
   }
-  
+
   return;
 }

@@ -10,9 +10,9 @@
 
 #define MEDIAN_WINDOW_FR 5
 #define MEDIAN_WINDOW_FL 5
-#define MEDIAN_WINDOW_BR 5
-#define MEDIAN_WINDOW_BL 5
-// State machine states
+#define MEDIAN_WINDOW_BR 20
+#define MEDIAN_WINDOW_BL 20
+// State machine state
 enum STATE { INITIALISING, RUNNING, STOPPED };
 
 // Motor control pins
@@ -28,7 +28,7 @@ const int FRONT_RIGHT_IR = A14;
 
 const int BACK_LEFT_IR = A5;
 
-const int BACK_RIGHT_IR = A15;
+const int BACK_RIGHT_IR = A8;
 
 extern SharpDistSensor FrontLeftIR;
 extern SharpDistSensor FrontRightIR;
@@ -36,8 +36,8 @@ extern SharpDistSensor BackLeftIR;
 extern SharpDistSensor BackRightIR;
 
 // IR left-right/wheel-drive states
-enum DRIVE {AWD, FWD, RWD};
-enum DIRECTION {LEFT, RIGHT, IDGAF};
+enum DRIVE { AWD, FWD, RWD };
+enum DIRECTION { LEFT, RIGHT, IDGAF };
 
 // Ultrasonic sensor pins and parameters
 const int TRIG_PIN = 48;

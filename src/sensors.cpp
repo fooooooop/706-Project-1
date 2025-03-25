@@ -3,6 +3,7 @@
 #define MEDIAN_WINDOW 3
 
 #ifndef NO_HC_SR04
+
 float HC_SR04_range() {
   unsigned long t1;
   unsigned long t2;
@@ -66,16 +67,17 @@ void GYRO_reading(int T) {
   // T is delay for loop
 
   // convert the 0-1023 signal to 0-5v
-  gyroRate = (analogRead(A3)*gyroSupplyVoltage)/1023;
+  gyroRate = (analogRead(A3) * gyroSupplyVoltage) / 1023;
   // find the voltage offset the value of voltage when gyro is zero (still)
-  gyroRate -= (gyroZeroVoltage/1023*5);
-  // read out voltage divided the gyro sensitivity to calculate the angular velocity
-  float angularVelocity = gyroRate/ gyroSensitivity;
+  gyroRate -= (gyroZeroVoltage / 1023 * 5);
+  // read out voltage divided the gyro sensitivity to calculate the angular
+  // velocity
+  float angularVelocity = gyroRate / gyroSensitivity;
   // if the angular velocity is less than the threshold, ignore it
-  if (angularVelocity >= rotationThreshold || angularVelocity <= -rotationThreshold)
-  {
+  if (angularVelocity >= rotationThreshold ||
+      angularVelocity <= -rotationThreshold) {
     // we are running a loop in T. one second will run (1000/T).
-    float angleChange = angularVelocity/(1000/T);
+    float angleChange = angularVelocity / (1000 / T);
     currentAngle += angleChange;
   }
 
@@ -83,9 +85,12 @@ void GYRO_reading(int T) {
 
   // keep the angle between 0-360
   // 183 threshold so we can do 180 degree turns
-  if (currentAngle < -183) {currentAngle += 360;}
-  else if (currentAngle > 183) {currentAngle -= 360;}
-  
+  if (currentAngle < -183) {
+    currentAngle += 360;
+  } else if (currentAngle > 183) {
+    currentAngle -= 360;
+  }
+
   delay(T);
   return;
 }
