@@ -1,66 +1,136 @@
 #include "sensors.h"
 
 #define MEDIAN_WINDOW 3
+#define OVERALL_IR_OFFSET 69
+#define FRONT_LEFT_IR_OFFSET 0
+#define FRONT_RIGHT_IR_OFFSET 0
+#define BACK_LEFT_IR_OFFSET -50
+#define BACK_RIGHT_IR_OFFSET -131
 
 #ifndef NO_HC_SR04
 
 float HC_SR04_range() {
-  unsigned long t1;
-  unsigned long t2;
-  unsigned long pulse_width;
-  float cm;
+  const int n = MEDIAN_WINDOW;  // Number of samples for the average
+  float sum = 0;
+  int validReadings = 0;
 
-  // Trigger the sensor
-  digitalWrite(TRIG_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG_PIN, LOW);
+  for (int i = 0; i < n; i++) {
+    unsigned long t1, t2, pulse_width;
+    float cm;
 
-  // Wait for echo to start
-  t1 = micros();
-  while (digitalRead(ECHO_PIN) == 0) {
+    // Trigger the sensor
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    // Wait for echo to start
+    t1 = micros();
+    while (digitalRead(ECHO_PIN) == 0) {
+      t2 = micros();
+      pulse_width = t2 - t1;
+      if (pulse_width > (MAX_DIST + 1000)) {
+        dualPrintln("HC-SR04: NOT found");
+        cm = 0;
+        break;
+      }
+    }
+
+    // Measure the echo pulse duration
+    t1 = micros();
+    while (digitalRead(ECHO_PIN) == 1) {
+      t2 = micros();
+      pulse_width = t2 - t1;
+      if (pulse_width > (MAX_DIST + 1000)) {
+        dualPrintln("HC-SR04: Out of range");
+        cm = 0;
+        break;
+      }
+    }
     t2 = micros();
     pulse_width = t2 - t1;
-    if (pulse_width > (MAX_DIST + 1000)) {
-      dualPrintln("HC-SR04: NOT found");
-      return 0;
+
+    cm = pulse_width / 58.0;
+
+    if (pulse_width <= MAX_DIST && cm > 0) {
+      sum += cm;
+      validReadings++;
     }
+
+    delay(50);  // Small delay between measurements
   }
 
-  // Measure the length of the echo pulse
-  t1 = micros();
-  while (digitalRead(ECHO_PIN) == 1) {
-    t2 = micros();
-    pulse_width = t2 - t1;
-    if (pulse_width > (MAX_DIST + 1000)) {
-      dualPrintln("HC-SR04: Out of range");
-      return 0;
-    }
-  }
-  t2 = micros();
-  pulse_width = t2 - t1;
-
-  cm = pulse_width / 58.0;
-
-  if (pulse_width > MAX_DIST) {
-    dualPrintln("HC-SR04: Out of range");
-  } else {
-    // dualPrintln("HC-SR04:");
-    // dualPrintln(cm);
-    // dualPrintln("cm");
+  if (validReadings == 0) {
+    return 0;
   }
 
-  return cm;
+  return sum / validReadings;  // Return average
 }
+
+// float HC_SR04_range() {
+//   unsigned long t1;
+//   unsigned long t2;
+//   unsigned long pulse_width;
+//   float cm;
+
+//   // Trigger the sensor
+//   digitalWrite(TRIG_PIN, HIGH);
+//   delayMicroseconds(10);
+//   digitalWrite(TRIG_PIN, LOW);
+
+//   // Wait for echo to start
+//   t1 = micros();
+//   while (digitalRead(ECHO_PIN) == 0) {
+//     t2 = micros();
+//     pulse_width = t2 - t1;
+//     if (pulse_width > (MAX_DIST + 1000)) {
+//       dualPrintln("HC-SR04: NOT found");
+//       return 0;
+//     }
+//   }
+
+//   // Measure the length of the echo pulse
+//   t1 = micros();
+//   while (digitalRead(ECHO_PIN) == 1) {
+//     t2 = micros();
+//     pulse_width = t2 - t1;
+//     if (pulse_width > (MAX_DIST + 1000)) {
+//       dualPrintln("HC-SR04: Out of range");
+//       return 0;
+//     }
+//   }
+//   t2 = micros();
+//   pulse_width = t2 - t1;
+
+//   cm = pulse_width / 58.0;
+
+//   if (pulse_width > MAX_DIST) {
+//     dualPrintln("HC-SR04: Out of range");
+//   } else {
+//     // dualPrintln("HC-SR04:");
+//     // dualPrintln(cm);
+//     // dualPrintln("cm");
+//   }
+
+//   return cm;
+// }
 #endif
 
 // Return IR sensor readings
-uint16_t FRONT_LEFT_shortIR_reading() { return FrontLeftIR.getDist(); }
+uint16_t FRONT_LEFT_shortIR_reading() {
+  return FrontLeftIR.getDist() + OVERALL_IR_OFFSET + FRONT_LEFT_IR_OFFSET;
+}
 
-uint16_t FRONT_RIGHT_shortIR_reading() { return FrontRightIR.getDist(); }
+uint16_t FRONT_RIGHT_shortIR_reading() {
+  return FrontRightIR.getDist() + OVERALL_IR_OFFSET + FRONT_RIGHT_IR_OFFSET;
+}
 
-uint16_t BACK_LEFT_longIR_reading() { return BackLeftIR.getDist(); }
+uint16_t BACK_LEFT_longIR_reading() {
+  return BackLeftIR.getDist() + OVERALL_IR_OFFSET + BACK_LEFT_IR_OFFSET;
+}
 
-uint16_t BACK_RIGHT_longIR_reading() { return BackRightIR.getDist(); }
+uint16_t BACK_RIGHT_longIR_reading() {
+  return BackRightIR.getDist() + OVERALL_IR_OFFSET + BACK_RIGHT_IR_OFFSET;
+}
 
 #ifndef NO_READ_GYRO
 void GYRO_reading(int T) {

@@ -105,7 +105,7 @@ void read_serial_command() {
         dualPrintln("Front Left IR sensor reading initiated");
         while (Serial1.read() != '9') {
           dualPrint(FRONT_LEFT_shortIR_reading());
-          dualPrintln(" cm");
+          dualPrintln("mm");
           delay(100);
         }
         dualPrintln("Front Left IR sensor reading done!");
@@ -117,7 +117,7 @@ void read_serial_command() {
         dualPrintln("Front Right IR sensor reading initiated");
         while (Serial1.read() != '9') {
           dualPrint(FRONT_RIGHT_shortIR_reading());
-          dualPrintln(" cm");
+          dualPrintln("mm");
           delay(100);
         }
         dualPrintln("Front Right IR sensor reading done!");
@@ -129,7 +129,7 @@ void read_serial_command() {
         dualPrintln("Back Left IR sensor reading initiated");
         while (Serial1.read() != '9') {
           dualPrint(BACK_LEFT_longIR_reading());
-          dualPrintln(" cm");
+          dualPrintln(" mm");
           delay(100);
         }
         dualPrintln("Back Left IR sensor reading done!");
@@ -141,10 +141,22 @@ void read_serial_command() {
         dualPrintln("Back Right IR sensor reading initiated");
         while (Serial1.read() != '9') {
           dualPrint(BACK_RIGHT_longIR_reading());
-          dualPrintln(" cm");
+          dualPrintln(" mm");
           delay(100);
         }
         dualPrintln("Back Right IR sensor reading done!");
+        break;
+
+      case '5':
+        dualPrintln("Ultrasonic Sensor reading initiated");
+        while (Serial1.read() != '9') {
+          float distance = HC_SR04_range();
+          dualPrint("Ultrasonic Distance: ");
+          dualPrint(distance);
+          dualPrintln(" mm");
+          delay(200);
+        }
+        dualPrintln("Ultrasonic reading done!");
         break;
 
       case 'c':  // Initiate forward_right()

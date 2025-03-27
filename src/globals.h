@@ -28,7 +28,7 @@ const int FRONT_RIGHT_IR = A14;
 
 const int BACK_LEFT_IR = A5;
 
-const int BACK_RIGHT_IR = A8;
+const int BACK_RIGHT_IR = A6;
 
 extern SharpDistSensor FrontLeftIR;
 extern SharpDistSensor FrontRightIR;
