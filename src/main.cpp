@@ -36,6 +36,9 @@ double IR_u = 0;
 double IRFront_u = 0;
 double IRBack_u = 0;
 
+double IR_err_mem = 0;
+double gyro_err_mem = 0;
+
 // Instanstiate IR sensor objects
 SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW_FL);
 SharpDistSensor FrontRightIR(FRONT_RIGHT_IR, MEDIAN_WINDOW_FR);

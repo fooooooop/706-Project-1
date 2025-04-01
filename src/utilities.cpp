@@ -42,15 +42,12 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   // General error variables
   double gyro_currentSensor;
   double gyro_err_current;
-  double gyro_err_previous = 0;
+  double gyro_err_previous;
 
   // For Derivative controller
   double dt;
   double de;
   double dedt;
-
-  // For Integral controller
-  double gyro_err_mem = 0;
 
   //Main Code Start!------------------------//
   // To get dt for Integral and Derivative controllers
@@ -77,7 +74,9 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   dedt = (de / dt);
 
   // PID controller
-  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) > 600 ? gyro_u = 600 : gyro_u = kp*gyro_err_current + ki*gyro_err_mem + kd*dedt;
+  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) > 600 ? gyro_u = 600 : 
+  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) < -600 ? gyro_u = -600 :
+  gyro_u = kp*gyro_err_current + ki*gyro_err_mem + kd*dedt;
 
   return gyro_err_current;
 }
@@ -97,15 +96,12 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   // General error variables
   double IR_currentSensor;
   double IR_err_current;
-  double IR_err_previous = 0;
+  double IR_err_previous;
 
   // For Derivative controller
   double dt;
   double de;
   double dedt;
-
-  // For Integral controller
-  double IR_err_mem = 0;
 
   //Main Code Start!------------------------//
   // To get dt for Integral and Derivative controllers
@@ -177,7 +173,9 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   }
 
   // Integral controller
-  if (abs(IR_u) < 200)  { // Anti-integral windup
+
+  if (abs(IR_u) < 200) { 
+    // Anti-integral windup
     IR_err_mem += IR_err_current;
   }
   
@@ -190,12 +188,19 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   // PID controller
   if (IR_mode == FWD) {
     // Add clamps
-    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) ? IRFront_u = 400 : IRFront_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) {IRFront_u = 400;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -400) {IRFront_u = -400;} else
+    {IRFront_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   } else if (IR_mode == RWD) {
     // Add clamps
-    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) ? IRBack_u = 400 : IRBack_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt) ;
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) {IRBack_u = 400;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -400) {IRBack_u = -400;} else
+    {IRBack_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   } else {
-    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 700) ? IR_u = 700 : IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);
+    // Add clamps
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 600) {IR_u = 600;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -600) {IR_u = -600;} else
+    {IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   }
 
   return IR_err_current;

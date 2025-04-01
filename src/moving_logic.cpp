@@ -103,13 +103,6 @@ void turn_angle(double target) {
   while (gyro_exit == false) {
     gyro_err_pos = GYRO_controller(target, 4.0, 1.75, 0);
 
-    // Clamp-----//
-    if (gyro_u > 400) {
-      gyro_u = 400;
-    } else if (gyro_u < -400) {
-      gyro_u = -400;
-    }
-
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + gyro_u);
     left_rear_motor.writeMicroseconds(1500 + gyro_u);
@@ -194,14 +187,14 @@ void strafe_target(double target, enum DIRECTION left_right) {
   while (strafe_exit == false) {
     // Start Strafing------------//
     gyro_err_pos = GYRO_controller(0, 0, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 0.4, 0.125, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 1.0, 0.08, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
 
     dualPrint("gyro ");
-    dualPrintln(gyro_err_pos);
+    dualPrintln(gyro_u);
     dualPrint("IR pos");
     dualPrintln(IR_err_pos);
     dualPrint("IR effort ");
@@ -301,8 +294,8 @@ void find_corner() {
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    IR_err_Fpos = IR_controller(200, FWD, LEFT, 4.7, 3.15, 0);
-    IR_err_Bpos = IR_controller(200, RWD, LEFT, 4.7, 3.15, 0);
+    IR_err_Fpos = IR_controller(320, FWD, LEFT, 4.7, 3.15, 0);
+    IR_err_Bpos = IR_controller(250, RWD, LEFT, 4.7, 3.15, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
@@ -344,8 +337,8 @@ void find_corner() {
 
   // Drive straight to shortest wall----------//
   do {
-    GYRO_controller(0, 20.5, 1, 0);
-    IR_controller(160, AWD, LEFT, 1.7, 1, 0);
+    GYRO_controller(0, 0, 0, 0);
+    IR_controller(160, AWD, LEFT, 4.7, 0.95, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
