@@ -57,7 +57,7 @@ STATE running() {
 #endif
 
 #ifndef NO_BATTERY_V_OK
-    // if (!is_battery_voltage_OK()) return STOPPED;
+    if (!is_battery_voltage_OK()) return STOPPED;
 #endif
 
     // Update turret position as an example

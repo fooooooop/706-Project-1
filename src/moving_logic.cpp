@@ -178,16 +178,16 @@ void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 30;
+  double strafe_bounds = 40;
   double IR_err_pos;
   double gyro_err_pos;
-  double gyro_bounds = 5;
+  double gyro_bounds = 50;
 
   // Strafe to a target by "pushing" off a wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
     gyro_err_pos = GYRO_controller(0, 0, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 1.0, 0.08, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 0.65, 0.03, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
