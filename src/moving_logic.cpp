@@ -344,8 +344,8 @@ void find_corner() {
 
   // Drive straight to shortest wall----------//
   do {
-    GYRO_controller(0, 20.5, 4.5, 0);
-    IR_controller(160, AWD, LEFT, 1.7, 0.7, 0);
+    GYRO_controller(0, 20.5, 1, 0);
+    IR_controller(160, AWD, LEFT, 1.7, 1, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
