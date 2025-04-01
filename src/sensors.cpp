@@ -133,7 +133,7 @@ uint16_t BACK_RIGHT_longIR_reading() {
 }
 
 #ifndef NO_READ_GYRO
-void GYRO_reading(int T) {
+void GYRO_reading(double T) {
   // T is delay for loop
 
   // convert the 0-1023 signal to 0-5v
@@ -147,7 +147,7 @@ void GYRO_reading(int T) {
   if (angularVelocity >= rotationThreshold ||
       angularVelocity <= -rotationThreshold) {
     // we are running a loop in T. one second will run (1000/T).
-    float angleChange = angularVelocity / (1000 / T);
+    float angleChange = angularVelocity / (1000.0 / T);
     currentAngle += angleChange;
   }
 
@@ -155,9 +155,9 @@ void GYRO_reading(int T) {
 
   // keep the angle between 0-360
   // 183 threshold so we can do 180 degree turns
-  if (currentAngle < -183) {
+  if (currentAngle < -195) {
     currentAngle += 360;
-  } else if (currentAngle > 183) {
+  } else if (currentAngle > 195) {
     currentAngle -= 360;
   }
 

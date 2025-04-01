@@ -76,6 +76,8 @@ extern double IRFront_u;
 extern double IRBack_u;
 
 extern double IR_err_mem;
+extern double IR_err_mem_back;
+extern double IR_err_mem_front;
 extern double gyro_err_mem;
 
 // Serial port pointer
