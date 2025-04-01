@@ -75,6 +75,7 @@ void read_serial_command() {
         find_corner();
         dualPrintln("Find corner executed");
         break;
+        
       case 'P': {
         dualPrintln("Position test mode: Press any key to exit.");
         while (!Serial1.available()) {
@@ -94,9 +95,9 @@ void read_serial_command() {
 
       case 'x':  // Initiate forward_left()
       case 'X':
-        dualPrintln("Loop One initiated");
+        dualPrintln("Loop forward_left initiated");
         forward_left();
-        dualPrintln("Loop One done!");
+        dualPrintln("Loop forward_left done!");
         break;
 
       // Case '1' to print Front Left IR sensor reading continously until '9' is
@@ -161,9 +162,9 @@ void read_serial_command() {
 
       case 'c':  // Initiate forward_right()
       case 'C':
-        dualPrintln("Loop One initiated");
+        dualPrintln("Loop forward_right initiated");
         forward_right();
-        dualPrintln("Loop One done!");
+        dualPrintln("Loop forward_right done!");
         break;
 
       default:

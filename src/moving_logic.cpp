@@ -185,7 +185,7 @@ void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 100;
+  double strafe_bounds = 30;
   double IR_err_pos;
   double gyro_err_pos;
   double gyro_bounds = 5;
@@ -193,12 +193,21 @@ void strafe_target(double target, enum DIRECTION left_right) {
   // Strafe to a target by "pushing" off a wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    gyro_err_pos = GYRO_controller(0, 6.5, 1.25, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 1.7, 0.7, 0);
+    gyro_err_pos = GYRO_controller(0, 0, 0, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 0.4, 0.125, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+
+    dualPrint("gyro ");
+    dualPrintln(gyro_err_pos);
+    dualPrint("IR pos");
+    dualPrintln(IR_err_pos);
+    dualPrint("IR effort ");
+    dualPrintln(IR_u);
+    dualPrint("Angle ");
+    dualPrintln(currentAngle);
 
     // Exit Condition-----//
     if (((abs(IR_err_pos) < strafe_bounds) &&
@@ -208,14 +217,14 @@ void strafe_target(double target, enum DIRECTION left_right) {
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if (((abs(IR_err_pos) > strafe_bounds) &&
+    if (((abs(IR_err_pos) > strafe_bounds) ||
          (abs(gyro_err_pos) > gyro_bounds)) &&
         (strafe_timestart == true)) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 1500.0) &&
+    } else if ((millis() - strafe_timer > 5500.0) &&
                ((abs(IR_err_pos) < strafe_bounds) &&
                 (abs(gyro_err_pos) < gyro_bounds)) &&
                (strafe_timestart == true)) {
@@ -225,65 +234,60 @@ void strafe_target(double target, enum DIRECTION left_right) {
     }
   }
 
+  IR_u = 0;
   return;
 }
 
 void forward_right() {
-  forward_target(110, 12, LEFT);
-  dualPrintln("Forward done");
-  strafe_target(310, LEFT);
+  // forward_target(110, 12, LEFT);
+  // dualPrintln("Forward done");
+  // strafe_target(310, LEFT);
+  // dualPrintln("Strafe done");
+  // reverse_target(310, 168, LEFT);
+  // dualPrintln("Reverse done");
+  // strafe_target(510, LEFT);
+  // dualPrintln("Strafe done");
+  // forward_target(510, 12, LEFT);
+  // dualPrintln("Forward done");
+  // strafe_target(710, LEFT);
+  // dualPrintln("Strafe done");
+  // reverse_target(710, 168, LEFT);
+  // dualPrintln("Reverse done");
+  // strafe_target(510, RIGHT);
+  // dualPrintln("Strafe done");
+  // forward_target(510, 12, RIGHT);
+  // dualPrintln("Forward done");
+  // strafe_target(310, RIGHT);
+  // dualPrintln("Strafe done");
+  // reverse_target(310, 168, RIGHT);
+  // dualPrintln("Reverse done");
+  // strafe_target(100, RIGHT);
+  // dualPrintln("Strafe done");
+  // forward_target(100, 12, RIGHT);
+  // dualPrintln("Forward done");
+  strafe_target(145, LEFT);
   dualPrintln("Strafe done");
-  reverse_target(310, 168, LEFT);
-  dualPrintln("Reverse done");
-  strafe_target(510, LEFT);
-  dualPrintln("Strafe done");
-  forward_target(510, 12, LEFT);
-  dualPrintln("Forward done");
-  strafe_target(710, LEFT);
-  dualPrintln("Strafe done");
-  reverse_target(710, 168, LEFT);
-  dualPrintln("Reverse done");
-  strafe_target(510, RIGHT);
-  dualPrintln("Strafe done");
-  forward_target(510, 12, RIGHT);
-  dualPrintln("Forward done");
-  strafe_target(310, RIGHT);
-  dualPrintln("Strafe done");
-  reverse_target(310, 168, RIGHT);
-  dualPrintln("Reverse done");
-  strafe_target(100, RIGHT);
-  dualPrintln("Strafe done");
-  forward_target(100, 12, RIGHT);
-  dualPrintln("Forward done");
 }
 
 void forward_left() {
-  forward_target(110, 12, RIGHT);
-  dualPrintln("Forward done");
-  strafe_target(310, RIGHT);
+  // forward_target(125, 12, RIGHT);
+  // dualPrintln("Forward done");
+  strafe_target(470, RIGHT);
   dualPrintln("Strafe done");
-  reverse_target(310, 168, RIGHT);
-  dualPrintln("Reverse done");
-  strafe_target(510, RIGHT);
-  dualPrintln("Strafe done");
-  forward_target(510, 12, RIGHT);
-  dualPrintln("Forward done");
-  strafe_target(710, RIGHT);
-  dualPrintln("Strafe done");
-  reverse_target(710, 168, RIGHT);
-  dualPrintln("Reverse done");
-  strafe_target(510, LEFT);
-  dualPrintln("Strafe done");
-  forward_target(510, 12, LEFT);
-  dualPrintln("Forward done");
-  strafe_target(310, LEFT);
-  dualPrintln("Strafe done");
-  reverse_target(310, 168, LEFT);
-  dualPrintln("Reverse done");
-  strafe_target(100, LEFT);
-  dualPrintln("Strafe done");
-  forward_target(100, 12, LEFT);
-  dualPrintln("Forward done");
+  // reverse_target(310, 168, RIGHT);
+  // dualPrintln("Reverse done");
+  // strafe_target(690, RIGHT);
+  // dualPrintln("Strafe done");
+  // // forward_target(510, 12, RIGHT);
+  // // dualPrintln("Forward done");
+  // strafe_target(470, LEFT);
+  // dualPrintln("Strafe done");
+  // reverse_target(310, 168, LEFT);
+  // dualPrintln("Reverse done");
+  // strafe_target(125, LEFT);
+  // dualPrintln("Strafe done");
+  // forward_target(100, 12, LEFT);
+  // dualPrintln("Forward done");
 }
 
 void find_corner() {
@@ -297,8 +301,8 @@ void find_corner() {
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    IR_err_Fpos = IR_controller(110, FWD, LEFT, 4.7, 3.15, 0);
-    IR_err_Bpos = IR_controller(110, RWD, LEFT, 4.7, 3.15, 0);
+    IR_err_Fpos = IR_controller(200, FWD, LEFT, 4.7, 3.15, 0);
+    IR_err_Bpos = IR_controller(200, RWD, LEFT, 4.7, 3.15, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
@@ -312,7 +316,7 @@ void find_corner() {
       strafe_timestart = true;
       strafe_timer = millis();
     }
-    if (((abs(IR_err_Fpos) > strafe_bounds) &&
+    if (((abs(IR_err_Fpos) > strafe_bounds) ||
          (abs(IR_err_Bpos) > strafe_bounds)) &&
         (strafe_timestart == true)) {
       // Checks to see if yss falls outside of exit threshold
@@ -329,6 +333,9 @@ void find_corner() {
     }
   }
 
+  IRFront_u = 0;
+  IRBack_u = 0;
+
   // Take an angle reading and "zero" the robot---//
   for (int i = 1; i < 10; i++) {
     GYRO_reading(50);
@@ -338,7 +345,7 @@ void find_corner() {
   // Drive straight to shortest wall----------//
   do {
     GYRO_controller(0, 20.5, 4.5, 0);
-    IR_controller(110, AWD, LEFT, 1.7, 0.7, 0);
+    IR_controller(160, AWD, LEFT, 1.7, 0.7, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);

@@ -178,23 +178,23 @@ boolean is_battery_voltage_OK() {
   Lipo_level_cal = Lipo_level_cal / 143;
 
   if (Lipo_level_cal > 0 && Lipo_level_cal < 160) {
-    Serial.print("Lipo level:");
-    Serial.print(Lipo_level_cal);
-    Serial.print("%");
-    Serial.println("");
+    dualPrint("Lipo level:");
+    dualPrint(Lipo_level_cal);
+    dualPrint("%");
+    dualPrintln("");
     Low_voltage_counter = 0;
     return true;
   } else {
     if (Lipo_level_cal < 0)
-      Serial.println("Lipo is Disconnected or Power Switch is turned OFF!!!");
+    dualPrintln("Lipo is Disconnected or Power Switch is turned OFF!!!");
     else if (Lipo_level_cal > 160)
-      Serial.println("!Lipo is Overcharged!!!");
+    dualPrintln("!Lipo is Overcharged!!!");
     else {
-      Serial.println(
+      dualPrintln(
           "Lipo voltage too LOW, any lower and the lipo will be damaged");
-      Serial.print("Please Re-charge Lipo:");
-      Serial.print(Lipo_level_cal);
-      Serial.println("%");
+      dualPrint("Please Re-charge Lipo:");
+      dualPrint(Lipo_level_cal);
+      dualPrintln("%");
     }
     Low_voltage_counter++;
     if (Low_voltage_counter > 5)

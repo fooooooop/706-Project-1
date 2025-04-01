@@ -77,7 +77,7 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   dedt = (de / dt);
 
   // PID controller
-  gyro_u = kp*gyro_err_current + ki+gyro_err_mem + kd*dedt;
+  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) > 600 ? gyro_u = 600 : gyro_u = kp*gyro_err_current + ki*gyro_err_mem + kd*dedt;
 
   return gyro_err_current;
 }
@@ -152,7 +152,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     // USE FOR THE STRAIGHT LINE
     // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
     // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
-    if (IR_target < 300) {
+    if (IR_target < 350) {
       if (left_right == LEFT){
         IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
@@ -177,7 +177,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   }
 
   // Integral controller
-  if (IR_u < 100)  { // Anti-integral windup
+  if (abs(IR_u) < 200)  { // Anti-integral windup
     IR_err_mem += IR_err_current;
   }
   
@@ -190,12 +190,12 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   // PID controller
   if (IR_mode == FWD) {
     // Add clamps
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 400) ? IRFront_u = 400 : IRFront_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) ? IRFront_u = 400 : IRFront_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);
   } else if (IR_mode == RWD) {
     // Add clamps
-    ((kp*IR_err_current + ki+IR_err_mem + kd*dedt) > 400) ? IRBack_u = 400 : IRBack_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt) ;
+    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 400) ? IRBack_u = 400 : IRBack_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt) ;
   } else {
-    IR_u = (kp*IR_err_current + ki+IR_err_mem + kd*dedt);
+    ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 700) ? IR_u = 700 : IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);
   }
 
   return IR_err_current;
