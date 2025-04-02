@@ -51,8 +51,8 @@ void setup(void) {
   digitalWrite(TRIG_PIN, LOW);
 
   // Initialize USB Serial for debugging and Serial1 for wireless commands
-  Serial.begin(115200);   // Debug output
-  Serial1.begin(115200);  // HC‑12 wireless commands
+  Serial.begin(9600);   // Debug output
+  Serial1.begin(9600);  // HC‑12 wireless commands
 
   // Set IR sensor models
   FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
