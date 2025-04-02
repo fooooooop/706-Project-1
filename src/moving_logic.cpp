@@ -254,52 +254,52 @@ void strafe_target(double target, enum DIRECTION left_right) {
 
 void forward_right() {
   forward_target(200, 12, LEFT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 1 done");
   strafe_target(400, LEFT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 1 done");
   reverse_target(400, 166, LEFT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse 2 done");
   strafe_target(600, LEFT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 2 done");
   forward_target(600, 12, LEFT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 3 done");
   strafe_target(510, RIGHT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 3 done");
   reverse_target(510, 166, RIGHT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse 4 done");
   strafe_target(360, RIGHT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 4 done");
   forward_target(360, 12, RIGHT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 5 done");
   strafe_target(180, RIGHT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 5 done");
   reverse_target(180, 166, RIGHT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse FINAL done");
 }
 
 void forward_left() {
   forward_target(180, 12, RIGHT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 1 done");
   strafe_target(360, RIGHT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 1 done");
   reverse_target(360, 168, RIGHT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse 2 done");
   strafe_target(500, RIGHT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 2 done");
   forward_target(500, 12, RIGHT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 3 done");
   strafe_target(600, LEFT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 3 done");
   reverse_target(600, 168, LEFT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse 4 done");
   strafe_target(400, LEFT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 4 done");
   forward_target(400, 12, LEFT);
-  dualPrintln("Forward done");
+  dualPrintln("Forward 5 done");
   strafe_target(200, LEFT);
-  dualPrintln("Strafe done");
+  dualPrintln("Strafe 5 done");
   reverse_target(200, 166, LEFT);
-  dualPrintln("Reverse done");
+  dualPrintln("Reverse FINAL done");
 }
 
 void find_corner() {
@@ -384,8 +384,6 @@ void find_corner() {
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
     // IR_u based on strafe_left function
-
-    dualPrintln(gyro_u);
 
   } while (HC_SR04_range() > 12);
 
