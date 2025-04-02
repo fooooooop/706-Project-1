@@ -8,8 +8,8 @@
 // --- Wireless Command Parsing ---
 // This function now listens on Serial1 (the HC‑12)
 void read_serial_command() {
-  if (Serial.available()) {
-    char val = Serial.read();
+  if (Serial1.available()) {
+    char val = Serial1.read();
     dualPrint("Received command: ");
     dualPrintln(String(val));
     dualPrint("Speed: ");
@@ -65,7 +65,7 @@ void read_serial_command() {
             "=== Mega Status Report ===");  // Keeping this HC-12 specific line
         Serial1.print("Speed value: ");
         Serial1.println(speed_val);
-        Serial.println(gyro_u);  // Keeping gyro_u only on Serial
+        Serial1.println(gyro_u);  // Keeping gyro_u only on Serial
         break;
 
       case 'z':  // Find Corner
