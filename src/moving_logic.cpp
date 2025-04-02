@@ -402,9 +402,11 @@ void find_corner() {
   if (first_reading > second_reading) {
     turn_angle(90);
     currentAngle = 0;
+    IR_u = 0;
     forward_right();  // Start Tilling
   } else {
     currentAngle = 0;
+    IR_u = 0; //Idk, it's to not make the IR controller crazy.
     forward_left();  // Start Tilling
   }
 
