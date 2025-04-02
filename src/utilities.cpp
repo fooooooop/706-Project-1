@@ -37,7 +37,7 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   // Time variables
   double t_current = 0;
   double t_previous = 0;
-  double gyro_t = 50;
+  double gyro_t = 100;
 
   // General error variables
   double gyro_currentSensor;
@@ -74,8 +74,8 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
   dedt = (de / dt);
 
   // PID controller
-  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) > 600 ? gyro_u = 600 : 
-  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) < -600 ? gyro_u = -600 :
+  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) > 300 ? gyro_u = 300 : 
+  (kp*gyro_err_current + ki*gyro_err_mem + kd*dedt) < -300 ? gyro_u = -300 :
   gyro_u = kp*gyro_err_current + ki*gyro_err_mem + kd*dedt;
 
   return gyro_err_current;
@@ -198,18 +198,18 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   // PID controller
   if (IR_mode == FWD) {
     // Add clamps
-    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) > 400) {IRFront_u = 400;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -400) {IRFront_u = -400;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) > 200) {IRFront_u = 200;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -200) {IRFront_u = -200;} else
     {IRFront_u = (kp*IR_err_current + ki*IR_err_mem_front + kd*dedt);}
   } else if (IR_mode == RWD) {
     // Add clamps
-    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) > 400) {IRBack_u = 400;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -400) {IRBack_u = -400;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) > 200) {IRBack_u = 200;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -200) {IRBack_u = -200;} else
     {IRBack_u = (kp*IR_err_current + ki*IR_err_mem_back + kd*dedt);}
   } else {
     // Add clamps
-    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 600) {IR_u = 600;} else
-    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -600) {IR_u = -600;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > 200) {IR_u = 200;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -200) {IR_u = -200;} else
     {IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   }
 

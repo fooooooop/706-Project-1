@@ -132,7 +132,7 @@ void turn_angle(double target) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       gyro_timestart = false;
-    } else if ((millis() - gyro_timer > 2000.0) &&
+    } else if ((millis() - gyro_timer > 1500.0) &&
                (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart == true)) {
       // Else, if yss is within threshold for a certain amount of time (check
       // first condition), exit controller
@@ -145,7 +145,7 @@ void forward_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 3.0, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 1.0, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -168,7 +168,7 @@ void reverse_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 3.0, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 1.0, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -310,7 +310,7 @@ void find_corner() {
       // If it does, then restart timer
       strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 2000.0) &&
+    } else if ((millis() - strafe_timer > 1500.0) &&
                ((abs(IR_err_Fpos) < strafe_bounds) &&
                 (abs(IR_err_Bpos) < strafe_bounds)) &&
                (strafe_timestart == true)) {
@@ -323,7 +323,28 @@ void find_corner() {
     }
   }
 
+  // Quick Stop//
+  delay(10);
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+  delay(500);
+  //----------//
+
   // Take an angle reading and "zero" the robot---//
+  // Set Gyro zero voltage
+  int i;
+  float sum = 0;
+  int sensorValue = 0;
+  for (i = 0; i < 100; i++)  // read 100 values of voltage when gyro is at
+                             // still, to calculate the zero-drift
+  {
+    sensorValue = analogRead(A3);
+    sum += sensorValue;
+    delay(5);
+  }
+  gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
   for (int i = 1; i < 10; i++) {
     GYRO_reading(50);
   }
@@ -332,7 +353,7 @@ void find_corner() {
   // Drive straight to shortest wall----------//
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(160, AWD, LEFT, 1.65, 0, 0);
+    IR_controller(160, AWD, LEFT, 1.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);

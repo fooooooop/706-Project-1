@@ -12,7 +12,7 @@ Servo right_front_motor;
 Servo turret_motor;
 
 // Speed Control
-int speed_val = 250;
+int speed_val = 150;
 int speed_change = 0;
 
 int pos = 0;  // turret pos?
@@ -23,7 +23,7 @@ float gyroZeroVoltage = 0;    // the value of voltage when gyro is zero
 float gyroSensitivity =
     0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
 float rotationThreshold =
-    2;  // because of gyro drifting, defining rotation angular velocity less
+    4;  // because of gyro drifting, defining rotation angular velocity less
         // than this value will not be ignored
 float gyroRate = 0;  // read out value of sensor in voltage
 float currentAngle =
