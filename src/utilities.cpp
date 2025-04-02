@@ -148,7 +148,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     // USE FOR THE STRAIGHT LINE
     // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
     // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
-    if (IR_target < 350) {
+    if (IR_target < 370) {
       if (left_right == LEFT){
         IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
@@ -174,17 +174,17 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
 
   // Integral controller
 
-  if (abs(IR_u) < 200) { 
+  if (abs(IR_u) < 500) { 
     // Anti-integral windup
     IR_err_mem += IR_err_current;
   }
 
-  if (abs(IRFront_u) < 200) { 
+  if (abs(IRFront_u) < 500) { 
     // Anti-integral windup
     IR_err_mem_front += IR_err_current;
   }
 
-  if (abs(IRBack_u) < 200) { 
+  if (abs(IRBack_u) < 500) { 
     // Anti-integral windup
     IR_err_mem_back += IR_err_current;
   }

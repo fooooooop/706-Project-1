@@ -84,8 +84,19 @@ void strafe_left() {
   // left_rear_motor.writeMicroseconds(1500 + speed_val);
   // right_rear_motor.writeMicroseconds(1500 + speed_val);
   // right_front_motor.writeMicroseconds(1500 - speed_val);
-  turn_angle(90);
-  currentAngle = 0;
+  
+  strafe_target(180, RIGHT);
+  dualPrintln("Strafe 6 done");
+  strafe_target(360, RIGHT);
+  dualPrintln("Strafe 5 done");
+  strafe_target(500, RIGHT);
+  dualPrintln("Strafe 4 done");
+  strafe_target(600, LEFT);
+  dualPrintln("Strafe 3 done");
+  strafe_target(400, LEFT);
+  dualPrintln("Strafe 2 done");
+  strafe_target(200, LEFT);
+  dualPrintln("Strafe 1 done");
 }
 
 void strafe_right() {
@@ -94,10 +105,18 @@ void strafe_right() {
   // right_rear_motor.writeMicroseconds(1500 - speed_val);
   // right_front_motor.writeMicroseconds(1500 + speed_val);
 
-  while (1){
-    GYRO_reading(50);
-    dualPrintln(currentAngle);
-  }
+  strafe_target(200, LEFT);
+  dualPrintln("Strafe 1 done");
+  strafe_target(400, LEFT);
+  dualPrintln("Strafe 2 done");
+  strafe_target(600, LEFT);
+  dualPrintln("Strafe 3 done");
+  strafe_target(500, RIGHT);
+  dualPrintln("Strafe 4 done");
+  strafe_target(360, RIGHT);
+  dualPrintln("Strafe 5 done");
+  strafe_target(180, RIGHT);
+  dualPrintln("Strafe 6 done");
   
 }
 
@@ -118,9 +137,6 @@ void turn_angle(double target) {
     left_rear_motor.writeMicroseconds(1500 + gyro_u);
     right_rear_motor.writeMicroseconds(1500 + gyro_u);
     right_front_motor.writeMicroseconds(1500 + gyro_u);
-
-    dualPrint("current Angle: ");
-    dualPrintln(currentAngle);
 
     // Exit Condition-----//
     if ((abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart != true)) {
@@ -191,7 +207,7 @@ void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 100;
+  double strafe_bounds = 40;
   double IR_err_pos;
   double gyro_err_pos;
   double gyro_bounds = 9;
@@ -200,7 +216,8 @@ void strafe_target(double target, enum DIRECTION left_right) {
   while (strafe_exit == false) {
     // Start Strafing------------//
     gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 1.5, 0, 0);
+    // IR_err_pos = IR_controller(target, AWD, left_right, 0.65, 0.03, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 2.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
@@ -236,45 +253,53 @@ void strafe_target(double target, enum DIRECTION left_right) {
 }
 
 void forward_right() {
-  forward_target(175, 12, LEFT);
+  forward_target(200, 12, LEFT);
   dualPrintln("Forward done");
-  strafe_target(310, LEFT);
+  strafe_target(400, LEFT);
   dualPrintln("Strafe done");
-  reverse_target(310, 168, LEFT);
+  reverse_target(400, 166, LEFT);
   dualPrintln("Reverse done");
-  strafe_target(690, LEFT);
+  strafe_target(600, LEFT);
   dualPrintln("Strafe done");
-  forward_target(690, 12, LEFT);
+  forward_target(600, 12, LEFT);
   dualPrintln("Forward done");
-  strafe_target(470, RIGHT);
+  strafe_target(510, RIGHT);
   dualPrintln("Strafe done");
-  reverse_target(470, 168, RIGHT);
+  reverse_target(510, 166, RIGHT);
   dualPrintln("Reverse done");
-  strafe_target(175, RIGHT);
+  strafe_target(360, RIGHT);
   dualPrintln("Strafe done");
-  forward_target(175, 12, RIGHT);
+  forward_target(360, 12, RIGHT);
   dualPrintln("Forward done");
+  strafe_target(180, RIGHT);
+  dualPrintln("Strafe done");
+  reverse_target(180, 166, RIGHT);
+  dualPrintln("Reverse done");
 }
 
 void forward_left() {
-  forward_target(175, 12, RIGHT);
+  forward_target(180, 12, RIGHT);
   dualPrintln("Forward done");
-  strafe_target(310, RIGHT);
+  strafe_target(360, RIGHT);
   dualPrintln("Strafe done");
-  reverse_target(310, 168, RIGHT);
+  reverse_target(360, 168, RIGHT);
   dualPrintln("Reverse done");
-  strafe_target(690, RIGHT);
+  strafe_target(500, RIGHT);
   dualPrintln("Strafe done");
-  forward_target(690, 12, RIGHT);
+  forward_target(500, 12, RIGHT);
   dualPrintln("Forward done");
-  strafe_target(470, LEFT);
+  strafe_target(600, LEFT);
   dualPrintln("Strafe done");
-  reverse_target(470, 168, LEFT);
+  reverse_target(600, 168, LEFT);
   dualPrintln("Reverse done");
-  strafe_target(175, LEFT);
+  strafe_target(400, LEFT);
   dualPrintln("Strafe done");
-  forward_target(175, 12, LEFT);
+  forward_target(400, 12, LEFT);
   dualPrintln("Forward done");
+  strafe_target(200, LEFT);
+  dualPrintln("Strafe done");
+  reverse_target(200, 166, LEFT);
+  dualPrintln("Reverse done");
 }
 
 void find_corner() {
@@ -346,7 +371,7 @@ void find_corner() {
   }
   gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
   for (int i = 1; i < 10; i++) {
-    GYRO_reading(50);
+    GYRO_reading(100);
   }
   currentAngle = 0;
 
@@ -375,9 +400,27 @@ void find_corner() {
 
   // Find Long Wall //
   turn_angle(90);
+  // Quick Stop//
+  delay(10);
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+  delay(500);
+  //----------//
   float first_reading = HC_SR04_range();
   turn_angle(179.5);
+  // Quick Stop//
+  delay(10);
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+  delay(500);
+  //----------//
   float second_reading = HC_SR04_range();
+
+  
   // Align along long wall and zero robot //
   if (first_reading > second_reading) {
     turn_angle(90);
