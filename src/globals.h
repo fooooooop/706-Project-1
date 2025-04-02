@@ -10,8 +10,8 @@
 
 #define MEDIAN_WINDOW_FR 5
 #define MEDIAN_WINDOW_FL 5
-#define MEDIAN_WINDOW_BR 20
-#define MEDIAN_WINDOW_BL 20
+#define MEDIAN_WINDOW_BR 5
+#define MEDIAN_WINDOW_BL 5
 // State machine state
 enum STATE { INITIALISING, RUNNING, STOPPED };
 

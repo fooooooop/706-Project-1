@@ -85,10 +85,16 @@ void strafe_left() {
 }
 
 void strafe_right() {
-  left_front_motor.writeMicroseconds(1500 + speed_val);
-  left_rear_motor.writeMicroseconds(1500 - speed_val);
-  right_rear_motor.writeMicroseconds(1500 - speed_val);
-  right_front_motor.writeMicroseconds(1500 + speed_val);
+  // left_front_motor.writeMicroseconds(1500 + speed_val);
+  // left_rear_motor.writeMicroseconds(1500 - speed_val);
+  // right_rear_motor.writeMicroseconds(1500 - speed_val);
+  // right_front_motor.writeMicroseconds(1500 + speed_val);
+
+  while (1){
+    GYRO_reading(50);
+    dualPrintln(currentAngle);
+  }
+  
 }
 
 //------------Custom Functions---------------------//
@@ -134,8 +140,8 @@ void turn_angle(double target) {
 void forward_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
-    GYRO_controller(0, 2.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 1.65, 0, 0);
+    GYRO_controller(0, 20.25, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 3.0, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -157,8 +163,8 @@ void forward_target(double target_sidewall, double target,
 void reverse_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
-    GYRO_controller(0, 2.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 1.65, 0, 0);
+    GYRO_controller(0, 20.25, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 3.0, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -181,7 +187,7 @@ void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 50;
+  double strafe_bounds = 100;
   double IR_err_pos;
   double gyro_err_pos;
   double gyro_bounds = 9;
@@ -189,14 +195,12 @@ void strafe_target(double target, enum DIRECTION left_right) {
   // Strafe to a target by "pushing" off a wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    gyro_err_pos = GYRO_controller(0, 3, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 0.65, 0.025, 0);
+    gyro_err_pos = GYRO_controller(0, 6, 0, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 1.5, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
-
-    dualPrintln(IR_u);
 
     // Exit Condition-----//
     if (((abs(IR_err_pos) < strafe_bounds) &&
@@ -323,13 +327,16 @@ void find_corner() {
 
   // Drive straight to shortest wall----------//
   do {
-    GYRO_controller(0, 2.25, 0, 0);
+    GYRO_controller(0, 20.25, 0, 0);
     IR_controller(160, AWD, LEFT, 1.65, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
     // IR_u based on strafe_left function
+
+    dualPrintln(gyro_u);
+
   } while (HC_SR04_range() > 12);
 
   // Quick Stop//
