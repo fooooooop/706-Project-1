@@ -207,7 +207,7 @@ void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 40;
+  double strafe_bounds = 100;
   double IR_err_pos;
   double gyro_err_pos;
   double gyro_bounds = 9;
@@ -261,6 +261,7 @@ void forward_right() {
   dualPrintln("Reverse 2 done");
   strafe_target(600, LEFT);
   dualPrintln("Strafe 2 done");
+  currentAngle = 0;
   forward_target(600, 12, LEFT);
   dualPrintln("Forward 3 done");
   strafe_target(510, RIGHT);
@@ -269,6 +270,7 @@ void forward_right() {
   dualPrintln("Reverse 4 done");
   strafe_target(360, RIGHT);
   dualPrintln("Strafe 4 done");
+  currentAngle = 0;
   forward_target(360, 12, RIGHT);
   dualPrintln("Forward 5 done");
   strafe_target(180, RIGHT);
@@ -286,12 +288,14 @@ void forward_left() {
   dualPrintln("Reverse 2 done");
   strafe_target(500, RIGHT);
   dualPrintln("Strafe 2 done");
+  currentAngle = 0;
   forward_target(500, 12, RIGHT);
   dualPrintln("Forward 3 done");
   strafe_target(600, LEFT);
   dualPrintln("Strafe 3 done");
   reverse_target(600, 168, LEFT);
   dualPrintln("Reverse 4 done");
+  currentAngle = 0;
   strafe_target(400, LEFT);
   dualPrintln("Strafe 4 done");
   forward_target(400, 12, LEFT);
@@ -348,15 +352,6 @@ void find_corner() {
     }
   }
 
-  // Quick Stop//
-  delay(10);
-  left_front_motor.writeMicroseconds(0);
-  left_rear_motor.writeMicroseconds(0);
-  right_rear_motor.writeMicroseconds(0);
-  right_front_motor.writeMicroseconds(0);
-  delay(500);
-  //----------//
-
   // Take an angle reading and "zero" the robot---//
   // Set Gyro zero voltage
   int i;
@@ -398,24 +393,8 @@ void find_corner() {
 
   // Find Long Wall //
   turn_angle(90);
-  // Quick Stop//
-  delay(10);
-  left_front_motor.writeMicroseconds(0);
-  left_rear_motor.writeMicroseconds(0);
-  right_rear_motor.writeMicroseconds(0);
-  right_front_motor.writeMicroseconds(0);
-  delay(500);
-  //----------//
   float first_reading = HC_SR04_range();
   turn_angle(179.5);
-  // Quick Stop//
-  delay(10);
-  left_front_motor.writeMicroseconds(0);
-  left_rear_motor.writeMicroseconds(0);
-  right_rear_motor.writeMicroseconds(0);
-  right_front_motor.writeMicroseconds(0);
-  delay(500);
-  //----------//
   float second_reading = HC_SR04_range();
 
   
