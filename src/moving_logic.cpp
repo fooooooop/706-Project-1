@@ -30,13 +30,15 @@ void forward() {
   while (Serial1.read() != 'c') {
     GYRO_controller(0, 20.5, 4.5, 0);
     dualPrintln(currentAngle);
-    // IR_controller(135, 1, 0, 1.7, 0.72, 0);
+    IR_controller(185, AWD, LEFT, 1.3, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
     // IR_u based on strafe_left function
   }
+
+  dualPrintln("STOP");
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -78,10 +80,12 @@ void cw() {
 }
 
 void strafe_left() {
-  left_front_motor.writeMicroseconds(1500 - speed_val);
-  left_rear_motor.writeMicroseconds(1500 + speed_val);
-  right_rear_motor.writeMicroseconds(1500 + speed_val);
-  right_front_motor.writeMicroseconds(1500 - speed_val);
+  // left_front_motor.writeMicroseconds(1500 - speed_val);
+  // left_rear_motor.writeMicroseconds(1500 + speed_val);
+  // right_rear_motor.writeMicroseconds(1500 + speed_val);
+  // right_front_motor.writeMicroseconds(1500 - speed_val);
+  turn_angle(90);
+  currentAngle = 0;
 }
 
 void strafe_right() {
@@ -107,7 +111,7 @@ void turn_angle(double target) {
   double gyro_bounds = 7;
 
   while (gyro_exit == false) {
-    gyro_err_pos = GYRO_controller(target, 4.0, 0, 0);
+    gyro_err_pos = GYRO_controller(target, 5.0, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + gyro_u);
