@@ -1,5 +1,8 @@
 #include "moving_logic.h"
 
+#define FORWARD_BOUND 5
+#define BACKWARD_BOUND 166
+
 void enable_motors() {
   left_front_motor.attach(left_front);
   left_rear_motor.attach(left_rear);
@@ -277,56 +280,58 @@ void strafe_target(double target, enum DIRECTION left_right) {
 }
 
 void forward_right() {
-  forward_target(120, 12, LEFT);
+  strafe_target(120, LEFT);
+  forward_target(120, FORWARD_BOUND, LEFT);
   dualPrintln("Forward 1 done");
   strafe_target(340, LEFT);
   dualPrintln("Strafe 1 done");
-  reverse_target(340, 166, LEFT);
+  reverse_target(340, BACKWARD_BOUND, LEFT);
   dualPrintln("Reverse 2 done");
   strafe_target(560, LEFT);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(560, 12, LEFT);
+  forward_target(560, FORWARD_BOUND, LEFT);
   dualPrintln("Forward 3 done");
   strafe_target(520, RIGHT);
   dualPrintln("Strafe 3 done");
-  reverse_target(520, 166, RIGHT);
+  reverse_target(520, BACKWARD_BOUND, RIGHT);
   dualPrintln("Reverse 4 done");
   strafe_target(220, RIGHT);
   dualPrintln("Strafe 4 done");
   currentAngle = 0;
-  forward_target(220, 12, RIGHT);
+  forward_target(220, FORWARD_BOUND, RIGHT);
   dualPrintln("Forward 5 done");
   strafe_target(70, RIGHT);
   dualPrintln("Strafe 5 done");
-  reverse_target(70, 166, RIGHT);
+  reverse_target(70, BACKWARD_BOUND, RIGHT);
   dualPrintln("Reverse FINAL done");
 }
 
 void forward_left() {
-  forward_target(70, 12, RIGHT);
+  strafe_target(70, RIGHT);
+  forward_target(70, FORWARD_BOUND, RIGHT);
   dualPrintln("Forward 1 done");
   strafe_target(340, RIGHT);
   dualPrintln("Strafe 1 done");
-  reverse_target(340, 168, RIGHT);
+  reverse_target(340, BACKWARD_BOUND, RIGHT);
   dualPrintln("Reverse 2 done");
   strafe_target(680, RIGHT);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(680, 12, RIGHT);
+  forward_target(680, FORWARD_BOUND, RIGHT);
   dualPrintln("Forward 3 done");
   strafe_target(520, LEFT);
   dualPrintln("Strafe 3 done");
-  reverse_target(520, 168, LEFT);
+  reverse_target(520, BACKWARD_BOUND, LEFT);
   dualPrintln("Reverse 4 done");
   currentAngle = 0;
   strafe_target(245, LEFT);
   dualPrintln("Strafe 4 done");
-  forward_target(245, 12, LEFT);
+  forward_target(245, FORWARD_BOUND, LEFT);
   dualPrintln("Forward 5 done");
-  strafe_target(120, LEFT);
+  strafe_target(125, LEFT);
   dualPrintln("Strafe 5 done");
-  reverse_target(120, 166, LEFT);
+  reverse_target(125, BACKWARD_BOUND, LEFT);
   dualPrintln("Reverse FINAL done");
 }
 
