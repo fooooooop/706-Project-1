@@ -292,6 +292,19 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 
     } while (IR_err_pos > strafe_bounds);
 
+    // Stop Motor ----//
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+
+    IR_u = 0;
+    IR_err_mem = 0;
+    IR_err_mem_back = 0;
+    IR_err_mem_front = 0;
+    IR_err_previous = 0;
+
+    return;
   }
 }
 
