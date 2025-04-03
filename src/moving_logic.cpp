@@ -27,18 +27,16 @@ void stop_motors() {
 }
 
 void forward() {
-  while (Serial1.read() != 'c') {
-    GYRO_controller(0, 20.5, 4.5, 0);
-    dualPrintln(currentAngle);
-    IR_controller(185, AWD, LEFT, 1.3, 0, 0);
+  while (Serial1.read() != 'v') {
+    GYRO_controller(0, 20.5, 0, 0);
+    // dualPrintln(currentAngle);
+    dualPrintln(IR_controller(405, AWD, RIGHT, 2.05, 0.02, 0.08));
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
     right_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
     // IR_u based on strafe_left function
   }
-
-  dualPrintln("STOP");
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -48,9 +46,9 @@ void forward() {
 }
 
 void reverse() {
-  while (Serial1.read() != 'c') {
-    GYRO_controller(0, 20.5, 4.5, 0);
-    // IR_controller(135, 1, 0, 1.7, 0.72, 0);
+  while (Serial1.read() != 'v') {
+    GYRO_controller(0, 20.5, 0, 0);
+    dualPrintln(IR_controller(405, AWD, RIGHT, 2.05, 0.02, 0.08));
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
@@ -120,7 +118,11 @@ void strafe_right() {
   
 }
 
+
+//-------------------------------------------------//
 //------------Custom Functions---------------------//
+//-------------------------------------------------//
+
 
 void turn_angle(double target) {
   bool gyro_exit = false;
@@ -148,7 +150,7 @@ void turn_angle(double target) {
       // Checks to see if yss falls outside of exit threshold
       // If it does, then restart timer
       gyro_timestart = false;
-    } else if ((millis() - gyro_timer > 1500.0) &&
+    } else if ((millis() - gyro_timer > 750.0) &&
                (abs(gyro_err_pos) < gyro_bounds) && (gyro_timestart == true)) {
       // Else, if yss is within threshold for a certain amount of time (check
       // first condition), exit controller
@@ -161,7 +163,7 @@ void forward_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 1.0, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.02, 0.08);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -184,7 +186,7 @@ void reverse_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 1.0, 0, 0);
+    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.02, 0.08);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -216,8 +218,8 @@ void strafe_target(double target, enum DIRECTION left_right) {
   while (strafe_exit == false) {
     // Start Strafing------------//
     gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-    // IR_err_pos = IR_controller(target, AWD, left_right, 0.65, 0.03, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 2.0, 0, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 0.75, 0.02, 0.04);
+    // IR_err_pos = IR_controller(target, AWD, left_right, 2.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
@@ -317,7 +319,7 @@ void find_corner() {
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    IR_err_Fpos = IR_controller(320, FWD, LEFT, 1.65, 0, 0);
+    IR_err_Fpos = IR_controller(250, FWD, LEFT, 1.65, 0, 0);
     IR_err_Bpos = IR_controller(250, RWD, LEFT, 1.65, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);

@@ -23,7 +23,7 @@ float gyroZeroVoltage = 0;    // the value of voltage when gyro is zero
 float gyroSensitivity =
     0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
 float rotationThreshold =
-    4;  // because of gyro drifting, defining rotation angular velocity less
+    2;  // because of gyro drifting, defining rotation angular velocity less
         // than this value will not be ignored
 float gyroRate = 0;  // read out value of sensor in voltage
 float currentAngle =
@@ -36,10 +36,17 @@ double IR_u = 0;
 double IRFront_u = 0;
 double IRBack_u = 0;
 
+// Controller Integral Memory
 double IR_err_mem = 0;
 double IR_err_mem_back = 0;
 double IR_err_mem_front = 0;
 double gyro_err_mem = 0;
+
+// Controller Derivative Memory
+double IR_t_previous = 0;
+double IR_err_previous = 0;
+double gyro_t_previous = 0;
+double gyro_err_previous = 0;
 
 // Instanstiate IR sensor objects
 SharpDistSensor FrontLeftIR(FRONT_LEFT_IR, MEDIAN_WINDOW_FL);
