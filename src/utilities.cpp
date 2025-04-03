@@ -87,7 +87,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
 
   //left_right states which side IR sensor to use
 
-  double clamp_effort = 200;
+  double clamp_effort = 300;
 
   // Time variables
   double t_current;
@@ -172,7 +172,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
 
   // Integral controller
 
-  if (abs(IR_u) < 1000) { 
+  if (abs(IR_u) < clamp_effort) { 
     // Anti-integral windup
     IR_err_mem += IR_err_current;
   }
@@ -197,17 +197,17 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   if (IR_mode == FWD) {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) > clamp_effort) {IRFront_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -clamp_effort) {IRFront_u = -clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -1*clamp_effort) {IRFront_u = -1*clamp_effort;} else
     {IRFront_u = (kp*IR_err_current + ki*IR_err_mem_front + kd*dedt);}
   } else if (IR_mode == RWD) {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) > clamp_effort) {IRBack_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -clamp_effort) {IRBack_u = -clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -1*clamp_effort) {IRBack_u = -1*clamp_effort;} else
     {IRBack_u = (kp*IR_err_current + ki*IR_err_mem_back + kd*dedt);}
   } else {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > clamp_effort) {IR_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -clamp_effort) {IR_u = -clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -1*clamp_effort) {IR_u = -1*clamp_effort;} else
     {IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   }
 

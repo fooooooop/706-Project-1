@@ -83,18 +83,18 @@ void strafe_left() {
   // right_rear_motor.writeMicroseconds(1500 + speed_val);
   // right_front_motor.writeMicroseconds(1500 - speed_val);
   
-  strafe_target(180, RIGHT);
-  dualPrintln("Strafe 6 done");
-  strafe_target(360, RIGHT);
-  dualPrintln("Strafe 5 done");
-  strafe_target(500, RIGHT);
+  // strafe_target(180, RIGHT);
+  // dualPrintln("Strafe 6 done");
+  // strafe_target(360, RIGHT);
+  // dualPrintln("Strafe 5 done");
+  strafe_target(200, RIGHT);
   dualPrintln("Strafe 4 done");
-  strafe_target(600, LEFT);
-  dualPrintln("Strafe 3 done");
-  strafe_target(400, LEFT);
-  dualPrintln("Strafe 2 done");
-  strafe_target(200, LEFT);
-  dualPrintln("Strafe 1 done");
+  // strafe_target(600, LEFT);
+  // dualPrintln("Strafe 3 done");
+  // strafe_target(400, LEFT);
+  // dualPrintln("Strafe 2 done");
+  // strafe_target(200, LEFT);
+  // dualPrintln("Strafe 1 done");
 }
 
 void strafe_right() {
@@ -103,18 +103,18 @@ void strafe_right() {
   // right_rear_motor.writeMicroseconds(1500 - speed_val);
   // right_front_motor.writeMicroseconds(1500 + speed_val);
 
+  // strafe_target(200, LEFT);
+  // dualPrintln("Strafe 1 done");
+  // strafe_target(400, LEFT);
+  // dualPrintln("Strafe 2 done");
   strafe_target(200, LEFT);
-  dualPrintln("Strafe 1 done");
-  strafe_target(400, LEFT);
-  dualPrintln("Strafe 2 done");
-  strafe_target(600, LEFT);
   dualPrintln("Strafe 3 done");
-  strafe_target(500, RIGHT);
-  dualPrintln("Strafe 4 done");
-  strafe_target(360, RIGHT);
-  dualPrintln("Strafe 5 done");
-  strafe_target(180, RIGHT);
-  dualPrintln("Strafe 6 done");
+  // strafe_target(500, RIGHT);
+  // dualPrintln("Strafe 4 done");
+  // strafe_target(360, RIGHT);
+  // dualPrintln("Strafe 5 done");
+  // strafe_target(180, RIGHT);
+  // dualPrintln("Strafe 6 done");
   
 }
 
@@ -163,7 +163,7 @@ void forward_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.02, 0.08);
+    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -180,13 +180,19 @@ void forward_target(double target_sidewall, double target,
   left_rear_motor.writeMicroseconds(0);
   right_rear_motor.writeMicroseconds(0);
   right_front_motor.writeMicroseconds(0);
+
+  IR_u = 0;
+  IR_err_mem = 0;
+  IR_err_mem_back = 0;
+  IR_err_mem_front = 0;
+  IR_err_previous = 0;
 }
 
 void reverse_target(double target_sidewall, double target,
                     enum DIRECTION left_right) {
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.02, 0.08);
+    IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -203,13 +209,19 @@ void reverse_target(double target_sidewall, double target,
   left_rear_motor.writeMicroseconds(0);
   right_rear_motor.writeMicroseconds(0);
   right_front_motor.writeMicroseconds(0);
+
+  IR_u = 0;
+  IR_err_mem = 0;
+  IR_err_mem_back = 0;
+  IR_err_mem_front = 0;
+  IR_err_previous = 0;
 }
 
 void strafe_target(double target, enum DIRECTION left_right) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 100;
+  double strafe_bounds = 75;
   double IR_err_pos;
   double gyro_err_pos;
   double gyro_bounds = 9;
@@ -218,8 +230,7 @@ void strafe_target(double target, enum DIRECTION left_right) {
   while (strafe_exit == false) {
     // Start Strafing------------//
     gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 0.75, 0.02, 0.04);
-    // IR_err_pos = IR_controller(target, AWD, left_right, 2.0, 0, 0);
+    IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
     left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
@@ -250,61 +261,72 @@ void strafe_target(double target, enum DIRECTION left_right) {
     }
   }
 
+  // Stop Motor ----//
+  left_front_motor.writeMicroseconds(0);
+  left_rear_motor.writeMicroseconds(0);
+  right_rear_motor.writeMicroseconds(0);
+  right_front_motor.writeMicroseconds(0);
+
   IR_u = 0;
+  IR_err_mem = 0;
+  IR_err_mem_back = 0;
+  IR_err_mem_front = 0;
+  IR_err_previous = 0;
+
   return;
 }
 
 void forward_right() {
-  forward_target(200, 12, LEFT);
+  forward_target(120, 12, LEFT);
   dualPrintln("Forward 1 done");
-  strafe_target(400, LEFT);
+  strafe_target(360, LEFT);
   dualPrintln("Strafe 1 done");
-  reverse_target(400, 166, LEFT);
+  reverse_target(360, 166, LEFT);
   dualPrintln("Reverse 2 done");
-  strafe_target(600, LEFT);
+  strafe_target(580, LEFT);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(600, 12, LEFT);
+  forward_target(580, 12, LEFT);
   dualPrintln("Forward 3 done");
-  strafe_target(510, RIGHT);
+  strafe_target(500, RIGHT);
   dualPrintln("Strafe 3 done");
-  reverse_target(510, 166, RIGHT);
+  reverse_target(500, 166, RIGHT);
   dualPrintln("Reverse 4 done");
-  strafe_target(360, RIGHT);
+  strafe_target(200, RIGHT);
   dualPrintln("Strafe 4 done");
   currentAngle = 0;
-  forward_target(360, 12, RIGHT);
+  forward_target(200, 12, RIGHT);
   dualPrintln("Forward 5 done");
-  strafe_target(180, RIGHT);
+  strafe_target(70, RIGHT);
   dualPrintln("Strafe 5 done");
-  reverse_target(180, 166, RIGHT);
+  reverse_target(70, 166, RIGHT);
   dualPrintln("Reverse FINAL done");
 }
 
 void forward_left() {
-  forward_target(180, 12, RIGHT);
+  forward_target(70, 12, RIGHT);
   dualPrintln("Forward 1 done");
   strafe_target(360, RIGHT);
   dualPrintln("Strafe 1 done");
   reverse_target(360, 168, RIGHT);
   dualPrintln("Reverse 2 done");
-  strafe_target(500, RIGHT);
+  strafe_target(700, RIGHT);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(500, 12, RIGHT);
+  forward_target(700, 12, RIGHT);
   dualPrintln("Forward 3 done");
-  strafe_target(600, LEFT);
+  strafe_target(500, LEFT);
   dualPrintln("Strafe 3 done");
-  reverse_target(600, 168, LEFT);
+  reverse_target(500, 168, LEFT);
   dualPrintln("Reverse 4 done");
   currentAngle = 0;
-  strafe_target(400, LEFT);
+  strafe_target(265, LEFT);
   dualPrintln("Strafe 4 done");
-  forward_target(400, 12, LEFT);
+  forward_target(265, 12, LEFT);
   dualPrintln("Forward 5 done");
-  strafe_target(200, LEFT);
+  strafe_target(120, LEFT);
   dualPrintln("Strafe 5 done");
-  reverse_target(200, 166, LEFT);
+  reverse_target(120, 166, LEFT);
   dualPrintln("Reverse FINAL done");
 }
 
@@ -375,7 +397,7 @@ void find_corner() {
   // Drive straight to shortest wall----------//
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(160, AWD, LEFT, 1.0, 0, 0);
+    IR_controller(130, AWD, LEFT, 1.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);
@@ -403,12 +425,39 @@ void find_corner() {
   // Align along long wall and zero robot //
   if (first_reading > second_reading) {
     turn_angle(90);
+
+    // Stop Motor ----//
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+
+    // Reset Things
     currentAngle = 0;
     IR_u = 0;
+    IR_err_mem = 0;
+    IR_err_mem_back = 0;
+    IR_err_mem_front = 0;
+    IR_err_previous = 0;
+
     forward_right();  // Start Tilling
   } else {
+
+
+    // Stop Motor ----//
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+
+    // Reset things
     currentAngle = 0;
     IR_u = 0; //Idk, it's to not make the IR controller crazy.
+    IR_err_mem = 0;
+    IR_err_mem_back = 0;
+    IR_err_mem_front = 0;
+    IR_err_previous = 0;
+
     forward_left();  // Start Tilling
   }
 
