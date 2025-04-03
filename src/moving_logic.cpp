@@ -296,59 +296,43 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 }
 
 void forward_right() {
-  strafe_target(120, LEFT, SLOW);
-  forward_target(120, FORWARD_BOUND, LEFT, SLOW);
-  dualPrintln("Forward 1 done");
-  strafe_target(340, LEFT, FAST);
-  dualPrintln("Strafe 1 done");
-  reverse_target(340, BACKWARD_BOUND, LEFT, FAST);
-  dualPrintln("Reverse 2 done");
-  strafe_target(560, LEFT, FAST);
-  dualPrintln("Strafe 2 done");
-  currentAngle = 0;
-  forward_target(560, FORWARD_BOUND, LEFT, FAST);
-  dualPrintln("Forward 3 done");
-  strafe_target(520, RIGHT, FAST);
-  dualPrintln("Strafe 3 done");
-  reverse_target(520, BACKWARD_BOUND, RIGHT, FAST);
-  dualPrintln("Reverse 4 done");
-  strafe_target(220, RIGHT, FAST);
-  dualPrintln("Strafe 4 done");
-  currentAngle = 0;
-  forward_target(220, FORWARD_BOUND, RIGHT, FAST);
-  dualPrintln("Forward 5 done");
+  strafe_target(125, LEFT, SLOW);
+  forward_target(125, FORWARD_BOUND, LEFT, SLOW);
+  strafe_target(240, LEFT, FAST);
+  reverse_target(240, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(440, LEFT, FAST);
+  forward_target(440, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(650, LEFT, FAST);
+  reverse_target(650, BACKWARD_BOUND, LEFT, FAST);
+
+  strafe_target(550, RIGHT, FAST);
+  forward_target(550, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(330, RIGHT, FAST);
+  reverse_target(330, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(200, RIGHT, FAST);
+  forward_target(200, FORWARD_BOUND, RIGHT, FAST);
   strafe_target(70, RIGHT, SLOW);
-  dualPrintln("Strafe 5 done");
   reverse_target(70, BACKWARD_BOUND, RIGHT, SLOW);
-  dualPrintln("Reverse FINAL done");
 }
 
 void forward_left() {
   strafe_target(70, RIGHT, SLOW);
   forward_target(70, FORWARD_BOUND, RIGHT, SLOW);
-  dualPrintln("Forward 1 done");
-  strafe_target(340, RIGHT, FAST);
-  dualPrintln("Strafe 1 done");
-  reverse_target(340, BACKWARD_BOUND, RIGHT, FAST);
-  dualPrintln("Reverse 2 done");
-  strafe_target(680, RIGHT, FAST);
-  dualPrintln("Strafe 2 done");
-  currentAngle = 0;
-  forward_target(680, FORWARD_BOUND, RIGHT, FAST);
-  dualPrintln("Forward 3 done");
-  strafe_target(520, LEFT, FAST);
-  dualPrintln("Strafe 3 done");
-  reverse_target(520, BACKWARD_BOUND, LEFT, FAST);
-  dualPrintln("Reverse 4 done");
-  currentAngle = 0;
-  strafe_target(245, LEFT, FAST);
-  dualPrintln("Strafe 4 done");
-  forward_target(245, FORWARD_BOUND, LEFT, FAST);
-  dualPrintln("Forward 5 done");
+  strafe_target(200, RIGHT, FAST);
+  reverse_target(200, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(330, RIGHT, FAST);
+  forward_target(330, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(550, RIGHT, FAST);
+  reverse_target(550, BACKWARD_BOUND, RIGHT, FAST);
+
+  strafe_target(650, LEFT, FAST);
+  forward_target(650, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(440, LEFT, FAST);
+  reverse_target(440, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(240, LEFT, FAST);
+  forward_target(240, FORWARD_BOUND, LEFT, FAST);
   strafe_target(125, LEFT, SLOW);
-  dualPrintln("Strafe 5 done");
   reverse_target(125, BACKWARD_BOUND, LEFT, SLOW);
-  dualPrintln("Reverse FINAL done");
 }
 
 void find_corner() {
