@@ -38,6 +38,7 @@ extern SharpDistSensor BackRightIR;
 // IR left-right/wheel-drive states
 enum DRIVE { AWD, FWD, RWD };
 enum DIRECTION { LEFT, RIGHT, IDGAF };
+enum SPEED { SLOW, FAST };
 
 // Ultrasonic sensor pins and parameters
 const int TRIG_PIN = 48;

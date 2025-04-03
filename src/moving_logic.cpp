@@ -90,7 +90,7 @@ void strafe_left() {
   // dualPrintln("Strafe 6 done");
   // strafe_target(360, RIGHT);
   // dualPrintln("Strafe 5 done");
-  strafe_target(200, RIGHT);
+  strafe_target(200, RIGHT, SLOW);
   dualPrintln("Strafe 4 done");
   // strafe_target(600, LEFT);
   // dualPrintln("Strafe 3 done");
@@ -110,7 +110,7 @@ void strafe_right() {
   // dualPrintln("Strafe 1 done");
   // strafe_target(400, LEFT);
   // dualPrintln("Strafe 2 done");
-  strafe_target(200, LEFT);
+  strafe_target(200, LEFT, SLOW);
   dualPrintln("Strafe 3 done");
   // strafe_target(500, RIGHT);
   // dualPrintln("Strafe 4 done");
@@ -162,8 +162,9 @@ void turn_angle(double target) {
   }
 }
 
-void forward_target(double target_sidewall, double target,
-                    enum DIRECTION left_right) {
+void forward_target(double target_sidewall, double target, enum DIRECTION left_right, enum SPEED boostit) {
+  boostit == FAST ? speed_val = 350 : speed_val = 165;
+
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
@@ -191,8 +192,9 @@ void forward_target(double target_sidewall, double target,
   IR_err_previous = 0;
 }
 
-void reverse_target(double target_sidewall, double target,
-                    enum DIRECTION left_right) {
+void reverse_target(double target_sidewall, double target, enum DIRECTION left_right, enum SPEED boostit) {
+  boostit == FAST ? speed_val = 350 : speed_val = 165;
+
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
@@ -220,7 +222,7 @@ void reverse_target(double target_sidewall, double target,
   IR_err_previous = 0;
 }
 
-void strafe_target(double target, enum DIRECTION left_right) {
+void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
@@ -229,109 +231,123 @@ void strafe_target(double target, enum DIRECTION left_right) {
   double gyro_err_pos;
   double gyro_bounds = 9;
 
-  // Strafe to a target by "pushing" off a wall-----//
-  while (strafe_exit == false) {
-    // Start Strafing------------//
-    gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-    IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
-    left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
-    left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-    right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-    right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+  if (boostit == SLOW){
+    // Strafe to a target by "pushing" off a wall-----//
+    while (strafe_exit == false) {
+      // Start Strafing------------//
+      gyro_err_pos = GYRO_controller(0, 6, 0, 0);
+      IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
+      left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+      left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+      right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+      right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
 
-    // Exit Condition-----//
-    if (((abs(IR_err_pos) < strafe_bounds) &&
-         (abs(gyro_err_pos) < gyro_bounds)) &&
-        (strafe_timestart != true)) {
-      // Checks to see if yss is within exit threshold, start timer
-      strafe_timestart = true;
-      strafe_timer = millis();
-    }
-    if (((abs(IR_err_pos) > strafe_bounds) ||
-         (abs(gyro_err_pos) > gyro_bounds)) &&
-        (strafe_timestart == true)) {
-      // Checks to see if yss falls outside of exit threshold
-      // If it does, then restart timer
-      strafe_timestart = false;
+      // Exit Condition-----//
+      if (((abs(IR_err_pos) < strafe_bounds) &&
+          (abs(gyro_err_pos) < gyro_bounds)) &&
+          (strafe_timestart != true)) {
+        // Checks to see if yss is within exit threshold, start timer
+        strafe_timestart = true;
+        strafe_timer = millis();
+      }
+      if (((abs(IR_err_pos) > strafe_bounds) ||
+          (abs(gyro_err_pos) > gyro_bounds)) &&
+          (strafe_timestart == true)) {
+        // Checks to see if yss falls outside of exit threshold
+        // If it does, then restart timer
+        strafe_timestart = false;
 
-    } else if ((millis() - strafe_timer > 2000.0) &&
-               ((abs(IR_err_pos) < strafe_bounds) &&
-                (abs(gyro_err_pos) < gyro_bounds)) &&
-               (strafe_timestart == true)) {
-      // Else, if yss is within threshold for a certain amount of time (check
-      // first condition), exit controller
-      strafe_exit = true;
+      } else if ((millis() - strafe_timer > 2000.0) &&
+                ((abs(IR_err_pos) < strafe_bounds) &&
+                  (abs(gyro_err_pos) < gyro_bounds)) &&
+                (strafe_timestart == true)) {
+        // Else, if yss is within threshold for a certain amount of time (check
+        // first condition), exit controller
+        strafe_exit = true;
+      }
     }
+
+    // Stop Motor ----//
+    left_front_motor.writeMicroseconds(0);
+    left_rear_motor.writeMicroseconds(0);
+    right_rear_motor.writeMicroseconds(0);
+    right_front_motor.writeMicroseconds(0);
+
+    IR_u = 0;
+    IR_err_mem = 0;
+    IR_err_mem_back = 0;
+    IR_err_mem_front = 0;
+    IR_err_previous = 0;
+
+    return;
+  } else if (boostit == FAST) {
+    do {
+      // Start Strafing------------//
+      gyro_err_pos = GYRO_controller(0, 6, 0, 0);
+      IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
+      left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+      left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+      right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
+      right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+
+    } while (IR_err_pos > strafe_bounds);
+
   }
-
-  // Stop Motor ----//
-  left_front_motor.writeMicroseconds(0);
-  left_rear_motor.writeMicroseconds(0);
-  right_rear_motor.writeMicroseconds(0);
-  right_front_motor.writeMicroseconds(0);
-
-  IR_u = 0;
-  IR_err_mem = 0;
-  IR_err_mem_back = 0;
-  IR_err_mem_front = 0;
-  IR_err_previous = 0;
-
-  return;
 }
 
 void forward_right() {
-  strafe_target(120, LEFT);
-  forward_target(120, FORWARD_BOUND, LEFT);
+  strafe_target(120, LEFT, SLOW);
+  forward_target(120, FORWARD_BOUND, LEFT, SLOW);
   dualPrintln("Forward 1 done");
-  strafe_target(340, LEFT);
+  strafe_target(340, LEFT, FAST);
   dualPrintln("Strafe 1 done");
-  reverse_target(340, BACKWARD_BOUND, LEFT);
+  reverse_target(340, BACKWARD_BOUND, LEFT, FAST);
   dualPrintln("Reverse 2 done");
-  strafe_target(560, LEFT);
+  strafe_target(560, LEFT, FAST);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(560, FORWARD_BOUND, LEFT);
+  forward_target(560, FORWARD_BOUND, LEFT, FAST);
   dualPrintln("Forward 3 done");
-  strafe_target(520, RIGHT);
+  strafe_target(520, RIGHT, FAST);
   dualPrintln("Strafe 3 done");
-  reverse_target(520, BACKWARD_BOUND, RIGHT);
+  reverse_target(520, BACKWARD_BOUND, RIGHT, FAST);
   dualPrintln("Reverse 4 done");
-  strafe_target(220, RIGHT);
+  strafe_target(220, RIGHT, FAST);
   dualPrintln("Strafe 4 done");
   currentAngle = 0;
-  forward_target(220, FORWARD_BOUND, RIGHT);
+  forward_target(220, FORWARD_BOUND, RIGHT, FAST);
   dualPrintln("Forward 5 done");
-  strafe_target(70, RIGHT);
+  strafe_target(70, RIGHT, SLOW);
   dualPrintln("Strafe 5 done");
-  reverse_target(70, BACKWARD_BOUND, RIGHT);
+  reverse_target(70, BACKWARD_BOUND, RIGHT, SLOW);
   dualPrintln("Reverse FINAL done");
 }
 
 void forward_left() {
-  strafe_target(70, RIGHT);
-  forward_target(70, FORWARD_BOUND, RIGHT);
+  strafe_target(70, RIGHT, SLOW);
+  forward_target(70, FORWARD_BOUND, RIGHT, SLOW);
   dualPrintln("Forward 1 done");
-  strafe_target(340, RIGHT);
+  strafe_target(340, RIGHT, FAST);
   dualPrintln("Strafe 1 done");
-  reverse_target(340, BACKWARD_BOUND, RIGHT);
+  reverse_target(340, BACKWARD_BOUND, RIGHT, FAST);
   dualPrintln("Reverse 2 done");
-  strafe_target(680, RIGHT);
+  strafe_target(680, RIGHT, FAST);
   dualPrintln("Strafe 2 done");
   currentAngle = 0;
-  forward_target(680, FORWARD_BOUND, RIGHT);
+  forward_target(680, FORWARD_BOUND, RIGHT, FAST);
   dualPrintln("Forward 3 done");
-  strafe_target(520, LEFT);
+  strafe_target(520, LEFT, FAST);
   dualPrintln("Strafe 3 done");
-  reverse_target(520, BACKWARD_BOUND, LEFT);
+  reverse_target(520, BACKWARD_BOUND, LEFT, FAST);
   dualPrintln("Reverse 4 done");
   currentAngle = 0;
-  strafe_target(245, LEFT);
+  strafe_target(245, LEFT, FAST);
   dualPrintln("Strafe 4 done");
-  forward_target(245, FORWARD_BOUND, LEFT);
+  forward_target(245, FORWARD_BOUND, LEFT, FAST);
   dualPrintln("Forward 5 done");
-  strafe_target(125, LEFT);
+  strafe_target(125, LEFT, SLOW);
   dualPrintln("Strafe 5 done");
-  reverse_target(125, BACKWARD_BOUND, LEFT);
+  reverse_target(125, BACKWARD_BOUND, LEFT, SLOW);
   dualPrintln("Reverse FINAL done");
 }
 
