@@ -290,7 +290,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
 
-    } while (IR_err_pos > strafe_bounds);
+    } while (abs(IR_err_pos) > strafe_bounds);
 
     // Stop Motor ----//
     left_front_motor.writeMicroseconds(0);
@@ -311,17 +311,17 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 void forward_right() {
   strafe_target(125, LEFT, SLOW);
   forward_target(125, FORWARD_BOUND, LEFT, SLOW);
-  strafe_target(240, LEFT, FAST);
-  reverse_target(240, BACKWARD_BOUND, LEFT, FAST);
-  strafe_target(440, LEFT, FAST);
-  forward_target(440, FORWARD_BOUND, LEFT, FAST);
-  strafe_target(650, LEFT, FAST);
-  reverse_target(650, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(260, LEFT, FAST);
+  reverse_target(260, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(460, LEFT, FAST);
+  forward_target(460, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(670, LEFT, FAST);
+  reverse_target(670, BACKWARD_BOUND, LEFT, FAST);
 
-  strafe_target(550, RIGHT, FAST);
-  forward_target(550, FORWARD_BOUND, RIGHT, FAST);
-  strafe_target(330, RIGHT, FAST);
-  reverse_target(330, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(530, RIGHT, FAST);
+  forward_target(530, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  reverse_target(390, BACKWARD_BOUND, RIGHT, FAST);
   strafe_target(200, RIGHT, FAST);
   forward_target(200, FORWARD_BOUND, RIGHT, FAST);
   strafe_target(70, RIGHT, SLOW);
@@ -333,17 +333,17 @@ void forward_left() {
   forward_target(70, FORWARD_BOUND, RIGHT, SLOW);
   strafe_target(200, RIGHT, FAST);
   reverse_target(200, BACKWARD_BOUND, RIGHT, FAST);
-  strafe_target(330, RIGHT, FAST);
-  forward_target(330, FORWARD_BOUND, RIGHT, FAST);
-  strafe_target(550, RIGHT, FAST);
-  reverse_target(550, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  forward_target(390, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(530, RIGHT, FAST);
+  reverse_target(530, BACKWARD_BOUND, RIGHT, FAST);
 
-  strafe_target(650, LEFT, FAST);
-  forward_target(650, FORWARD_BOUND, LEFT, FAST);
-  strafe_target(440, LEFT, FAST);
-  reverse_target(440, BACKWARD_BOUND, LEFT, FAST);
-  strafe_target(240, LEFT, FAST);
-  forward_target(240, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(670, LEFT, FAST);
+  forward_target(670, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(460, LEFT, FAST);
+  reverse_target(460, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(260, LEFT, FAST);
+  forward_target(260, FORWARD_BOUND, LEFT, FAST);
   strafe_target(125, LEFT, SLOW);
   reverse_target(125, BACKWARD_BOUND, LEFT, SLOW);
 }

@@ -23,7 +23,7 @@ float gyroZeroVoltage = 0;    // the value of voltage when gyro is zero
 float gyroSensitivity =
     0.007;  // gyro sensitivity unit is (mv/degree/second) get from datasheet
 float rotationThreshold =
-    2;  // because of gyro drifting, defining rotation angular velocity less
+    3;  // because of gyro drifting, defining rotation angular velocity less
         // than this value will not be ignored
 float gyroRate = 0;  // read out value of sensor in voltage
 float currentAngle =
