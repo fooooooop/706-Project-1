@@ -1,7 +1,47 @@
 #include "moving_logic.h"
 
+#include "state_machine.h"
+
 #define FORWARD_BOUND 5
 #define BACKWARD_BOUND 166
+
+// DRISHTI REMOVE THIS ONLY FOR TESTING
+void test_logging_only() {
+  log_index = 0;
+  is_logging = true;
+
+  digitalWrite(LED_BUILTIN, HIGH);  // LED ON = Logging started
+  unsigned long start_time = millis();
+
+  while (millis() - start_time < 180000) {  // Log for 3 seconds
+    // Just wait while the background logger in `state_machine.cpp` does its
+    // thing
+    running();
+  }
+
+  is_logging = false;
+  digitalWrite(LED_BUILTIN, LOW);  // LED OFF = Logging ended
+
+  // Print all collected sensor values
+  for (int i = 0; i < log_index; i++) {
+    Serial1.print(log_index);
+    Serial1.print(",");  // index
+    Serial1.print(i);
+    Serial1.print(",");  // index
+    Serial1.print(frontLeftIR_log[i]);
+    Serial1.print(",");
+    Serial1.print(frontRightIR_log[i]);
+    Serial1.print(",");
+    Serial1.print(backLeftIR_log[i]);
+    Serial1.print(",");
+    Serial1.print(backRightIR_log[i]);
+    Serial1.print(",");
+    Serial1.print(ultrasonic_log[i], 2);
+    Serial1.print(",");
+    Serial1.println(gyro_log[i], 2);  // newline here
+    delay(50);  // shorter delay helps reduce overflow, adjust if needed
+  }
+}
 
 void enable_motors() {
   left_front_motor.attach(left_front);
@@ -85,7 +125,7 @@ void strafe_left() {
   // left_rear_motor.writeMicroseconds(1500 + speed_val);
   // right_rear_motor.writeMicroseconds(1500 + speed_val);
   // right_front_motor.writeMicroseconds(1500 - speed_val);
-  
+
   // strafe_target(180, RIGHT);
   // dualPrintln("Strafe 6 done");
   // strafe_target(360, RIGHT);
@@ -118,14 +158,11 @@ void strafe_right() {
   // dualPrintln("Strafe 5 done");
   // strafe_target(180, RIGHT);
   // dualPrintln("Strafe 6 done");
-  
 }
-
 
 //-------------------------------------------------//
 //------------Custom Functions---------------------//
 //-------------------------------------------------//
-
 
 void turn_angle(double target) {
   bool gyro_exit = false;
@@ -162,10 +199,12 @@ void turn_angle(double target) {
   }
 }
 
-void forward_target(double target_sidewall, double target, enum DIRECTION left_right, enum SPEED boostit) {
+void forward_target(double target_sidewall, double target,
+                    enum DIRECTION left_right, enum SPEED boostit) {
   boostit == FAST ? speed_val = 350 : speed_val = 165;
 
   do {
+    log_sensors();  // Start logging sensors
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
 
@@ -178,7 +217,7 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
 
     // Exit Condition - when ultrasonic sensor reaches target//
   } while (HC_SR04_range() > target);
-
+  log_sensors();  // Start logging sensors
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
@@ -192,10 +231,12 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
   IR_err_previous = 0;
 }
 
-void reverse_target(double target_sidewall, double target, enum DIRECTION left_right, enum SPEED boostit) {
+void reverse_target(double target_sidewall, double target,
+                    enum DIRECTION left_right, enum SPEED boostit) {
   boostit == FAST ? speed_val = 350 : speed_val = 165;
 
   do {
+    log_sensors();  // Start logging sensors
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
 
@@ -208,7 +249,7 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
 
     // Exit Condition - when ultrasonic sensor reaches target//
   } while (HC_SR04_range() < target);
-
+  log_sensors();  // Start logging sensors
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
@@ -222,7 +263,8 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
   IR_err_previous = 0;
 }
 
-void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit) {
+void strafe_target(double target, enum DIRECTION left_right,
+                   enum SPEED boostit) {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
@@ -231,9 +273,10 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
   double gyro_err_pos;
   double gyro_bounds = 9;
 
-  if (boostit == SLOW){
+  if (boostit == SLOW) {
     // Strafe to a target by "pushing" off a wall-----//
     while (strafe_exit == false) {
+      log_sensors();  // Start logging sensors
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
@@ -244,28 +287,30 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 
       // Exit Condition-----//
       if (((abs(IR_err_pos) < strafe_bounds) &&
-          (abs(gyro_err_pos) < gyro_bounds)) &&
+           (abs(gyro_err_pos) < gyro_bounds)) &&
           (strafe_timestart != true)) {
         // Checks to see if yss is within exit threshold, start timer
         strafe_timestart = true;
         strafe_timer = millis();
       }
       if (((abs(IR_err_pos) > strafe_bounds) ||
-          (abs(gyro_err_pos) > gyro_bounds)) &&
+           (abs(gyro_err_pos) > gyro_bounds)) &&
           (strafe_timestart == true)) {
         // Checks to see if yss falls outside of exit threshold
         // If it does, then restart timer
         strafe_timestart = false;
 
       } else if ((millis() - strafe_timer > 2000.0) &&
-                ((abs(IR_err_pos) < strafe_bounds) &&
+                 ((abs(IR_err_pos) < strafe_bounds) &&
                   (abs(gyro_err_pos) < gyro_bounds)) &&
-                (strafe_timestart == true)) {
+                 (strafe_timestart == true)) {
         // Else, if yss is within threshold for a certain amount of time (check
         // first condition), exit controller
         strafe_exit = true;
       }
     }
+
+    log_sensors();  // Start logging sensors
 
     // Stop Motor ----//
     left_front_motor.writeMicroseconds(0);
@@ -282,6 +327,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
     return;
   } else if (boostit == FAST) {
     do {
+      log_sensors();  // Start logging sensors
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
@@ -291,7 +337,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
 
     } while (abs(IR_err_pos) > strafe_bounds);
-
+    log_sensors();  // Start logging sensors
     // Stop Motor ----//
     left_front_motor.writeMicroseconds(0);
     left_rear_motor.writeMicroseconds(0);
@@ -347,6 +393,20 @@ void forward_left() {
   strafe_target(125, LEFT, SLOW);
   reverse_target(125, BACKWARD_BOUND, LEFT, SLOW);
 }
+void log_sensors() {
+  static unsigned long last_log_time = 0;
+  if (is_logging && millis() - last_log_time > 50 &&
+      log_index < SENSOR_LOG_SIZE) {
+    frontLeftIR_log[log_index] = FRONT_LEFT_shortIR_reading();
+    frontRightIR_log[log_index] = FRONT_RIGHT_shortIR_reading();
+    backLeftIR_log[log_index] = BACK_LEFT_longIR_reading();
+    backRightIR_log[log_index] = BACK_RIGHT_longIR_reading();
+    ultrasonic_log[log_index] = HC_SR04_range();
+    gyro_log[log_index] = currentAngle;
+    log_index++;
+    last_log_time = millis();
+  }
+}
 
 void find_corner() {
   bool strafe_exit = false;
@@ -359,6 +419,7 @@ void find_corner() {
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
+    log_sensors();
     IR_err_Fpos = IR_controller(250, FWD, LEFT, 1.65, 0, 0);
     IR_err_Bpos = IR_controller(250, RWD, LEFT, 1.65, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
@@ -390,7 +451,7 @@ void find_corner() {
       strafe_exit = true;
 
       IRFront_u = 0;
-      IRBack_u = 0; 
+      IRBack_u = 0;
     }
   }
 
@@ -414,6 +475,7 @@ void find_corner() {
 
   // Drive straight to shortest wall----------//
   do {
+    log_sensors();
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(130, AWD, LEFT, 1.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -426,6 +488,7 @@ void find_corner() {
 
   // Quick Stop//
   delay(10);
+  log_sensors();
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
   right_rear_motor.writeMicroseconds(0);
@@ -434,14 +497,15 @@ void find_corner() {
   //----------//
 
   // Find Long Wall //
+  log_sensors();
   turn_angle(90);
   float first_reading = HC_SR04_range();
   turn_angle(179.5);
   float second_reading = HC_SR04_range();
 
-  
   // Align along long wall and zero robot //
   if (first_reading > second_reading) {
+    log_sensors();
     turn_angle(90);
 
     // Stop Motor ----//
@@ -460,9 +524,8 @@ void find_corner() {
 
     forward_right();  // Start Tilling
   } else {
-
-
     // Stop Motor ----//
+    log_sensors();
     left_front_motor.writeMicroseconds(0);
     left_rear_motor.writeMicroseconds(0);
     right_rear_motor.writeMicroseconds(0);
@@ -470,7 +533,7 @@ void find_corner() {
 
     // Reset things
     currentAngle = 0;
-    IR_u = 0; //Idk, it's to not make the IR controller crazy.
+    IR_u = 0;  // Idk, it's to not make the IR controller crazy.
     IR_err_mem = 0;
     IR_err_mem_back = 0;
     IR_err_mem_front = 0;

@@ -23,4 +23,13 @@ inline void dualPrintln() {
   Serial1.println();
 }
 
+inline void dualPrint(float value, int digits) {
+  Serial.print(value, digits);
+  Serial1.print(value, digits);
+}
+
+inline void dualPrintln(float value, int digits) {
+  Serial.println(value, digits);
+  Serial1.println(value, digits);
+}
 #endif

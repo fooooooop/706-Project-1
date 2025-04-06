@@ -178,17 +178,17 @@ boolean is_battery_voltage_OK() {
   Lipo_level_cal = Lipo_level_cal / 143;
 
   if (Lipo_level_cal > 0 && Lipo_level_cal < 160) {
-    dualPrint("Lipo level:");
-    dualPrint(Lipo_level_cal);
-    dualPrint("%");
-    dualPrintln("");
+    // dualPrint("Lipo level:");
+    // dualPrint(Lipo_level_cal);
+    // dualPrint("%");
+    // dualPrintln("");
     Low_voltage_counter = 0;
     return true;
   } else {
     if (Lipo_level_cal < 0)
-    dualPrintln("Lipo is Disconnected or Power Switch is turned OFF!!!");
+      dualPrintln("Lipo is Disconnected or Power Switch is turned OFF!!!");
     else if (Lipo_level_cal > 160)
-    dualPrintln("!Lipo is Overcharged!!!");
+      dualPrintln("!Lipo is Overcharged!!!");
     else {
       dualPrintln(
           "Lipo voltage too LOW, any lower and the lipo will be damaged");

@@ -71,11 +71,34 @@ void read_serial_command() {
 
       case 'z':  // Find Corner
       case 'Z':
-        dualPrintln("Find corner initiated");
+        Serial1.println("Find corner initiated");
+        log_index = 0;
+        is_logging = true;
         find_corner();
-        dualPrintln("Find corner executed");
+        delay(1000);
+        is_logging = false;
+
+        for (int i = 0; i < log_index; i++) {
+          Serial1.print(log_index);
+          Serial1.print(",");
+          Serial1.print(i);
+          Serial1.print(",");
+          Serial1.print(frontLeftIR_log[i]);
+          Serial1.print(",");
+          Serial1.print(frontRightIR_log[i]);
+          Serial1.print(",");
+          Serial1.print(backLeftIR_log[i]);
+          Serial1.print(",");
+          Serial1.print(backRightIR_log[i]);
+          Serial1.print(",");
+          Serial1.print(ultrasonic_log[i], 2);
+          Serial1.print(",");
+          Serial1.println(gyro_log[i], 2);
+          delay(50);  // pace the output
+        }
+        Serial1.println("Find corner executed");
         break;
-        
+
       case 'P': {
         dualPrintln("Position test mode: Press any key to exit.");
         while (!Serial1.available()) {

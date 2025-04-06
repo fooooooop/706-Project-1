@@ -12,6 +12,19 @@
 #define MEDIAN_WINDOW_FL 5
 #define MEDIAN_WINDOW_BR 5
 #define MEDIAN_WINDOW_BL 5
+
+#define SENSOR_LOG_SIZE 300  // max data points (~5-6 KB in total)
+
+extern uint16_t frontLeftIR_log[SENSOR_LOG_SIZE];
+extern uint16_t frontRightIR_log[SENSOR_LOG_SIZE];
+extern uint16_t backLeftIR_log[SENSOR_LOG_SIZE];
+extern uint16_t backRightIR_log[SENSOR_LOG_SIZE];
+extern float ultrasonic_log[SENSOR_LOG_SIZE];
+extern float gyro_log[SENSOR_LOG_SIZE];
+
+extern int log_index;
+extern bool is_logging;
+
 // State machine state
 enum STATE { INITIALISING, RUNNING, STOPPED };
 

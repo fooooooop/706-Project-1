@@ -1,7 +1,9 @@
 #include <Arduino.h>
 
 #include "globals.h"
+#include "moving_logic.h"
 #include "positioning_system.h"
+#include "sensors.h"
 #include "state_machine.h"
 
 // Instantiate servo objects and global variables
@@ -10,6 +12,16 @@ Servo left_rear_motor;
 Servo right_rear_motor;
 Servo right_front_motor;
 Servo turret_motor;
+
+// Sensor log arrays
+uint16_t frontLeftIR_log[SENSOR_LOG_SIZE];
+uint16_t frontRightIR_log[SENSOR_LOG_SIZE];
+uint16_t backLeftIR_log[SENSOR_LOG_SIZE];
+uint16_t backRightIR_log[SENSOR_LOG_SIZE];
+float ultrasonic_log[SENSOR_LOG_SIZE];
+float gyro_log[SENSOR_LOG_SIZE];
+int log_index = 0;
+bool is_logging = false;
 
 // Speed Control
 int speed_val = 165;
@@ -64,8 +76,8 @@ void setup(void) {
   digitalWrite(TRIG_PIN, LOW);
 
   // Initialize USB Serial for debugging and Serial1 for wireless commands
-  Serial.begin(9600);   // Debug output
-  Serial1.begin(9600);  // HC‑12 wireless commands
+  Serial.begin(115200);   // Debug output
+  Serial1.begin(115200);  // HC‑12 wireless commands
 
   // Set IR sensor models
   FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
@@ -87,12 +99,19 @@ void setup(void) {
     delay(5);
   }
   gyroZeroVoltage = sum / 100;  // average the sum as the zero drifting
-  initPositioning();
+
   // Debug startup messages
+  Serial1.print("Hello darkness my old friend");
   dualPrintln("MECHENG706_Base_Code_25/01/2018");
   delay(1000);
   dualPrintln("Setup....");
   delay(1000);
+
+  delay(1000);  // Let everything settle
+  dualPrintln("Starting background sensor logging test...");
+  // is_logging = true;
+  // test_logging_only();
+  // while (1);  // Stop forever after test
 }
 
 void loop(void) {

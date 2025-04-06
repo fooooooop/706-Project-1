@@ -28,23 +28,19 @@ STATE running() {
   // Perform periodic tasks every 500ms
   if (millis() - previous_millis > 500) {
     previous_millis = millis();
-    // dualPrintln("RUNNING---------");
-    // speed_change_smooth();
-    // dualPrintln(speed_val);
-    // GYRO_controller(0,0,0,0);
-    // dualPrintln(gyro_u);
-    // dualPrintln(currentAngle);
-    // dualPrintln(IR_u);
-    // dualPrintln(IRFront_u);
-    // dualPrintln(IRBack_u);
-    // dualPrint("IR Sensor Front Right Short: ");
-    // dualPrintln(FRONT_RIGHT_shortIR_reading());
-    // dualPrint("IR Sensor Front Left Short: ");
-    // dualPrintln(FRONT_LEFT_shortIR_reading());
-    // dualPrint("IR Sensor Back Left Long: ");
-    // dualPrintln(BACK_LEFT_longIR_reading());
-    // dualPrint("IR Sensor Back Right  Long: ");
-    // dualPrintln(BACK_RIGHT_longIR_reading());
+    static unsigned long last_log_time = 0;
+    // if (is_logging && millis() - last_log_time > 50 &&
+    //     log_index < SENSOR_LOG_SIZE) {
+    //   frontLeftIR_log[log_index] = FRONT_LEFT_shortIR_reading();
+    //   frontRightIR_log[log_index] = FRONT_RIGHT_shortIR_reading();
+    //   backLeftIR_log[log_index] = BACK_LEFT_longIR_reading();
+    //   backRightIR_log[log_index] = BACK_RIGHT_longIR_reading();
+    //   ultrasonic_log[log_index] = HC_SR04_range();
+    //   gyro_log[log_index] = currentAngle;
+    //   log_index++;
+
+    //   last_log_time = millis();
+    // }
 
 #ifndef NO_READ_GYRO
     // GYRO_reading(500);
