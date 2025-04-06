@@ -419,7 +419,7 @@ void find_corner() {
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    log_sensors();
+
     IR_err_Fpos = IR_controller(250, FWD, LEFT, 1.65, 0, 0);
     IR_err_Bpos = IR_controller(250, RWD, LEFT, 1.65, 0, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
@@ -475,7 +475,6 @@ void find_corner() {
 
   // Drive straight to shortest wall----------//
   do {
-    log_sensors();
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(130, AWD, LEFT, 1.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -488,7 +487,7 @@ void find_corner() {
 
   // Quick Stop//
   delay(10);
-  log_sensors();
+
   left_front_motor.writeMicroseconds(0);
   left_rear_motor.writeMicroseconds(0);
   right_rear_motor.writeMicroseconds(0);
@@ -497,7 +496,7 @@ void find_corner() {
   //----------//
 
   // Find Long Wall //
-  log_sensors();
+
   turn_angle(90);
   float first_reading = HC_SR04_range();
   turn_angle(179.5);
@@ -505,7 +504,6 @@ void find_corner() {
 
   // Align along long wall and zero robot //
   if (first_reading > second_reading) {
-    log_sensors();
     turn_angle(90);
 
     // Stop Motor ----//
@@ -522,10 +520,11 @@ void find_corner() {
     IR_err_mem_front = 0;
     IR_err_previous = 0;
 
+    log_sensors();
     forward_right();  // Start Tilling
   } else {
     // Stop Motor ----//
-    log_sensors();
+
     left_front_motor.writeMicroseconds(0);
     left_rear_motor.writeMicroseconds(0);
     right_rear_motor.writeMicroseconds(0);
@@ -539,6 +538,7 @@ void find_corner() {
     IR_err_mem_front = 0;
     IR_err_previous = 0;
 
+    log_sensors();
     forward_left();  // Start Tilling
   }
 
