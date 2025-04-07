@@ -15,6 +15,7 @@ short IR_value[SENSOR_LOG_SIZE];
 short IR_pos[SENSOR_LOG_SIZE];
 short US_value[SENSOR_LOG_SIZE];
 short k = 0;
+long global_timesnap = 0;
 
 // Speed Control
 int speed_val = 165;

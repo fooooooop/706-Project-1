@@ -168,8 +168,11 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
-    US_value[k] = HC_SR04_range();
-    k += 1;
+    if (millis() - global_timesnap > 1000) {
+      US_value[k] = HC_SR04_range();
+      k += 1; 
+      global_timesnap = millis();
+    }
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -179,7 +182,7 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
     // IR_u based on strafe_left function
 
     // Exit Condition - when ultrasonic sensor reaches target//
-  } while (US_value[k] > target);
+  } while (HC_SR04_range() > target);
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -200,8 +203,12 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
-    US_value[k] = HC_SR04_range();
-    k += 1;
+    if (millis() - global_timesnap > 1000) {
+      US_value[k] = HC_SR04_range();
+      k += 1; 
+      global_timesnap = millis();
+    }
+    
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 - speed_val + gyro_u - IR_u);
@@ -211,7 +218,7 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
     // IR_u based on strafe_left function
 
     // Exit Condition - when ultrasonic sensor reaches target//
-  } while (US_value[k] < target);
+  } while (HC_SR04_range() < target);
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -241,8 +248,13 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
-      US_value[k] = HC_SR04_range();
-      k += 1;
+
+      if (millis() - global_timesnap > 1000) {
+        US_value[k] = HC_SR04_range();
+        k += 1; 
+        global_timesnap = millis();
+      }
+      
       left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
       left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
@@ -291,8 +303,13 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
-      US_value[k] = HC_SR04_range();
-      k += 1;
+
+      if (millis() - global_timesnap > 1000) {
+        US_value[k] = HC_SR04_range();
+        k += 1; 
+        global_timesnap = millis();
+      }
+
       left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
       left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
