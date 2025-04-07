@@ -11,6 +11,8 @@ Servo right_rear_motor;
 Servo right_front_motor;
 Servo turret_motor;
 
+int k = 0;
+
 // Speed Control
 int speed_val = 165;
 int speed_change = 0;

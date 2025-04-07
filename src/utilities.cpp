@@ -115,11 +115,13 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
       // Less than 13cm from LEFT wall
       IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
+      IR_pos[k] = 1;
   
     } else if (left_right == RIGHT) {
       // Less than 13cm from RIGHT wall
       IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
       IR_err_current = IR_target - IR_currentSensor; 
+      IR_pos[k] = 2;
   
     }
     //---------------------------//
@@ -131,11 +133,13 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
       // More than 32cm from LEFT wall
       IR_currentSensor = (double)BACK_LEFT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor) * -1; 
+      IR_pos[k] = 3;
   
     } else if (left_right == RIGHT){
       // More than 32cm from RIGHT wall
       IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
       IR_err_current = (IR_target - IR_currentSensor); 
+      IR_pos[k] = 4;
 
     } 
     //------------------------------//
@@ -150,20 +154,25 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
       if (left_right == LEFT){
         IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
+        IR_pos[k] = 1;
     
       } else if (left_right == RIGHT){
         IR_currentSensor = (double)FRONT_RIGHT_shortIR_reading();
         IR_err_current = IR_target - IR_currentSensor; 
+        IR_pos[k] = 2;
     
       }
     } else {
       if (left_right == LEFT){
         IR_currentSensor = (double)BACK_LEFT_longIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
+        IR_pos[k] = 3;
     
       } else if (left_right == RIGHT){
         IR_currentSensor = (double)BACK_RIGHT_longIR_reading();
-        IR_err_current = (IR_target - IR_currentSensor); 
+        IR_err_current = (IR_target - IR_currentSensor);
+        IR_pos[k] = 4; 
+
       }
     }
     //------------------------------//
@@ -210,6 +219,8 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -1*clamp_effort) {IR_u = -1*clamp_effort;} else
     {IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   }
+
+  IR_value[k] = IR_currentSensor;
 
   return IR_err_current;
 }
