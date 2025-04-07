@@ -2,6 +2,7 @@
 
 #define FORWARD_BOUND 5
 #define BACKWARD_BOUND 166
+#define SAMPLING_TIME 500
 
 void enable_motors() {
   left_front_motor.attach(left_front);
@@ -168,7 +169,7 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
-    if (millis() - global_timesnap > 1000) {
+    if (millis() - global_timesnap > SAMPLING_TIME) {
       US_value[k] = HC_SR04_range();
       k += 1; 
       global_timesnap = millis();
@@ -203,7 +204,7 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
   do {
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
-    if (millis() - global_timesnap > 1000) {
+    if (millis() - global_timesnap > SAMPLING_TIME) {
       US_value[k] = HC_SR04_range();
       k += 1; 
       global_timesnap = millis();
@@ -249,7 +250,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
 
-      if (millis() - global_timesnap > 1000) {
+      if (millis() - global_timesnap > SAMPLING_TIME) {
         US_value[k] = HC_SR04_range();
         k += 1; 
         global_timesnap = millis();
@@ -304,7 +305,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
       IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
 
-      if (millis() - global_timesnap > 1000) {
+      if (millis() - global_timesnap > SAMPLING_TIME) {
         US_value[k] = HC_SR04_range();
         k += 1; 
         global_timesnap = millis();
