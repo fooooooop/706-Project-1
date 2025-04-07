@@ -13,12 +13,12 @@
 #define MEDIAN_WINDOW_BR 5
 #define MEDIAN_WINDOW_BL 5
 
-#define SENSOR_LOG_SIZE 300
+#define SENSOR_LOG_SIZE 10000
 
-extern int IR_value[SENSOR_LOG_SIZE];
-extern int IR_pos[SENSOR_LOG_SIZE];
-extern int US_value[SENSOR_LOG_SIZE];
-extern int k;
+extern short IR_value[SENSOR_LOG_SIZE];
+extern short IR_pos[SENSOR_LOG_SIZE];
+extern short US_value[SENSOR_LOG_SIZE];
+extern short k;
 
 // State machine state
 enum STATE { INITIALISING, RUNNING, STOPPED };

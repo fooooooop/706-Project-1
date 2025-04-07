@@ -73,6 +73,21 @@ void read_serial_command() {
       case 'Z':
         dualPrintln("Find corner initiated");
         find_corner();
+
+        Serial1.println("Tilling Started");
+        for (int i = 0; i < k; i++) {
+          Serial1.print(k);
+          Serial1.print(",");
+          Serial1.print(i);
+          Serial1.print(",");
+          Serial1.print(IR_value[i]);
+          Serial1.print(",");
+          Serial1.print(IR_pos[i]);
+          Serial1.print(",");
+          Serial1.println(US_value[i]);
+          delay(50);  // pace the output
+        }
+        
         dualPrintln("Find corner executed");
         break;
         

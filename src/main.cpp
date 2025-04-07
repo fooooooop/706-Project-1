@@ -11,10 +11,10 @@ Servo right_rear_motor;
 Servo right_front_motor;
 Servo turret_motor;
 
-int IR_value[SENSOR_LOG_SIZE];
-int IR_pos[SENSOR_LOG_SIZE];
-int US_value[SENSOR_LOG_SIZE];
-int k = 0;
+short IR_value[SENSOR_LOG_SIZE];
+short IR_pos[SENSOR_LOG_SIZE];
+short US_value[SENSOR_LOG_SIZE];
+short k = 0;
 
 // Speed Control
 int speed_val = 165;
@@ -69,8 +69,8 @@ void setup(void) {
   digitalWrite(TRIG_PIN, LOW);
 
   // Initialize USB Serial for debugging and Serial1 for wireless commands
-  Serial.begin(9600);   // Debug output
-  Serial1.begin(9600);  // HC‑12 wireless commands
+  Serial.begin(115200);   // Debug output
+  Serial1.begin(115200);  // HC‑12 wireless commands
 
   // Set IR sensor models
   FrontLeftIR.setModel(SharpDistSensor::GP2Y0A41SK0F_5V_DS);
