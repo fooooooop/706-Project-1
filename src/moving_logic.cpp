@@ -2,7 +2,7 @@
 
 #define FORWARD_BOUND 5
 #define BACKWARD_BOUND 166
-#define SAMPLING_TIME 500
+#define SAMPLING_TIME 125
 
 void enable_motors() {
   left_front_motor.attach(left_front);
@@ -133,10 +133,10 @@ void turn_angle(double target) {
   bool gyro_timestart = false;
   double gyro_timer = 0;
   double gyro_err_pos;
-  double gyro_bounds = 7;
+  double gyro_bounds = 9;
 
   while (gyro_exit == false) {
-    gyro_err_pos = GYRO_controller(target, 5.0, 0, 0);
+    gyro_err_pos = GYRO_controller(target, 4.75, 0, 0);
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + gyro_u);
@@ -170,10 +170,10 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
     if (millis() - global_timesnap > SAMPLING_TIME) {
-      US_value[k] = HC_SR04_range();
       k += 1; 
       global_timesnap = millis();
     }
+    US_value[k] = HC_SR04_range();
 
     // Send Power to Motors-----//
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
@@ -183,7 +183,7 @@ void forward_target(double target_sidewall, double target, enum DIRECTION left_r
     // IR_u based on strafe_left function
 
     // Exit Condition - when ultrasonic sensor reaches target//
-  } while (HC_SR04_range() > target);
+  } while (US_value[k] > target);
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -205,10 +205,10 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
     GYRO_controller(0, 20.25, 0, 0);
     IR_controller(target_sidewall, AWD, left_right, 2.05, 0.01, 0.08);
     if (millis() - global_timesnap > SAMPLING_TIME) {
-      US_value[k] = HC_SR04_range();
       k += 1; 
       global_timesnap = millis();
     }
+    US_value[k] = HC_SR04_range();
     
 
     // Send Power to Motors-----//
@@ -219,7 +219,7 @@ void reverse_target(double target_sidewall, double target, enum DIRECTION left_r
     // IR_u based on strafe_left function
 
     // Exit Condition - when ultrasonic sensor reaches target//
-  } while (HC_SR04_range() < target);
+  } while (US_value[k] < target);
 
   // Stop Motor ----//
   left_front_motor.writeMicroseconds(0);
@@ -335,8 +335,8 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 }
 
 void forward_right() {
-  strafe_target(125, LEFT, SLOW);
-  forward_target(125, FORWARD_BOUND, LEFT, SLOW);
+  strafe_target(135, LEFT, SLOW);
+  forward_target(135, FORWARD_BOUND, LEFT, SLOW);
   strafe_target(260, LEFT, FAST);
   reverse_target(260, BACKWARD_BOUND, LEFT, FAST);
   strafe_target(460, LEFT, FAST);
@@ -350,13 +350,13 @@ void forward_right() {
   reverse_target(390, BACKWARD_BOUND, RIGHT, FAST);
   strafe_target(200, RIGHT, FAST);
   forward_target(200, FORWARD_BOUND, RIGHT, FAST);
-  strafe_target(70, RIGHT, SLOW);
-  reverse_target(70, BACKWARD_BOUND, RIGHT, SLOW);
+  strafe_target(90, RIGHT, SLOW);
+  reverse_target(90, BACKWARD_BOUND, RIGHT, SLOW);
 }
 
 void forward_left() {
-  strafe_target(70, RIGHT, SLOW);
-  forward_target(70, FORWARD_BOUND, RIGHT, SLOW);
+  strafe_target(90, RIGHT, SLOW);
+  forward_target(90, FORWARD_BOUND, RIGHT, SLOW);
   strafe_target(200, RIGHT, FAST);
   reverse_target(200, BACKWARD_BOUND, RIGHT, FAST);
   strafe_target(390, RIGHT, FAST);
@@ -370,8 +370,8 @@ void forward_left() {
   reverse_target(460, BACKWARD_BOUND, LEFT, FAST);
   strafe_target(260, LEFT, FAST);
   forward_target(260, FORWARD_BOUND, LEFT, FAST);
-  strafe_target(125, LEFT, SLOW);
-  reverse_target(125, BACKWARD_BOUND, LEFT, SLOW);
+  strafe_target(135, LEFT, SLOW);
+  reverse_target(135, BACKWARD_BOUND, LEFT, SLOW);
 }
 
 void find_corner() {

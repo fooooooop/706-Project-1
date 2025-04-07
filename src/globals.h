@@ -13,7 +13,7 @@
 #define MEDIAN_WINDOW_BR 5
 #define MEDIAN_WINDOW_BL 5
 
-#define SENSOR_LOG_SIZE 200
+#define SENSOR_LOG_SIZE 500
 
 extern short IR_value[SENSOR_LOG_SIZE];
 extern short IR_pos[SENSOR_LOG_SIZE];
