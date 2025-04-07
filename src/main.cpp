@@ -11,6 +11,9 @@ Servo right_rear_motor;
 Servo right_front_motor;
 Servo turret_motor;
 
+int IR_value[SENSOR_LOG_SIZE];
+int IR_pos[SENSOR_LOG_SIZE];
+int US_value[SENSOR_LOG_SIZE];
 int k = 0;
 
 // Speed Control
