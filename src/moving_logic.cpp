@@ -378,15 +378,15 @@ void find_corner() {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 120;
+  double strafe_bounds = 50;
   double IR_err_Fpos;
   double IR_err_Bpos;
 
   // Strafe left and orient onto wall-----//
   while (strafe_exit == false) {
     // Start Strafing------------//
-    IR_err_Fpos = IR_controller(250, FWD, LEFT, 1.65, 0, 0);
-    IR_err_Bpos = IR_controller(250, RWD, LEFT, 1.65, 0, 0);
+    IR_err_Fpos = IR_controller(250, FWD, LEFT, 1.0, 0.0015, 0);
+    IR_err_Bpos = IR_controller(250, RWD, LEFT, 1.0, 0.0015, 0);
     left_front_motor.writeMicroseconds(1500 - 100 - IRFront_u);
     left_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
     right_rear_motor.writeMicroseconds(1500 + 100 + IRBack_u);
