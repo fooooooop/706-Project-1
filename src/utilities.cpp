@@ -36,7 +36,7 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
 
   // Time variables
   double t_current = 0;
-  double gyro_t = 100;
+  double gyro_t = 50;
 
   // General error variables
   double gyro_currentSensor;
@@ -100,6 +100,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   double dt;
   double de;
   double dedt;
+
 
   //Main Code Start!------------------------//
   // To get dt for Integral and Derivative controllers
@@ -186,12 +187,12 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     IR_err_mem += IR_err_current;
   }
 
-  if (abs(IRFront_u) < 500) { 
+  if (abs(IRFront_u) < clamp_effort) { 
     // Anti-integral windup
     IR_err_mem_front += IR_err_current;
   }
 
-  if (abs(IRBack_u) < 500) { 
+  if (abs(IRBack_u) < clamp_effort) { 
     // Anti-integral windup
     IR_err_mem_back += IR_err_current;
   }
