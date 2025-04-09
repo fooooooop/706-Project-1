@@ -91,7 +91,7 @@ void strafe_left() {
   // dualPrintln("Strafe 6 done");
   // strafe_target(360, RIGHT);
   // dualPrintln("Strafe 5 done");
-  strafe_target(200, RIGHT, SLOW);
+  strafe_target(200, LEFT, SLOW);
   dualPrintln("Strafe 4 done");
   // strafe_target(600, LEFT);
   // dualPrintln("Strafe 3 done");
@@ -111,7 +111,7 @@ void strafe_right() {
   // dualPrintln("Strafe 1 done");
   // strafe_target(400, LEFT);
   // dualPrintln("Strafe 2 done");
-  strafe_target(200, LEFT, SLOW);
+  strafe_target(200, RIGHT, SLOW);
   dualPrintln("Strafe 3 done");
   // strafe_target(500, RIGHT);
   // dualPrintln("Strafe 4 done");
@@ -243,40 +243,47 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
   double IR_err_Fpos = 0;
   double IR_err_Bpos = 0;
   double gyro_err_pos;
-  double gyro_bounds = 10;
+  double gyro_bounds = 100;
 
   if (boostit == SLOW){
     // Strafe to a target by "pushing" off a wall-----//
     while (strafe_exit == false) {
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-      IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0015, 0.0);
-      // IR_err_Fpos = IR_controller(250, FWD, left_right, 3.0, 0.0015, 0);
-      // IR_err_Bpos = IR_controller(250, RWD, left_right, 3.0, 0.0015, 0);  
+      IR_err_pos = IR_controller(target, AWD, left_right, 3.0, 0.01, 0.0);
+      // IR_err_Fpos = IR_controller(target, FWD, left_right, 3.0, 0.0015, 0);
+      // IR_err_Bpos = IR_controller(target, RWD, left_right, 3.0, 0.0015, 0);  
 
       if (millis() - global_timesnap > SAMPLING_TIME) {
         US_value[k] = HC_SR04_range();
         k += 1; 
         global_timesnap = millis();
       }
-      
+
       left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
       left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+      
+      // left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IRFront_u);
+      // left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IRBack_u);
+      // right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IRBack_u);
+      // right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IRFront_u);
 
       // Exit Condition-----//
       if (((abs(IR_err_Fpos) < strafe_bounds) &&
           (abs(gyro_err_pos) < gyro_bounds) &&
-          (abs(IR_err_Bpos) < strafe_bounds)) &&
+          (abs(IR_err_Bpos) < strafe_bounds) &&
+          (abs(IR_err_pos) < strafe_bounds)) &&
           (strafe_timestart != true)) {
         // Checks to see if yss is within exit threshold, start timer
         strafe_timestart = true;
         strafe_timer = millis();
       }
-      if (((abs(IR_err_Fpos) > strafe_bounds) ||
-          (abs(gyro_err_pos) > gyro_bounds) ||
-          (abs(IR_err_Bpos) > strafe_bounds)) &&
+      if (((abs(IR_err_Fpos) > strafe_bounds) &&
+          (abs(gyro_err_pos) > gyro_bounds) &&
+          (abs(IR_err_Bpos) > strafe_bounds) &&
+          (abs(IR_err_pos) > strafe_bounds)) &&
           (strafe_timestart == true)) {
         // Checks to see if yss falls outside of exit threshold
         // If it does, then restart timer
@@ -284,8 +291,9 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 
       } else if ((millis() - strafe_timer > 2000.0) &&
                 ((abs(IR_err_Fpos) < strafe_bounds) &&
-                  (abs(gyro_err_pos) < gyro_bounds) &&
-                  (abs(IR_err_Bpos) < strafe_bounds)) &&
+                (abs(gyro_err_pos) < gyro_bounds) &&
+                (abs(IR_err_Bpos) < strafe_bounds) &&
+                (abs(IR_err_pos) < strafe_bounds)) &&
                 (strafe_timestart == true)) {
         // Else, if yss is within threshold for a certain amount of time (check
         // first condition), exit controller
@@ -300,17 +308,21 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
     right_front_motor.writeMicroseconds(0);
 
     IR_u = 0;
+    IRFront_u = 0;
+    IRBack_u = 0;
     IR_err_mem = 0;
     IR_err_mem_back = 0;
     IR_err_mem_front = 0;
     IR_err_previous = 0;
 
     return;
+
   } else if (boostit == FAST) {
+
     do {
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-      IR_err_pos = IR_controller(target, AWD, left_right, 2.75, 0.0, 0.0);
+      IR_err_pos = IR_controller(target, AWD, left_right, 3.0, 0.0, 0.0);
 
       if (millis() - global_timesnap > SAMPLING_TIME) {
         US_value[k] = HC_SR04_range();
@@ -323,7 +335,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
       right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
       right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
 
-    } while (abs(IR_err_pos) > strafe_bounds);
+    } while (abs(IR_err_pos) > strafe_bounds*1.5);
 
     // Stop Motor ----//
     left_front_motor.writeMicroseconds(0);
@@ -332,6 +344,8 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
     right_front_motor.writeMicroseconds(0);
 
     IR_u = 0;
+    IRFront_u = 0;
+    IRBack_u = 0;
     IR_err_mem = 0;
     IR_err_mem_back = 0;
     IR_err_mem_front = 0;
@@ -348,32 +362,40 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(135, LEFT, SLOW);
-  forward_target(135, FORWARD_BOUND, LEFT, SLOW);
+  forward_target(160, FORWARD_BOUND, LEFT, SLOW);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(260, LEFT, FAST);
-  reverse_target(260, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(349, LEFT, FAST);
+  reverse_target(349, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(460, LEFT, FAST);
-  forward_target(460, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(351, LEFT, FAST);
+  forward_target(351, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(670, LEFT, FAST);
-  reverse_target(670, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(545, LEFT, FAST);
+  reverse_target(545, BACKWARD_BOUND, LEFT, FAST);
+  for (int i = 0; i < 5; i++){
+    FRONT_LEFT_shortIR_reading();
+    FRONT_RIGHT_shortIR_reading();
+    BACK_LEFT_longIR_reading();
+    BACK_RIGHT_longIR_reading();
+  }
+  strafe_target(585, LEFT, FAST);
+  forward_target(585, FORWARD_BOUND, LEFT, FAST);
+  
 
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
@@ -381,32 +403,40 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(530, RIGHT, FAST);
-  forward_target(530, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(650, RIGHT, FAST);
+  reverse_target(650, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(390, RIGHT, FAST);
-  reverse_target(390, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(560, RIGHT, FAST);
+  forward_target(560, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(200, RIGHT, FAST);
-  forward_target(200, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(300, RIGHT, FAST);
+  reverse_target(300, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(90, RIGHT, SLOW);
-  reverse_target(90, BACKWARD_BOUND, RIGHT, SLOW);
+  strafe_target(250, RIGHT, FAST);
+  forward_target(250, FORWARD_BOUND, RIGHT, FAST);
+  for (int i = 0; i < 5; i++){
+    FRONT_LEFT_shortIR_reading();
+    FRONT_RIGHT_shortIR_reading();
+    BACK_LEFT_longIR_reading();
+    BACK_RIGHT_longIR_reading();
+  }
+  strafe_target(81, RIGHT, SLOW);
+  reverse_target(81, BACKWARD_BOUND, RIGHT, SLOW);
 }
 
 void forward_left() {
@@ -416,32 +446,40 @@ void forward_left() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(90, RIGHT, SLOW);
-  forward_target(90, FORWARD_BOUND, RIGHT, SLOW);
+  forward_target(81, FORWARD_BOUND, RIGHT, SLOW);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(200, RIGHT, FAST);
-  reverse_target(200, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(250, RIGHT, FAST);
+  reverse_target(250, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(390, RIGHT, FAST);
-  forward_target(390, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(300, RIGHT, FAST);
+  forward_target(300, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(530, RIGHT, FAST);
-  reverse_target(530, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(560, RIGHT, FAST);
+  reverse_target(560, BACKWARD_BOUND, RIGHT, FAST);
+  for (int i = 0; i < 5; i++){
+    FRONT_LEFT_shortIR_reading();
+    FRONT_RIGHT_shortIR_reading();
+    BACK_LEFT_longIR_reading();
+    BACK_RIGHT_longIR_reading();
+  }
+  strafe_target(650, RIGHT, FAST);
+  forward_target(650, FORWARD_BOUND, RIGHT, FAST);
+
 
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
@@ -449,39 +487,47 @@ void forward_left() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(670, LEFT, FAST);
-  forward_target(670, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(585, LEFT, FAST);
+  reverse_target(585, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(460, LEFT, FAST);
-  reverse_target(460, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(545, LEFT, FAST);
+  forward_target(545, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(260, LEFT, FAST);
-  forward_target(260, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(351, LEFT, FAST);
+  reverse_target(351, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(135, LEFT, SLOW);
-  reverse_target(135, BACKWARD_BOUND, LEFT, SLOW);
+  strafe_target(349, LEFT, FAST);
+  forward_target(349, FORWARD_BOUND, LEFT, FAST);
+  for (int i = 0; i < 5; i++){
+    FRONT_LEFT_shortIR_reading();
+    FRONT_RIGHT_shortIR_reading();
+    BACK_LEFT_longIR_reading();
+    BACK_RIGHT_longIR_reading();
+  }
+  strafe_target(160, LEFT, SLOW);
+  reverse_target(160, BACKWARD_BOUND, LEFT, SLOW);
 }
 
 void find_corner() {
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 30;
+  double strafe_bounds = 25;
   double IR_err_Fpos;
   double IR_err_Bpos;
 
@@ -553,7 +599,7 @@ void find_corner() {
   // Drive straight to shortest wall----------//
   do {
     GYRO_controller(0, 20.25, 0, 0);
-    IR_controller(130, AWD, LEFT, 1.0, 0, 0);
+    IR_controller(170, AWD, LEFT, 1.0, 0, 0);
     left_front_motor.writeMicroseconds(1500 + speed_val + gyro_u - IR_u);
     left_rear_motor.writeMicroseconds(1500 + speed_val + gyro_u + IR_u);
     right_rear_motor.writeMicroseconds(1500 - speed_val + gyro_u + IR_u);

@@ -101,7 +101,6 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   double de;
   double dedt;
 
-
   //Main Code Start!------------------------//
   // To get dt for Integral and Derivative controllers
   t_current = millis();
@@ -151,7 +150,7 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
     // USE FOR THE STRAIGHT LINE
     // Honestly we could do two separate controllers for the front and back wheels and see how that goes?
     // But that's highkey kinda hard, and also, the short IR sensors will be useless in the middle anyways
-    if (IR_target < 370) {
+    if (IR_target < 350) {
       if (left_right == LEFT){
         IR_currentSensor = (double)FRONT_LEFT_shortIR_reading();
         IR_err_current = (IR_target - IR_currentSensor) * -1; 
@@ -207,17 +206,17 @@ double IR_controller(double IR_target, enum DRIVE IR_mode, enum DIRECTION left_r
   if (IR_mode == FWD) {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) > clamp_effort) {IRFront_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -1*clamp_effort) {IRFront_u = -1*clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_front + kd*dedt) < -clamp_effort) {IRFront_u = -clamp_effort;} else
     {IRFront_u = (kp*IR_err_current + ki*IR_err_mem_front + kd*dedt);}
   } else if (IR_mode == RWD) {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) > clamp_effort) {IRBack_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -1*clamp_effort) {IRBack_u = -1*clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem_back + kd*dedt) < -clamp_effort) {IRBack_u = -clamp_effort;} else
     {IRBack_u = (kp*IR_err_current + ki*IR_err_mem_back + kd*dedt);}
   } else {
     // Add clamps
     if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) > clamp_effort) {IR_u = clamp_effort;} else
-    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -1*clamp_effort) {IR_u = -1*clamp_effort;} else
+    if ((kp*IR_err_current + ki*IR_err_mem + kd*dedt) < -clamp_effort) {IR_u = -clamp_effort;} else
     {IR_u = (kp*IR_err_current + ki*IR_err_mem + kd*dedt);}
   }
 
