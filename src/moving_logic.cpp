@@ -238,7 +238,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 30;
+  double strafe_bounds = 25;
   double IR_err_pos = 0;
   double IR_err_Fpos = 0;
   double IR_err_Bpos = 0;
@@ -361,6 +361,7 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   forward_target(160, FORWARD_BOUND, LEFT, SLOW);
   for (int i = 0; i < 5; i++){
@@ -368,14 +369,16 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(349, LEFT, FAST);
-  reverse_target(349, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(280, LEFT, FAST);
+  reverse_target(280, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(351, LEFT, FAST);
   forward_target(351, FORWARD_BOUND, LEFT, FAST);
@@ -384,14 +387,16 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(545, LEFT, FAST);
-  reverse_target(545, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(500, LEFT, FAST);
+  reverse_target(500, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(585, LEFT, FAST);
   forward_target(585, FORWARD_BOUND, LEFT, FAST);
@@ -402,6 +407,7 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(650, RIGHT, FAST);
   reverse_target(650, BACKWARD_BOUND, RIGHT, FAST);
@@ -410,6 +416,7 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(560, RIGHT, FAST);
   forward_target(560, FORWARD_BOUND, RIGHT, FAST);
@@ -418,14 +425,16 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(300, RIGHT, FAST);
-  reverse_target(300, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  reverse_target(390, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(250, RIGHT, FAST);
   forward_target(250, FORWARD_BOUND, RIGHT, FAST);
@@ -434,9 +443,10 @@ void forward_right() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(81, RIGHT, SLOW);
-  reverse_target(81, BACKWARD_BOUND, RIGHT, SLOW);
+  strafe_target(110, RIGHT, SLOW);
+  reverse_target(110, BACKWARD_BOUND, RIGHT, SLOW);
 }
 
 void forward_left() {
@@ -445,13 +455,15 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  forward_target(81, FORWARD_BOUND, RIGHT, SLOW);
+  forward_target(110, FORWARD_BOUND, RIGHT, SLOW);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(250, RIGHT, FAST);
   reverse_target(250, BACKWARD_BOUND, RIGHT, FAST);
@@ -460,14 +472,16 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(300, RIGHT, FAST);
-  forward_target(300, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  forward_target(390, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(560, RIGHT, FAST);
   reverse_target(560, BACKWARD_BOUND, RIGHT, FAST);
@@ -476,6 +490,7 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(650, RIGHT, FAST);
   forward_target(650, FORWARD_BOUND, RIGHT, FAST);
@@ -486,6 +501,7 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(585, LEFT, FAST);
   reverse_target(585, BACKWARD_BOUND, LEFT, FAST);
@@ -494,14 +510,16 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(545, LEFT, FAST);
-  forward_target(545, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(500, LEFT, FAST);
+  forward_target(500, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(351, LEFT, FAST);
   reverse_target(351, BACKWARD_BOUND, LEFT, FAST);
@@ -510,14 +528,16 @@ void forward_left() {
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
-  strafe_target(349, LEFT, FAST);
-  forward_target(349, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(280, LEFT, FAST);
+  forward_target(280, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
+    HC_SR04_range();
   }
   strafe_target(160, LEFT, SLOW);
   reverse_target(160, BACKWARD_BOUND, LEFT, SLOW);
