@@ -36,7 +36,7 @@ double GYRO_controller(double gyro_target, double kp, double ki, double kd) {
 
   // Time variables
   double t_current = 0;
-  double gyro_t = 100;
+  double gyro_t = 50;
 
   // General error variables
   double gyro_currentSensor;

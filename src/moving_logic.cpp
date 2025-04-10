@@ -111,7 +111,7 @@ void strafe_right() {
   // dualPrintln("Strafe 1 done");
   // strafe_target(400, LEFT);
   // dualPrintln("Strafe 2 done");
-  strafe_target(90, RIGHT, SLOW);
+  strafe_target(100, RIGHT, SLOW);
   dualPrintln("Strafe 3 done");
   // strafe_target(500, RIGHT);
   // dualPrintln("Strafe 4 done");
@@ -242,13 +242,14 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
   double IR_err_pos = 0;
   double gyro_err_pos;
   double gyro_bounds = 100;
+  double timer_stop = millis();
 
   if (boostit == SLOW){
     // Strafe to a target by "pushing" off a wall-----//
     while (strafe_exit == false) {
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-      IR_err_pos = IR_controller(target, AWD, left_right, 1.5, 0.0105, 0.03);
+      IR_err_pos = IR_controller(target, AWD, left_right, 1.0, 0.01, 0.05);
       // IR_err_Fpos = IR_controller(target, FWD, left_right, 3.0, 0.0015, 0);
       // IR_err_Bpos = IR_controller(target, RWD, left_right, 3.0, 0.0015, 0);  
 
@@ -257,6 +258,8 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
         k += 1; 
         global_timesnap = millis();
       }
+
+      dualPrintln(IR_err_pos);
 
       left_front_motor.writeMicroseconds(1500 + gyro_u - IR_u);
       left_rear_motor.writeMicroseconds(1500 + gyro_u + IR_u);
@@ -291,6 +294,9 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
         // first condition), exit controller
         strafe_exit = true;
       }
+
+      //REDUNDANCY
+      if (millis() - timer_stop > 10000) break;
     }
 
     // Stop Motor ----//
@@ -348,6 +354,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
 }
 
 void forward_right() {
+
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -361,8 +368,8 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(280, LEFT, FAST);
-  reverse_target(280, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(300, LEFT, FAST);
+  reverse_target(300, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -411,8 +418,8 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(370, RIGHT, FAST);
-  reverse_target(370, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  reverse_target(390, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -427,8 +434,9 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(90, RIGHT, SLOW);
-  reverse_target(90, BACKWARD_BOUND, RIGHT, SLOW);
+
+  strafe_target(100, RIGHT, SLOW);
+  reverse_target(100, BACKWARD_BOUND, RIGHT, SLOW);
 }
 
 void forward_left() {
@@ -439,7 +447,7 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  forward_target(90, FORWARD_BOUND, RIGHT, SLOW);
+  forward_target(80, FORWARD_BOUND, RIGHT, SLOW);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -456,8 +464,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(370, RIGHT, FAST);
-  forward_target(370, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(390, RIGHT, FAST);
+  forward_target(390, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -512,8 +520,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(280, LEFT, FAST);
-  forward_target(280, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(300, LEFT, FAST);
+  forward_target(300, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
