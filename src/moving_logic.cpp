@@ -91,7 +91,7 @@ void strafe_left() {
   // dualPrintln("Strafe 6 done");
   // strafe_target(360, RIGHT);
   // dualPrintln("Strafe 5 done");
-  strafe_target(200, LEFT, SLOW);
+  strafe_target(160, LEFT, SLOW);
   dualPrintln("Strafe 4 done");
   // strafe_target(600, LEFT);
   // dualPrintln("Strafe 3 done");
@@ -111,7 +111,7 @@ void strafe_right() {
   // dualPrintln("Strafe 1 done");
   // strafe_target(400, LEFT);
   // dualPrintln("Strafe 2 done");
-  strafe_target(200, RIGHT, SLOW);
+  strafe_target(81, RIGHT, SLOW);
   dualPrintln("Strafe 3 done");
   // strafe_target(500, RIGHT);
   // dualPrintln("Strafe 4 done");
@@ -238,7 +238,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
   bool strafe_exit = false;
   double strafe_timer = 0;
   bool strafe_timestart = false;
-  double strafe_bounds = 20;
+  double strafe_bounds = 30;
   double IR_err_pos = 0;
   double IR_err_Fpos = 0;
   double IR_err_Bpos = 0;
@@ -250,7 +250,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
     while (strafe_exit == false) {
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-      IR_err_pos = IR_controller(target, AWD, left_right, 3.0, 0.01, 0.0);
+      IR_err_pos = IR_controller(target, AWD, left_right, 1.5, 0.005, 0.03);
       // IR_err_Fpos = IR_controller(target, FWD, left_right, 3.0, 0.0015, 0);
       // IR_err_Bpos = IR_controller(target, RWD, left_right, 3.0, 0.0015, 0);  
 
@@ -260,10 +260,10 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
         global_timesnap = millis();
       }
 
-      left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
-      left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-      right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-      right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+      left_front_motor.writeMicroseconds(1500 + gyro_u - IR_u);
+      left_rear_motor.writeMicroseconds(1500 + gyro_u + IR_u);
+      right_rear_motor.writeMicroseconds(1500 + gyro_u + IR_u);
+      right_front_motor.writeMicroseconds(1500 + gyro_u - IR_u);
       
       // left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IRFront_u);
       // left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IRBack_u);
@@ -322,7 +322,7 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
     do {
       // Start Strafing------------//
       gyro_err_pos = GYRO_controller(0, 6, 0, 0);
-      IR_err_pos = IR_controller(target, AWD, left_right, 3.0, 0.0, 0.0);
+      IR_err_pos = IR_controller(target, AWD, left_right, 1.5, 0.005, 0.03);
 
       if (millis() - global_timesnap > SAMPLING_TIME) {
         US_value[k] = HC_SR04_range();
@@ -330,10 +330,10 @@ void strafe_target(double target, enum DIRECTION left_right, enum SPEED boostit)
         global_timesnap = millis();
       }
 
-      left_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
-      left_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-      right_rear_motor.writeMicroseconds(1500 + 100 + gyro_u + IR_u);
-      right_front_motor.writeMicroseconds(1500 - 100 + gyro_u - IR_u);
+      left_front_motor.writeMicroseconds(1500 + gyro_u - IR_u);
+      left_rear_motor.writeMicroseconds(1500 + gyro_u + IR_u);
+      right_rear_motor.writeMicroseconds(1500 + gyro_u + IR_u);
+      right_front_motor.writeMicroseconds(1500 + gyro_u - IR_u);
 
     } while (abs(IR_err_pos) > strafe_bounds*1.5);
 
