@@ -377,8 +377,8 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(520, LEFT, FAST);
-  reverse_target(520, BACKWARD_BOUND, LEFT, FAST);
+  strafe_target(500, LEFT, FAST);
+  reverse_target(500, BACKWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -395,32 +395,32 @@ void forward_right() {
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(650, RIGHT, FAST);
-  reverse_target(650, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(660, RIGHT, FAST);
+  reverse_target(660, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(510, RIGHT, FAST);
-  forward_target(510, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(500, RIGHT, FAST);
+  forward_target(500, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(380, RIGHT, FAST);
-  reverse_target(380, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(370, RIGHT, FAST);
+  reverse_target(370, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
     BACK_LEFT_longIR_reading();
     BACK_RIGHT_longIR_reading();
   }
-  strafe_target(240, RIGHT, FAST);
-  forward_target(240, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(230, RIGHT, FAST);
+  forward_target(230, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -447,8 +447,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(240, RIGHT, FAST);
-  reverse_target(240, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(230, RIGHT, FAST);
+  reverse_target(230, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -456,8 +456,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(380, RIGHT, FAST);
-  forward_target(380, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(370, RIGHT, FAST);
+  forward_target(370, FORWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -465,8 +465,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(510, RIGHT, FAST);
-  reverse_target(510, BACKWARD_BOUND, RIGHT, FAST);
+  strafe_target(500, RIGHT, FAST);
+  reverse_target(500, BACKWARD_BOUND, RIGHT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
@@ -474,8 +474,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(650, RIGHT, FAST);
-  forward_target(650, FORWARD_BOUND, RIGHT, FAST);
+  strafe_target(660, RIGHT, FAST);
+  forward_target(660, FORWARD_BOUND, RIGHT, FAST);
 
 
   for (int i = 0; i < 5; i++){
@@ -494,8 +494,8 @@ void forward_left() {
     BACK_RIGHT_longIR_reading();
     HC_SR04_range();
   }
-  strafe_target(520, LEFT, FAST);
-  forward_target(520, FORWARD_BOUND, LEFT, FAST);
+  strafe_target(500, LEFT, FAST);
+  forward_target(500, FORWARD_BOUND, LEFT, FAST);
   for (int i = 0; i < 5; i++){
     FRONT_LEFT_shortIR_reading();
     FRONT_RIGHT_shortIR_reading();
